@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>mz3d</title>
+<style type="text/css">
+* {
+	margin: 0;
+	padding: 0;
+}
+</style>
+</head>
+<body>
+
+<div class="page" id="updateTips"></div>
+<div class="page" id="pickView"></div>  
+<div class="page" id="displayView"></div>
+
+<canvas></canvas>
+<canvas style="position: absolute; left: 50%; top: 0;"></canvas>
+
+<script type="text/javascript" src="./libs/three.js"></script>
+<script>
+var winWidth = document.body.clientWidth || document.documentElement.clientWidth;
+var winHeight = window.innerHeight;
+
+console.log(winWidth, winHeight);
+var cvses = document.querySelectorAll('canvas');
+cvses.forEach(function(cvs) {
+	cvs.width = winWidth/2;
+	cvs.height = winHeight;
+});
+
+
+
+var scene = new THREE.Scene();
+
+// create a camera, which defines where we're looking at.
+var camera = new THREE.PerspectiveCamera(45, window.innerWidth * 0.5 / window.innerHeight, 0.1, 1000);
+
+var camera2 = new THREE.PerspectiveCamera(45, window.innerWidth * 0.5 / window.innerHeight, 0.1, 1000);
+
+// create a render and set the size
+var webGLRenderer = new THREE.WebGLRenderer({canvas: cvses[0]});
+webGLRenderer.setClearColor(new THREE.Color(0x000000, 1.0));
+webGLRenderer.setSize(window.innerWidth/2, window.innerHeight);
+webGLRenderer.shadowMapEnabled = true;
+
+// create a render and set the size
+var webGLRenderer2 = new THREE.WebGLRenderer({canvas: cvses[1]});
+webGLRenderer2.setClearColor(new THREE.Color(0x000000, 1.0));
+webGLRenderer2.setSize(window.innerWidth/2, window.innerHeight);
+webGLRenderer2.shadowMapEnabled = true;
+
+
+// position and point the camera to the center of the scene
+camera.position.x = 150;
+camera.position.y = 150;
+camera.position.z = 150;
+camera.lookAt(new THREE.Vector3(0, 20, 0));
+
+// position and point the camera to the center of the scene
+camera2.position.x = -150;
+camera2.position.y = 150;
+camera2.position.z = 150;
+camera2.lookAt(new THREE.Vector3(0, 20, 0));
+
+
+// cube
+var cubeGeometry = new THREE.CubeGeometry(20, 20, 20);
+
+var material = new THREE.MeshBasicMaterial({color: '#fff', wireframe: true});
+
+var cube = new THREE.Mesh(cubeGeometry, material);
+
+scene.add(cube);
+
+// add spotlight for the shadows
+var spotLight = new THREE.SpotLight(0xffffff);
+spotLight.position.set(150, 150, 150);
+spotLight.intensity = 2;
+scene.add(spotLight);
+
+// add the output of the renderer to the html element
+
+//webGLRenderer.render(scene, camera);
+
+setTimeout(function() {
+	webGLRenderer2.render(scene, camera2);
+}, 2000);
+
+</script>
+</body>
+</html>
