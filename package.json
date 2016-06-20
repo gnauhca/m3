@@ -1,0 +1,25 @@
+{
+  "name": "m3",
+  "version": "1.0.0",
+  "description": "m3",
+  "main": "index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zhzhchwin/m3.git"
+  },
+  "keywords": [
+    "m3"
+  ],
+  "author": "zzc",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/zhzhchwin/m3/issues"
+  },
+  "homepage": "https://github.com/zhzhchwin/m3#readme",
+  "devDependencies": {
+    "webpack": "^1.13.1"
+  }
+}
