@@ -1,15 +1,21 @@
+var webpack = require('webpack');
+
 module.exports = {
 	entry: './js/main.js',
 	output: {
 		'filename': 'index.js',
 		'path': './build'
 	},
+	resolve: {
+		modulesDirectories: ['node_modules']
+	},
+
 	plugins: [
 		new webpack.ProvidePlugin({
 		    $: "jquery",
 		    jQuery: "jquery",
-		    "window.jQuery": "jquery",
-		    CONFIG: './js/config.js'
+		    "window.$": "jquery",
+		    CONFIG: './config.js'
 		})
 	]
 }

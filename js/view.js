@@ -1,9 +1,11 @@
+var TimeBody = require('./time.js');
 var views = [];
 
-var View = Class.extend(function() {
-    this.constructor  function() {
+var View = TimeBody.extend(function() {
+    this.constructor = function() {
         this._id = parseInt(Math.random() * 100000000);
         views[this._id] = this;
+        this.super();
     }
 
     this.changeView = function(viewname, data) {
@@ -11,7 +13,7 @@ var View = Class.extend(function() {
     }
 
     this.activate = function(data) {
-        
+
     }
 
     this.getViewId = function() {
@@ -19,6 +21,7 @@ var View = Class.extend(function() {
     }
 
     this.distroy = function() {
+        this.super.distroy();
         delete views[this._id];
     }
 

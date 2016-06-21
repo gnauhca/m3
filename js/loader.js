@@ -4,8 +4,8 @@
 
 var Loader = Class.extend(function() {
 	sizeInfo = {
-		IMG_SIZE: 1,
-		MODEL_SIZE: 3	
+		'img': 1,
+		'model': 3	
 	}
 
 
@@ -25,6 +25,8 @@ var Loader = Class.extend(function() {
 			totalSize += sizeInfo[loadConfig['type']];
 
 			loadMethod[loadConfig['type']](loadConfig['url'], (function(type, _i) {
+					console.log(_i);
+				
 				return function(res) {
 					loadedSize += sizeInfo[type];
 
@@ -38,7 +40,7 @@ var Loader = Class.extend(function() {
 						successCallback(loadedReses);
 					}
 				}
-			})(loadConfig['type']), i);
+			})(loadConfig['type'], i));
 		}
 	}
 });
@@ -59,3 +61,7 @@ var loadMethod = {
 		//
 	}
 }
+
+module.exports = Loader;
+
+
