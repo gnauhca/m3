@@ -1,5 +1,6 @@
 var View = require('./view.js');
 var Loader = require('./loader.js');
+var LogoAni = require('./logo-animation.js');
 var loader = new Loader();
 
 var ViewList = View.extend(function() {
@@ -8,15 +9,18 @@ var ViewList = View.extend(function() {
 	var scene; // 场景 外部提供
 	var camera; // 自身创建 camera
 	var assetsLoaded = false; // 资源是否已加载
-	var productCfg = []; // 产品配置信息 from config.products
+	var isActive = false;
 
+	var productCfg = []; // 产品配置信息 from config.products
 	var col = 4; // 一列展示的产品数量
 	var initCrood = new THREE.Vector3(0, 0, -10); // 初始坐标
 	var baseCrood = new THREE.Vector3(0, 0, 0); // 基准坐标，产品陈列中心点
 
+	var logoUrl = CONFIG.meizulogo;
+	var logoAni;
+
 	var spriteBox = new THREE.Object3D(); // 精灵容器
 
-	var isActive = false;
 
 	this.viewDisPlayManagerId; // 展示视图的ID
 
@@ -27,6 +31,9 @@ var ViewList = View.extend(function() {
 
 		productCfg = $.extend(true, [], CONFIG.products);
 		//productCfg.length = 1;
+		
+		logoAni = new LogoAni(scene);
+
 		this.super();
 	}
 
@@ -87,7 +94,7 @@ var ViewList = View.extend(function() {
 	// 创建精灵
 	function createSprite() {
 		var spriteSize = 3;
-		var spriteMargin = 1;
+		var spriteMargin = 6;
 
 		var row = Math.ceil(productCfg.length / col);
 		var center = {row: row/2 - 0.5, col: col/2 - 0.5};
@@ -128,15 +135,17 @@ var ViewList = View.extend(function() {
 
 	// init Animate 初始动画
 	function initAni() {
+		logoAni.init(); return;
+
 		var aniCfg = $.extend(true, [], productCfg);
-		var circle = 1; // 旋转圈数
+		var circle = 4; // 旋转圈数
 		var timePass = 0; 
 
 		aniCfg.forEach(function(cfg, i) {
 			cfg.percent = 0; 
 			cfg.finalAngle = Math.PI * 2 * circle + Math.atan(cfg.sizeInfo.x / (baseCrood.z - initCrood.z));
 			cfg.aniRadius = Math.sqrt(cfg.sizeInfo.x * cfg.sizeInfo.x + (baseCrood.z - initCrood.z) * (baseCrood.z - initCrood.z));
-			cfg.delay = i * 0.3 * Math.random();
+			cfg.delay = i * 200 + Math.random() * 100;
 			cfg.aniDur = 2000 + parseInt(Math.random() * 1000); 
 		});
 
@@ -163,7 +172,6 @@ var ViewList = View.extend(function() {
 
 				cfg.sprite.position.set(cfg.x, cfg.y, cfg.z);
 				cfg.sprite.scale.set(cfg.s, cfg.s, cfg.s);
-				console.log(cfg.sprite.position);
 
 				if (cfg.percent === 1) {
 					finishNum ++;
@@ -178,6 +186,7 @@ var ViewList = View.extend(function() {
 				}, 0);
 			}
 		});	
+
 	}
 
 	// 加载资源
@@ -188,6 +197,11 @@ var ViewList = View.extend(function() {
 			loadConfigs[i] = {};
 			loadConfigs[i].type = 'img';
 			loadConfigs[i].url = item.imgUrl;
+		});
+
+		loadConfigs.push({
+			type: 'img',
+			url: logoUrl
 		});
 
 		loader.load(loadConfigs, function(progress) {

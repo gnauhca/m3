@@ -1,4 +1,5 @@
 var CONFIG = {
+	meizulogo: './assets/logo.png',
 	products: [
 		{
 			'name': 'pro6',

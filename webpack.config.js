@@ -10,6 +10,8 @@ module.exports = {
 		modulesDirectories: ['node_modules']
 	},
 
+	devtool: 'source-map',
+
 	plugins: [
 		new webpack.ProvidePlugin({
 		    $: "jquery",
