@@ -1,8 +1,9 @@
 (function() {
+	require('../css/common.scss');
+
 	var ViewUpdate = require('./update-tip.js');
 	var ViewList = require('./view-list.js');
 	var ViewDisplayManager = require('./view-display-manager');
-
 
 	// todo: webgl 检查
 	if (false) {

@@ -12,6 +12,13 @@ module.exports = {
 
 	devtool: 'source-map',
 
+    module: {
+        loaders: [
+            
+            { test: /css.*?\.scss$/, loaders: ["style", "css", "sass"] }
+        ]
+    },
+
 	plugins: [
 		new webpack.ProvidePlugin({
 		    $: "jquery",

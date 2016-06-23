@@ -1,6 +1,7 @@
 var View = require('./view.js');
 var Loader = require('./loader.js');
 var LogoAni = require('./logo-animation.js');
+var ProductPreview = require('./product-preview.js');
 var loader = new Loader();
 
 var ViewList = View.extend(function() {
@@ -21,7 +22,6 @@ var ViewList = View.extend(function() {
 
 	var spriteBox = new THREE.Object3D(); // 精灵容器
 
-
 	this.viewDisPlayManagerId; // 展示视图的ID
 
 	this.constructor = function(_renderer, _scene) {
@@ -33,6 +33,7 @@ var ViewList = View.extend(function() {
 		//productCfg.length = 1;
 		
 		logoAni = new LogoAni(scene);
+		productPreview = new ProductPreview();
 
 		this.super();
 	}
@@ -56,20 +57,22 @@ var ViewList = View.extend(function() {
 			return;
 		}
 
-		// 精灵创建
-		if (!productCfg[0].sprite) {
-			createSprite();
-		}
-
 		// window render 设置
 		resetWindow();
 
 		// 精灵动画
-		initAni();
+		init();
 
 		// render frame
 		render();
 
+	}
+
+	function init() {
+		resetWindow();
+		logoAni.playEntryAnimation(function() {
+			that.gotoView(productPreview.getViewId());
+		});
 	}
 
 	// 窗口变化调整
@@ -78,116 +81,14 @@ var ViewList = View.extend(function() {
 		var winHeight = window.innerHeight;
 
 		renderer.setSize(winWidth, winHeight);
-		camera.position.set(0, 0, 50);
+		camera.position.set(0, 0, 250);
 		camera.lookAt(baseCrood);
 		scene.add(camera);
 
-        // add spotlight for the shadows
-        var spotLight = new THREE.SpotLight(0xffffff);
-        spotLight.position.set(300, 300, 300);
-        spotLight.intensity = 1;
-        scene.add(spotLight);
-
-
+		logoAni.reset();
+		productPreview.reset();
 	}
 
-	// 创建精灵
-	function createSprite() {
-		var spriteSize = 3;
-		var spriteMargin = 6;
-
-		var row = Math.ceil(productCfg.length / col);
-		var center = {row: row/2 - 0.5, col: col/2 - 0.5};
-
-		productCfg.forEach(function(cfg, i) {
-	        var spriteMaterial = new THREE.SpriteMaterial({
-                opacity: 1,
-                color: 0xaaaaaa,
-                transparent: true,
-                map: new THREE.ImageUtils.loadTexture(cfg.imgUrl)
-            });
-
-	        //spriteMaterial.depthTest = false;
-	        //spriteMaterial.blending = THREE.AdditiveBlending;
-
-	        var sprite = new THREE.Sprite(spriteMaterial);
-	        cfg.sprite = sprite;// 存入config
-
-
-	        // 精灵最终位置大小信息
-	        cfg.sizeInfo = {
-	        	x: (i % col - center.col) * (spriteSize + spriteMargin),
-	        	y: (Math.floor(i / col) - center.row) * (spriteSize + spriteMargin),
-	        	z: baseCrood.z,
-	        	s: spriteSize // 精灵大小
-	        }
-	        console.log(cfg.sizeInfo);
-	        cfg.sprite.position.copy(initCrood);
-	        cfg.sprite.scale.set(0, 0, 0);
-
-	        //cfg.sprite.position.set(cfg.sizeInfo.x, cfg.sizeInfo.y, cfg.sizeInfo.z);
-	        //cfg.sprite.scale.set(1, 1, 1);
-
-	        spriteBox.add(sprite);
-		});
-		scene.add(spriteBox);
-	}
-
-	// init Animate 初始动画
-	function initAni() {
-		logoAni.init(); return;
-
-		var aniCfg = $.extend(true, [], productCfg);
-		var circle = 4; // 旋转圈数
-		var timePass = 0; 
-
-		aniCfg.forEach(function(cfg, i) {
-			cfg.percent = 0; 
-			cfg.finalAngle = Math.PI * 2 * circle + Math.atan(cfg.sizeInfo.x / (baseCrood.z - initCrood.z));
-			cfg.aniRadius = Math.sqrt(cfg.sizeInfo.x * cfg.sizeInfo.x + (baseCrood.z - initCrood.z) * (baseCrood.z - initCrood.z));
-			cfg.delay = i * 200 + Math.random() * 100;
-			cfg.aniDur = 2000 + parseInt(Math.random() * 1000); 
-		});
-
-
-		var currentAngle;
-		var finishNum = 0;
-
-		var aniTick = that.addTick(function(detal) {
-			timePass += detal;
-
-			// 遍历更新精灵位置
-			aniCfg.forEach(function(cfg) {
-				if (cfg.percent === 1) return;
-
-				cfg.percent = (timePass - cfg.delay) / cfg.aniDur;
-				cfg.percent = cfg.percent < 0 ? 0 : (cfg.percent > 1 ? 1: cfg.percent);
-				currentAngle = cfg.finalAngle * cfg.percent;
-
-				cfg.x = Math.sin(currentAngle) * cfg.aniRadius * cfg.percent;
-				cfg.z = Math.cos(currentAngle) * cfg.aniRadius * cfg.percent + initCrood.z;
-				cfg.y = (cfg.sizeInfo.y - initCrood.y) * cfg.percent;
-
-				cfg.s = cfg.sizeInfo.s * cfg.percent;
-
-				cfg.sprite.position.set(cfg.x, cfg.y, cfg.z);
-				cfg.sprite.scale.set(cfg.s, cfg.s, cfg.s);
-
-				if (cfg.percent === 1) {
-					finishNum ++;
-				}
-			});
-
-			if (finishNum === aniCfg.length) {
-				// 初始动画完成
-				this.isActive = true;
-				setTimeout(function() {
-					that.removeTick(aniTick);
-				}, 0);
-			}
-		});	
-
-	}
 
 	// 加载资源
 	function loadAssets() {

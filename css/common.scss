@@ -1,0 +1,99 @@
+/* RESET*/
+html,body,div,ul,ol,li,dl,dt,dd,h1,h2,h3,h4,h5,h6,pre,form,p,blockquote,fieldset,input,abbr,article,aside,command,details,figcaption,figure,footer,header,hgroup,mark,meter,nav,output,progress,section,summary,time {margin: 0; padding: 0; }
+h1,h2,h3,h4,h5,h6,pre,code,address,caption,cite,code,em,strong,th,figcaption {font-size: 1em; font-weight: normal; font-style: normal; }
+fieldset,iframe {border: none; }
+caption,th {text-align: left; }
+table {border-collapse: collapse; border-spacing: 0; }
+article,aside,footer,header,hgroup,nav,section,figure,figcaption {display: block; }
+
+html, body {width: 100%;height: 100%; position:relative;}
+html {background-color:#fff; }
+img {border: 0; }
+a {text-decoration: none;color: #515151; &:focus {outline: none;} }
+i {font-style: normal;}
+ul, li {list-style: none; }
+p {max-height: 100%;}
+.clearfix:after, .clearfix:before {content: "";display: table;height: 0px;clear: both;visibility: hidden;}
+.clearfix{ *zoom:1; }
+
+
+
+// listView
+#listView {
+    perspective: 1200px;
+    position: fixed;
+    display: none;
+    width: 100%;
+    height: 100%;
+
+    top: 0;
+    left: 0;
+    z-index: 100;
+
+    li {
+        position: absolute;
+        overflow: hidden;
+        //transform-style: preserve-3d;
+
+        div {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+
+            opacity: 0;
+            transform: translate3d(0, -400px, -100px) rotateX(200deg);
+            //transform: translateX(100%);
+            //transform-origin: top;
+            background-color: rgba(255,255,255, 1);
+            border: 1px solid #000;
+        }
+    }
+
+    img {
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        width: 60%;
+        max-width: 80%;
+        max-height: 80%;
+
+        transform: translate(-50%, -50%);
+    }
+}
+
+#listView.active {
+    li {
+        div {
+            opacity: 1;
+            transform: none;
+        }
+
+        @for $i from 1 through 30 {
+            &:nth-child(#{$i}) {
+                div {
+                    transition: all 2s 0.1s * $i;
+                }
+            }
+        }
+    }   
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

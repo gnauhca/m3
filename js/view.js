@@ -8,8 +8,8 @@ var View = TimeBody.extend(function() {
         this.super();
     }
 
-    this.changeView = function(viewname, data) {
-        views[viewname].activate(data);
+    this.gotoView = function(viewId, data) {
+        views[viewId].activate(data);
     }
 
     this.activate = function(data) {

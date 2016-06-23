@@ -25,7 +25,6 @@ var Loader = Class.extend(function() {
 			totalSize += sizeInfo[loadConfig['type']];
 
 			loadMethod[loadConfig['type']](loadConfig['url'], (function(type, _i) {
-					console.log(_i);
 				
 				return function(res) {
 					loadedSize += sizeInfo[type];

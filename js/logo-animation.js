@@ -21,8 +21,8 @@ var Logo = Time.extend(function() {
 		}
 	}
 
-	this.init = function() {
-		initAni();
+	this.reset = function() {
+
 	}
 
 	this.getParticlesData = function(img) {
@@ -53,29 +53,28 @@ var Logo = Time.extend(function() {
 		        particleDatas.push({
 		        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
 		        	//'color': '#abcdef',
-		        	'size': {'x': x/5, 'y': y/5}
+		        	'size': {'x': x, 'y': y}
 		        });
 		    }
 		}
 
 		// 动画相关设置
 		var circleNum = 2;
-		var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
-		var radiusV = 10; // 每旋转一圈半径增长长度
+		var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
+		var radiusV = 30; // 每旋转一圈半径增长长度
 
-		particleDatas.forEach(function(particleData) {
+		particleDatas.forEach(function(particleData, i) {
 
 			particleData.radiusV = radiusV;
 			particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
 			particleData.percent = 0;
-			particleData.delay = Math.random() * 3000;
+			particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
 			particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
 			particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
 
 			particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
 			particleData.currentAngle = particleData.initAngle;
-			particleData.finalAngle = (circleNum + Math.random()) * Math.PI * (Math.random() > 0.5 ? 1 : -1);
-			//particleData.finalAngle = particleData.initAngle + Math.PI * 2;
+			particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
 			particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
 
 		});
@@ -87,7 +86,7 @@ var Logo = Time.extend(function() {
 
         var geom = new THREE.Geometry();
         var material = new THREE.PointCloudMaterial({
-            size: 1/5,
+            size: 1,
             transparent: true,
             opacity: 0.6,
             vertexColors: true,
@@ -109,27 +108,26 @@ var Logo = Time.extend(function() {
         scene.add(cloud);
 	}
 
-	function initAni() {
+	this.playEntryAnimation = function(callback) {
 		var timePass = 0;
 		var aniDatas = $.extend(true, [], particleDatas);
 		//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
-		var aniDone;
+		var aniDoneNum = 0;
 
 		var aniTick = that.addTick(function(detal) {
 			timePass += detal;
-			aniDone = true;
+			aniDoneNum = 0;
 
 			aniDatas.forEach(function(aniData, i) {
-				aniDone = aniData.percent !== 1 ? false : aniDone;
-				if (timePass < aniData.delay || aniData.percent === 1) return;
+				if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
 				aniData.percent = (timePass - aniData.delay) / aniData.dur;
 				aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
 
 				aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
 
-				aniData.currentRadius = ((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+				aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
 
-				aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY) * (1 + aniData.percent*3);
+				aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
 				aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
 				aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
 
@@ -140,7 +138,11 @@ var Logo = Time.extend(function() {
 
 			cloud.geometry.verticesNeedUpdate = true;
 
-			if (aniDone) {
+			if (aniDoneNum/aniDatas.length > 0.6 || timePass > 50000) {
+				callback && callback(); callback = false;
+			}
+
+			if (aniDoneNum/aniDatas.length > 0.99) {
 				that.removeTick(aniTick);
 			}
 		});

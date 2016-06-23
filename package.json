@@ -20,6 +20,8 @@
   },
   "homepage": "https://github.com/zhzhchwin/m3#readme",
   "devDependencies": {
+    "node-sass": "^3.8.0",
+    "sass-loader": "^3.2.1",
     "tween.js": "^16.3.4",
     "webpack": "^1.13.1"
   }

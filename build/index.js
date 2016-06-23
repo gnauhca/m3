@@ -45,10 +45,11 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	(function() {
-		var ViewUpdate = __webpack_require__(1);
-		var ViewList = __webpack_require__(2);
-		var ViewDisplayManager = __webpack_require__(8);
+		__webpack_require__(1);
 	
+		var ViewUpdate = __webpack_require__(5);
+		var ViewList = __webpack_require__(6);
+		var ViewDisplayManager = __webpack_require__(14);
 	
 		// todo: webgl 检查
 		if (false) {
@@ -108,17 +109,366 @@
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
-
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(2);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(4)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
+				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(5);
-	var Loader = __webpack_require__(7);
-	var LogoAni = __webpack_require__(9);
+	exports = module.exports = __webpack_require__(3)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView li {\n    position: absolute;\n    overflow: hidden; }\n    #listView li div {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      opacity: 0;\n      transform: translate3d(0, -400px, -100px) rotateX(200deg);\n      background-color: white;\n      border: 1px solid #000; }\n  #listView img {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    width: 60%;\n    max-width: 80%;\n    max-height: 80%;\n    transform: translate(-50%, -50%); }\n\n#listView.active li div {\n  opacity: 1;\n  transform: none; }\n\n#listView.active li:nth-child(1) div {\n  transition: all 2s 0.1s; }\n\n#listView.active li:nth-child(2) div {\n  transition: all 2s 0.2s; }\n\n#listView.active li:nth-child(3) div {\n  transition: all 2s 0.3s; }\n\n#listView.active li:nth-child(4) div {\n  transition: all 2s 0.4s; }\n\n#listView.active li:nth-child(5) div {\n  transition: all 2s 0.5s; }\n\n#listView.active li:nth-child(6) div {\n  transition: all 2s 0.6s; }\n\n#listView.active li:nth-child(7) div {\n  transition: all 2s 0.7s; }\n\n#listView.active li:nth-child(8) div {\n  transition: all 2s 0.8s; }\n\n#listView.active li:nth-child(9) div {\n  transition: all 2s 0.9s; }\n\n#listView.active li:nth-child(10) div {\n  transition: all 2s 1s; }\n\n#listView.active li:nth-child(11) div {\n  transition: all 2s 1.1s; }\n\n#listView.active li:nth-child(12) div {\n  transition: all 2s 1.2s; }\n\n#listView.active li:nth-child(13) div {\n  transition: all 2s 1.3s; }\n\n#listView.active li:nth-child(14) div {\n  transition: all 2s 1.4s; }\n\n#listView.active li:nth-child(15) div {\n  transition: all 2s 1.5s; }\n\n#listView.active li:nth-child(16) div {\n  transition: all 2s 1.6s; }\n\n#listView.active li:nth-child(17) div {\n  transition: all 2s 1.7s; }\n\n#listView.active li:nth-child(18) div {\n  transition: all 2s 1.8s; }\n\n#listView.active li:nth-child(19) div {\n  transition: all 2s 1.9s; }\n\n#listView.active li:nth-child(20) div {\n  transition: all 2s 2s; }\n\n#listView.active li:nth-child(21) div {\n  transition: all 2s 2.1s; }\n\n#listView.active li:nth-child(22) div {\n  transition: all 2s 2.2s; }\n\n#listView.active li:nth-child(23) div {\n  transition: all 2s 2.3s; }\n\n#listView.active li:nth-child(24) div {\n  transition: all 2s 2.4s; }\n\n#listView.active li:nth-child(25) div {\n  transition: all 2s 2.5s; }\n\n#listView.active li:nth-child(26) div {\n  transition: all 2s 2.6s; }\n\n#listView.active li:nth-child(27) div {\n  transition: all 2s 2.7s; }\n\n#listView.active li:nth-child(28) div {\n  transition: all 2s 2.8s; }\n\n#listView.active li:nth-child(29) div {\n  transition: all 2s 2.9s; }\n\n#listView.active li:nth-child(30) div {\n  transition: all 2s 3s; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 3 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports) {
+
+
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
+	var Loader = __webpack_require__(11);
+	var LogoAni = __webpack_require__(12);
+	var ProductPreview = __webpack_require__(13);
 	var loader = new Loader();
 	
 	var ViewList = View.extend(function() {
@@ -139,7 +489,6 @@
 	
 		var spriteBox = new THREE.Object3D(); // 精灵容器
 	
-	
 		this.viewDisPlayManagerId; // 展示视图的ID
 	
 		this.constructor = function(_renderer, _scene) {
@@ -151,6 +500,7 @@
 			//productCfg.length = 1;
 			
 			logoAni = new LogoAni(scene);
+			productPreview = new ProductPreview();
 	
 			this.super();
 		}
@@ -174,20 +524,22 @@
 				return;
 			}
 	
-			// 精灵创建
-			if (!productCfg[0].sprite) {
-				createSprite();
-			}
-	
 			// window render 设置
 			resetWindow();
 	
 			// 精灵动画
-			initAni();
+			init();
 	
 			// render frame
 			render();
 	
+		}
+	
+		function init() {
+			resetWindow();
+			logoAni.playEntryAnimation(function() {
+				that.gotoView(productPreview.getViewId());
+			});
 		}
 	
 		// 窗口变化调整
@@ -196,116 +548,14 @@
 			var winHeight = window.innerHeight;
 	
 			renderer.setSize(winWidth, winHeight);
-			camera.position.set(0, 0, 50);
+			camera.position.set(0, 0, 250);
 			camera.lookAt(baseCrood);
 			scene.add(camera);
 	
-	        // add spotlight for the shadows
-	        var spotLight = new THREE.SpotLight(0xffffff);
-	        spotLight.position.set(300, 300, 300);
-	        spotLight.intensity = 1;
-	        scene.add(spotLight);
-	
-	
+			logoAni.reset();
+			productPreview.reset();
 		}
 	
-		// 创建精灵
-		function createSprite() {
-			var spriteSize = 3;
-			var spriteMargin = 6;
-	
-			var row = Math.ceil(productCfg.length / col);
-			var center = {row: row/2 - 0.5, col: col/2 - 0.5};
-	
-			productCfg.forEach(function(cfg, i) {
-		        var spriteMaterial = new THREE.SpriteMaterial({
-	                opacity: 1,
-	                color: 0xaaaaaa,
-	                transparent: true,
-	                map: new THREE.ImageUtils.loadTexture(cfg.imgUrl)
-	            });
-	
-		        //spriteMaterial.depthTest = false;
-		        //spriteMaterial.blending = THREE.AdditiveBlending;
-	
-		        var sprite = new THREE.Sprite(spriteMaterial);
-		        cfg.sprite = sprite;// 存入config
-	
-	
-		        // 精灵最终位置大小信息
-		        cfg.sizeInfo = {
-		        	x: (i % col - center.col) * (spriteSize + spriteMargin),
-		        	y: (Math.floor(i / col) - center.row) * (spriteSize + spriteMargin),
-		        	z: baseCrood.z,
-		        	s: spriteSize // 精灵大小
-		        }
-		        console.log(cfg.sizeInfo);
-		        cfg.sprite.position.copy(initCrood);
-		        cfg.sprite.scale.set(0, 0, 0);
-	
-		        //cfg.sprite.position.set(cfg.sizeInfo.x, cfg.sizeInfo.y, cfg.sizeInfo.z);
-		        //cfg.sprite.scale.set(1, 1, 1);
-	
-		        spriteBox.add(sprite);
-			});
-			scene.add(spriteBox);
-		}
-	
-		// init Animate 初始动画
-		function initAni() {
-			logoAni.init(); return;
-	
-			var aniCfg = $.extend(true, [], productCfg);
-			var circle = 4; // 旋转圈数
-			var timePass = 0; 
-	
-			aniCfg.forEach(function(cfg, i) {
-				cfg.percent = 0; 
-				cfg.finalAngle = Math.PI * 2 * circle + Math.atan(cfg.sizeInfo.x / (baseCrood.z - initCrood.z));
-				cfg.aniRadius = Math.sqrt(cfg.sizeInfo.x * cfg.sizeInfo.x + (baseCrood.z - initCrood.z) * (baseCrood.z - initCrood.z));
-				cfg.delay = i * 200 + Math.random() * 100;
-				cfg.aniDur = 2000 + parseInt(Math.random() * 1000); 
-			});
-	
-	
-			var currentAngle;
-			var finishNum = 0;
-	
-			var aniTick = that.addTick(function(detal) {
-				timePass += detal;
-	
-				// 遍历更新精灵位置
-				aniCfg.forEach(function(cfg) {
-					if (cfg.percent === 1) return;
-	
-					cfg.percent = (timePass - cfg.delay) / cfg.aniDur;
-					cfg.percent = cfg.percent < 0 ? 0 : (cfg.percent > 1 ? 1: cfg.percent);
-					currentAngle = cfg.finalAngle * cfg.percent;
-	
-					cfg.x = Math.sin(currentAngle) * cfg.aniRadius * cfg.percent;
-					cfg.z = Math.cos(currentAngle) * cfg.aniRadius * cfg.percent + initCrood.z;
-					cfg.y = (cfg.sizeInfo.y - initCrood.y) * cfg.percent;
-	
-					cfg.s = cfg.sizeInfo.s * cfg.percent;
-	
-					cfg.sprite.position.set(cfg.x, cfg.y, cfg.z);
-					cfg.sprite.scale.set(cfg.s, cfg.s, cfg.s);
-	
-					if (cfg.percent === 1) {
-						finishNum ++;
-					}
-				});
-	
-				if (finishNum === aniCfg.length) {
-					// 初始动画完成
-					this.isActive = true;
-					setTimeout(function() {
-						that.removeTick(aniTick);
-					}, 0);
-				}
-			});	
-	
-		}
 	
 		// 加载资源
 		function loadAssets() {
@@ -344,10 +594,10 @@
 	
 	
 	module.exports = ViewList;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3), __webpack_require__(4)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ },
-/* 3 */
+/* 7 */
 /***/ function(module, exports) {
 
 	var CONFIG = {
@@ -355,7 +605,7 @@
 		products: [
 			{
 				'name': 'pro6',
-				'imgUrl': './assets/pro6/pro6.png',
+				'imgUrl': './assets/pro6/phone-silver.jpg',
 				'modelUrl': './assets/pro6/pro6.dae',
 				'title': 'PRO 6',
 				'desc' : 'PRO 6 was produced in 2016'
@@ -364,13 +614,13 @@
 	};
 	
 	// test 
-	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router'];
+	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
 	var _products = [];
 	
 	products.forEach(function(product, i) {
 		_products[i] = {
 			'name': product,
-			'imgUrl': './assets/pro6/pro6.png',
+			'imgUrl': './assets/pro6/phone-silver.jpg',
 			'modelUrl': './assets/pro6/pro6.dae',
 			'title': 'PRO 6',
 			'desc' : 'PRO 6 was produced in 2016'
@@ -382,7 +632,7 @@
 	module.exports = CONFIG;
 
 /***/ },
-/* 4 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10425,10 +10675,10 @@
 
 
 /***/ },
-/* 5 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var TimeBody = __webpack_require__(6);
+	var TimeBody = __webpack_require__(10);
 	var views = [];
 	
 	var View = TimeBody.extend(function() {
@@ -10438,8 +10688,8 @@
 	        this.super();
 	    }
 	
-	    this.changeView = function(viewname, data) {
-	        views[viewname].activate(data);
+	    this.gotoView = function(viewId, data) {
+	        views[viewId].activate(data);
 	    }
 	
 	    this.activate = function(data) {
@@ -10498,7 +10748,7 @@
 
 
 /***/ },
-/* 6 */
+/* 10 */
 /***/ function(module, exports) {
 
 	/* 时间 */
@@ -10667,7 +10917,7 @@
 
 
 /***/ },
-/* 7 */
+/* 11 */
 /***/ function(module, exports) {
 
 	/*
@@ -10697,7 +10947,6 @@
 				totalSize += sizeInfo[loadConfig['type']];
 	
 				loadMethod[loadConfig['type']](loadConfig['url'], (function(type, _i) {
-						console.log(_i);
 					
 					return function(res) {
 						loadedSize += sizeInfo[type];
@@ -10740,23 +10989,10 @@
 
 
 /***/ },
-/* 8 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(5);
-	var ViewDisplayManager = View.extend(function() {
-		
-		this.viewListId;
-	
-	});
-	
-	module.exports = ViewDisplayManager;
-
-/***/ },
-/* 9 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {var Time = __webpack_require__(6);
+	/* WEBPACK VAR INJECTION */(function($) {var Time = __webpack_require__(10);
 	
 	var Logo = Time.extend(function() {
 		var that = this;
@@ -10779,8 +11015,8 @@
 			}
 		}
 	
-		this.init = function() {
-			initAni();
+		this.reset = function() {
+	
 		}
 	
 		this.getParticlesData = function(img) {
@@ -10811,29 +11047,28 @@
 			        particleDatas.push({
 			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
 			        	//'color': '#abcdef',
-			        	'size': {'x': x/5, 'y': y/5}
+			        	'size': {'x': x, 'y': y}
 			        });
 			    }
 			}
 	
 			// 动画相关设置
 			var circleNum = 2;
-			var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
-			var radiusV = 10; // 每旋转一圈半径增长长度
+			var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
+			var radiusV = 30; // 每旋转一圈半径增长长度
 	
-			particleDatas.forEach(function(particleData) {
-				
+			particleDatas.forEach(function(particleData, i) {
+	
 				particleData.radiusV = radiusV;
 				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
 				particleData.percent = 0;
-				particleData.delay = Math.random() * 3000;
+				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
 				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
 				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
 	
 				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
 				particleData.currentAngle = particleData.initAngle;
-				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * (Math.random() > 0.5 ? 1 : -1);
-				//particleData.finalAngle = particleData.initAngle + Math.PI * 2;
+				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
 				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
 	
 			});
@@ -10845,7 +11080,7 @@
 	
 	        var geom = new THREE.Geometry();
 	        var material = new THREE.PointCloudMaterial({
-	            size: 1/5,
+	            size: 1,
 	            transparent: true,
 	            opacity: 0.6,
 	            vertexColors: true,
@@ -10867,27 +11102,26 @@
 	        scene.add(cloud);
 		}
 	
-		function initAni() {
+		this.playEntryAnimation = function(callback) {
 			var timePass = 0;
 			var aniDatas = $.extend(true, [], particleDatas);
 			//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
-			var aniDone;
+			var aniDoneNum = 0;
 	
 			var aniTick = that.addTick(function(detal) {
 				timePass += detal;
-				aniDone = true;
+				aniDoneNum = 0;
 	
 				aniDatas.forEach(function(aniData, i) {
-					aniDone = aniData.percent !== 1 ? false : aniDone;
-					if (timePass < aniData.delay || aniData.percent === 1) return;
+					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
 					aniData.percent = (timePass - aniData.delay) / aniData.dur;
 					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
 	
 					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
 	
-					aniData.currentRadius = ((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
 	
-					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY) * (1 + aniData.percent*3);
+					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
 					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
 					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
 	
@@ -10898,7 +11132,11 @@
 	
 				cloud.geometry.verticesNeedUpdate = true;
 	
-				if (aniDone) {
+				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 50000) {
+					callback && callback(); callback = false;
+				}
+	
+				if (aniDoneNum/aniDatas.length > 0.99) {
 					that.removeTick(aniTick);
 				}
 			});
@@ -10910,7 +11148,233 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(4)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(9);
+	
+	var ProductsPreview = View.extend(function() {
+		var that = this;
+	
+		var $domWrap;
+	
+		var gridNumHor;
+		var gridNumVer;
+		var gridWidthPercent;
+		var gridHeightPercent;
+	
+		var productDatas = [];
+		var itemElems = [];
+	
+		var maxSelect = 4; // 最多选择个数
+	
+		this.constructor = function() {
+			this.super();
+			this.init();
+		}
+	
+		this.init = function() {
+			productDatas = $.extend(true, [], CONFIG.products);
+			$domWrap = $('#listView');
+			create();
+			initEvent();
+		}
+	
+		this.activate = function() {
+			$domWrap.show();
+			setTimeout(function() {
+				$domWrap.addClass('active');
+			}, 50);
+		}
+	
+		this.gotoView = function() {
+			$domWrap.addClass('inactive');
+		}
+	
+		// 重置大小，位置
+		this.reset = function() {
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
+	
+			var gridWidth = 400;
+			var gridHeight = 400;
+	
+			gridNumHor = Math.round(winWidth/gridWidth);
+			gridNumVer = Math.round(winHeight/gridHeight);
+	
+			gridWidthPercent = 100 / (gridNumHor === 0 ? 1 : gridNumHor);
+		 	gridHeightPercent = 100 / (gridNumVer === 0 ? 1 : gridNumVer);
+	
+	
+			var left;
+			var top;
+		 	if (itemElems.length) {
+	
+		 		for (var i = 0; i < productDatas.length || i < gridNumHor * gridNumVer; i++) {
+			 		left = (i % gridNumHor) * gridWidthPercent;
+			 		top = Math.floor(i / gridNumHor) * gridHeightPercent;
+	
+			 		if (!itemElems[i]) {
+			 			itemElems[i] = $('<li data-preview-index="' + i + '"><div></div></li>')[0];
+			 			$domWrap.find('ul').append(itemElems[i]);
+			 		}
+	
+		 			$(itemElems[i]).css({
+		 				left: left + '%',
+		 				top: top + '%',
+		 				width: gridWidthPercent + '%',
+		 				height: gridHeightPercent + '%'
+		 			});
+		 		}
+		 	}
+		}
+	
+		this.getSelected = function() {
+	
+		}
+	
+		function create() {
+			var htmlStr = '';
+	
+		 	productDatas.forEach(function(productData, i) {
+		 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.imgUrl + '" alt=""></div></li>'
+		 	});	
+		 	htmlStr = '<ul>' + htmlStr + '</ul>';
+		 	$domWrap.html(htmlStr);
+	
+		 	itemElems = [];
+		 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
+		 	that.reset();
+		}
+	
+		function initEvent() {
+			$domWrap.on('click', 'li', function() {
+				$(this).toggleClass('selected');
+				productDatas[$(this).data('previewIndex')].selected = true;
+			});
+		}
+	
+	
+	
+	});
+	
+	module.exports = ProductsPreview;
+	
+	
+	
+	// 创建精灵
+	/*function createSprite() {
+		var spriteSize = 8;
+		var spriteMargin = 4;
+	
+		var row = Math.ceil(productCfg.length / col);
+		var center = {row: row/2 - 0.5, col: col/2 - 0.5};
+	
+		productCfg.forEach(function(cfg, i) {
+	        var spriteMaterial = new THREE.SpriteMaterial({
+	            opacity: 1,
+	            color: 0xaaaaaa,
+	            transparent: true,
+	            map: new THREE.ImageUtils.loadTexture(cfg.imgUrl)
+	        });
+	
+	        //spriteMaterial.depthTest = false;
+	        //spriteMaterial.blending = THREE.AdditiveBlending;
+	
+	        var sprite = new THREE.Sprite(spriteMaterial);
+	        cfg.sprite = sprite;// 存入config
+	
+	
+	        // 精灵最终位置大小信息
+	        cfg.sizeInfo = {
+	        	x: (i % col - center.col) * (spriteSize + spriteMargin),
+	        	y: -(Math.floor(i / col) - center.row) * (spriteSize + spriteMargin),
+	        	z: baseCrood.z + 10,
+	        	s: spriteSize // 精灵大小
+	        }
+	        console.log(cfg.sizeInfo);
+	        cfg.sprite.position.copy(initCrood);
+	        cfg.sprite.scale.set(0, 0, 0);
+	
+	        //cfg.sprite.position.set(cfg.sizeInfo.x, cfg.sizeInfo.y, cfg.sizeInfo.z);
+	        //cfg.sprite.scale.set(1, 1, 1);
+	
+	        spriteBox.add(sprite);
+		});
+		scene.add(spriteBox);
+	}
+	
+	// init Animate 初始动画
+	function initAni() {
+		logoAni.playEntryAnimation(); return;
+	
+		var aniCfg = $.extend(true, [], productCfg);
+		var circle = 2; // 旋转圈数
+		var timePass = 0; 
+	
+		aniCfg.forEach(function(cfg, i) {
+			cfg.percent = 0; 
+			cfg.finalAngle = Math.PI * 2 * circle + Math.atan(cfg.sizeInfo.x / (baseCrood.z - initCrood.z));
+			cfg.aniRadius = Math.sqrt(cfg.sizeInfo.x * cfg.sizeInfo.x + (baseCrood.z - initCrood.z) * (baseCrood.z - initCrood.z));
+			cfg.delay = i * 200 + Math.random() * 100;
+			cfg.aniDur = 5000 + parseInt(Math.random() * 1000); 
+		});
+	
+	
+		var currentAngle;
+		var finishNum = 0;
+	
+		var aniTick = that.addTick(function(detal) {
+			timePass += detal;
+	
+			// 遍历更新精灵位置
+			aniCfg.forEach(function(cfg) {
+				if (cfg.percent === 1) return;
+	
+				cfg.percent = (timePass - cfg.delay) / cfg.aniDur;
+				cfg.percent = cfg.percent < 0 ? 0 : (cfg.percent > 1 ? 1: cfg.percent);
+				currentAngle = cfg.finalAngle * cfg.percent;
+	
+				cfg.x = Math.sin(currentAngle) * cfg.aniRadius * cfg.percent;
+				cfg.z = Math.cos(currentAngle) * cfg.aniRadius * cfg.percent + initCrood.z;
+				cfg.y = (cfg.sizeInfo.y - initCrood.y) * cfg.percent;
+	
+				cfg.s = cfg.sizeInfo.s * cfg.percent;
+	
+				cfg.sprite.position.set(cfg.x, cfg.y, cfg.z);
+				cfg.sprite.scale.set(cfg.s, cfg.s, cfg.s);
+	
+				if (cfg.percent === 1) {
+					finishNum ++;
+				}
+			});
+	
+			if (finishNum === aniCfg.length) {
+				// 初始动画完成
+				this.isActive = true;
+				setTimeout(function() {
+					that.removeTick(aniTick);
+				}, 0);
+			}
+		});	
+	}*/
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(9);
+	var ViewDisplayManager = View.extend(function() {
+		
+		this.viewListId;
+	
+	});
+	
+	module.exports = ViewDisplayManager;
 
 /***/ }
 /******/ ]);
