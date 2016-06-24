@@ -1,5 +1,5 @@
 var CONFIG = {
-	meizulogo: './assets/logo.png',
+	MEIZU_LOGO: './assets/logo.png',
 	products: [
 		{
 			'name': 'pro6',
@@ -20,8 +20,10 @@ products.forEach(function(product, i) {
 		'name': product,
 		'imgUrl': './assets/pro6/phone-silver.jpg',
 		'modelUrl': './assets/pro6/pro6.dae',
+		'modelPos': {x: i * 10, y: 0, z: -100},
 		'title': 'PRO 6',
 		'desc' : 'PRO 6 was produced in 2016'
+
 	}
 });
 CONFIG.products = _products;

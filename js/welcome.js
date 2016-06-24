@@ -1,31 +1,63 @@
-var Time = require('./time.js');
+var View = require('./view.js');
+var Welcome = View.extend(function() {
+	this.name = 'welcome';
+	this.isInit = false;
 
-var Logo = Time.extend(function() {
 	var that = this;
-	var logoUrl = './assets/logo.png';
+	var logoUrl = CONFIG.MEIZU_LOGO;
 	var particleDatas = [];
-
-	var scene;
+	var camera; // 自身创建 camera
 	var cloud;
+	var baseCrood = new THREE.Vector3(0, 0, 0);
+	var renderTick;
 
-	this.constructor = function(_scene) {
+	this.constructor = function() {
 		this.super();
+        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 
-		scene = _scene;
+		M3.scene.add(camera);
+	}
 
-		var img = new Image();
-		img.src = logoUrl;
-		img.onload = function() {
-			particleDatas = that.getParticlesData(img);
-			createParticle();
+	this.activate = function() {
+		if (!particleDatas.length) {
+			var img = new Image();
+			img.src = logoUrl;
+			img.onload = function() {
+				particleDatas = getParticlesData(img);
+				createParticle();
+				init();
+			}
+		} else {
+			init();		
 		}
 	}
 
-	this.reset = function() {
-
+	this.inactivate = function() {
+		//this.removeTick(renderTick); // 移除renderTick 
 	}
 
-	this.getParticlesData = function(img) {
+	this.reset = function() {
+		var winWidth = window.innerWidth;
+		var winHeight = window.innerHeight;
+
+		M3.renderer.setSize(winWidth, winHeight);
+		camera.aspect = window.innerWidth / window.innerHeight;
+        camera.updateProjectionMatrix();
+
+		camera.position.set(0, 0, 250);
+		camera.lookAt(baseCrood);
+	}
+
+
+	function init() {
+		that.reset();
+		playEntryAnimation(function() {
+			that.activateView('product-preview');
+		});	
+		render();
+	} 
+
+	function getParticlesData(img) {
 		var particleDatas = [];
 		var width = img.width;
 		var height = img.height;
@@ -74,7 +106,7 @@ var Logo = Time.extend(function() {
 
 			particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
 			particleData.currentAngle = particleData.initAngle;
-			particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
+			particleData.finalAngle = (circleNum * Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
 			particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
 
 		});
@@ -105,10 +137,10 @@ var Logo = Time.extend(function() {
 
         cloud = new THREE.PointCloud(geom, material);
         cloud.name = "particles";
-        scene.add(cloud);
+        M3.scene.add(cloud);
 	}
 
-	this.playEntryAnimation = function(callback) {
+	function playEntryAnimation(callback) {
 		var timePass = 0;
 		var aniDatas = $.extend(true, [], particleDatas);
 		//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
@@ -133,23 +165,31 @@ var Logo = Time.extend(function() {
 
 				cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
 
-				//console.log(aniData.size.x, aniData.size.y, aniData.size.z, aniData.currentRadius);
 			});
 
 			cloud.geometry.verticesNeedUpdate = true;
 
-			if (aniDoneNum/aniDatas.length > 0.6 || timePass > 50000) {
+			if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
 				callback && callback(); callback = false;
 			}
 
+			cloud.rotation.x += 0.0005;
+			cloud.rotation.y += 0.0005;
+			cloud.rotation.z += 0.0005;
 			if (aniDoneNum/aniDatas.length > 0.99) {
-				that.removeTick(aniTick);
+				//that.removeTick(aniTick);
 			}
 		});
 	}
 
+	// render 
+	function render() {
+		renderTick = that.addTick(function() {
+			M3.renderer.render(M3.scene, camera);
+		});
+	}
 });
 
-module.exports = Logo;
+module.exports = Welcome;
 
 

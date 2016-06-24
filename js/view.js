@@ -2,30 +2,64 @@ var TimeBody = require('./time.js');
 var views = [];
 
 var View = TimeBody.extend(function() {
+    this.active = false;
+    this.getName = function() {
+        if (!this.name) {
+            this.name = 'm3view' + parseInt(Math.random() * 100000);
+        }
+        return this.name;
+    }
+
     this.constructor = function() {
-        this._id = parseInt(Math.random() * 100000000);
-        views[this._id] = this;
+        this.getName();
+        views[this.name] = this;
         this.super();
     }
 
-    this.gotoView = function(viewId, data) {
-        views[viewId].activate(data);
+    this.activateView = function(name, data) {
+        if (!views[name]) {
+            var viewConstructors = {
+                'welcome': require('./welcome.js'),
+                'product-preview': require('./product-preview.js'),
+                'display-manager': require('./display-manager.js'),
+                'display': require('./display.js'),
+                'list': require('./list.js')
+            };
+            views[name] = new viewConstructors[name]();
+        }
+        views[name].activate(data);
+        
     }
 
-    this.activate = function(data) {
-
+    this.inactivateView = function(name, data) {
+        if (!views[name]) {
+            views[name] = new viewConstructors[name]();
+        }
+        views[name].inactivate(data);
     }
 
-    this.getViewId = function() {
-        return this._id;
-    }
+    this.activate = function(data) {}
+
+    this.inactivate = function() {}
+
+    this.reset = function() {}
 
     this.distroy = function() {
         this.super.distroy();
-        delete views[this._id];
+        delete views[this.name];
     }
 
 });
+
+View.addConstructor = function(name, _constructor) {
+    viewConstructors[name] = _constructor
+}
+
+window.onresize = function() {
+    for (var name in views) {
+        views[name].active && views[name].reset();
+    }
+}
 
 module.exports = View;
 

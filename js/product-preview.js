@@ -1,8 +1,9 @@
 var View = require('./view.js');
 
 var ProductsPreview = View.extend(function() {
-	var that = this;
+	this.name = 'product-preview';
 
+	var that = this;
 	var $domWrap;
 
 	var gridNumHor;
@@ -11,6 +12,7 @@ var ProductsPreview = View.extend(function() {
 	var gridHeightPercent;
 
 	var productDatas = [];
+	var productSelected = [];
 	var itemElems = [];
 
 	var maxSelect = 4; // 最多选择个数
@@ -28,14 +30,17 @@ var ProductsPreview = View.extend(function() {
 	}
 
 	this.activate = function() {
+		this.active = true;
 		$domWrap.show();
 		setTimeout(function() {
 			$domWrap.addClass('active');
 		}, 50);
 	}
 
-	this.gotoView = function() {
+	this.inactivate = function() {
+		this.active = false;
 		$domWrap.addClass('inactive');
+		setTimeout(function() {$domWrap.hide();}, 1000);
 	}
 
 	// 重置大小，位置
@@ -56,8 +61,9 @@ var ProductsPreview = View.extend(function() {
 		var left;
 		var top;
 	 	if (itemElems.length) {
+	 		var max = Math.max(productDatas.length, gridNumHor * gridNumVer);
 
-	 		for (var i = 0; i < productDatas.length || i < gridNumHor * gridNumVer; i++) {
+	 		for (var i = 0; i < max; i++) {
 		 		left = (i % gridNumHor) * gridWidthPercent;
 		 		top = Math.floor(i / gridNumHor) * gridHeightPercent;
 
@@ -73,6 +79,8 @@ var ProductsPreview = View.extend(function() {
 	 				height: gridHeightPercent + '%'
 	 			});
 	 		}
+	 		itemElems.length = max;
+	 		$domWrap.find('.list-wrap li:gt(' + (max - 1) + ')').remove();
 	 	}
 	}
 
@@ -86,8 +94,8 @@ var ProductsPreview = View.extend(function() {
 	 	productDatas.forEach(function(productData, i) {
 	 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.imgUrl + '" alt=""></div></li>'
 	 	});	
-	 	htmlStr = '<ul>' + htmlStr + '</ul>';
-	 	$domWrap.html(htmlStr);
+	 	htmlStr = htmlStr;
+	 	$domWrap.find('.list-wrap').html(htmlStr);
 
 	 	itemElems = [];
 	 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
@@ -95,14 +103,72 @@ var ProductsPreview = View.extend(function() {
 	}
 
 	function initEvent() {
-		$domWrap.on('click', 'li', function() {
-			$(this).toggleClass('selected');
-			productDatas[$(this).data('previewIndex')].selected = true;
+		function selectProducts(indexes) {
+			var $li = $domWrap.find('.list-wrap li');
+			$li.removeClass('selected');
+
+			if (indexes)
+			indexes.forEach(function(index) {
+				$li.eq(index).addClass('selected');
+			});
+
+			if (indexes && indexes.length) {
+				$domWrap.addClass('show-control');
+			} else {
+				$domWrap.removeClass('show-control');
+			}
+		}
+
+		$domWrap.on('click', 'li:lt(' + productDatas.length + ')', function() {
+			var previewIndex = $(this).data('previewIndex');
+
+			var productData = productDatas[previewIndex];
+
+			if (productSelected.indexOf(productData) < 0) {
+				productSelected.push(productData);
+				if (productSelected.length > maxSelect) {
+					productSelected.shift();
+				}
+			} else {
+				productSelected = productSelected.filter(function(product) {
+					return product !== productData;
+				});
+			}
+
+			selectProducts(productSelected.map(function(product) {
+				return productDatas.indexOf(product);
+			}));
+		});
+
+		$domWrap.on('click', '#clear', function() {
+			productSelected.length = 0;
+			selectProducts();
+		});
+		$domWrap.on('click', '#go', function() {
+			goDisplay();
 		});
 	}
 
+	function goDisplay() {
+		$domWrap.removeClass('show-control').addClass('choosed');
+		var $li = $domWrap.find('.list-wrap li');
+		var selectedPos = calculateSubWindowSize(productSelected.length);
+		var index = 0;
 
+		productDatas.forEach(function(product, i) {
+			if (index > productSelected.length - 1) return false;
+			if (productSelected.indexOf(product) != -1) {
+				$li.eq(i).css(selectedPos[index]);
+			    index++;			
+			}
+		});
 
+		setTimeout(function() {
+			that.inactivate();
+			that.inactivateView('welcome');
+			that.activateView('display-manager', {'productDatas': productSelected});
+		}, 1000);
+	}
 });
 
 module.exports = ProductsPreview;

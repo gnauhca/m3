@@ -40,16 +40,18 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ([
-/* 0 */
+/******/ ({
+
+/***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
+	window.M3 = {};
 	(function() {
 		__webpack_require__(1);
 	
 		var ViewUpdate = __webpack_require__(5);
-		var ViewList = __webpack_require__(6);
-		var ViewDisplayManager = __webpack_require__(14);
+		var List = __webpack_require__(6);
+		var DisplayManager = __webpack_require__(13);
 	
 		// todo: webgl 检查
 		if (false) {
@@ -61,54 +63,21 @@
 	
 	
 		// 基本场景
-		var renderer = new THREE.WebGLRenderer();
-		var scene = new THREE.Scene();
-	    document.body.appendChild(renderer.domElement);
-	    renderer.setClearColor(0x000);
-		/*var winWidth = window.innerWidth;
-		var winHeight = window.innerHeight;
-		renderer.setSize(winWidth, winHeight);
+		M3.renderer = new THREE.WebGLRenderer();
+		M3.scene = new THREE.Scene();
+	    document.body.appendChild(M3.renderer.domElement);
+	    M3.renderer.setClearColor(0x000000);
 	
 	
 	
-	
-	
-	
-	    var camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
-	
-		camera.position.set(0, 0, 50);
-		camera.lookAt(new THREE.Vector3(0,0,0));
-	
-		scene.add(camera); 
-	
-	    var cubeGeometry = new THREE.BoxGeometry(10, 10, 10);
-	    var cubeMaterial = new THREE.MeshBasicMaterial({color: 0xff0000, wireframe: true});
-	    var cube = new THREE.Mesh(cubeGeometry, cubeMaterial);
-	
-	    // position the cube
-	    cube.position.x = -4;
-	    cube.position.y = 3;
-	    cube.position.z = 0;
-	    cube.rotation.y = -0.2 * Math.PI;
-	
-	
-	    // add the cube to the scene
-	    scene.add(cube);
-	    renderer.render(scene, camera);*/
-	
-	
-		var viewDisPlayManager = new ViewDisplayManager(renderer, scene);
-		var viewList = new ViewList(renderer, scene);
-	
-		viewDisPlayManager.viewListId = viewList.getViewId();
-		viewList.viewDisPlayManagerId = viewDisPlayManager.getViewId();
-	
-		viewList.activate();	
+		var list = new List();
+		list.activate();	
 	})();
 
 
 /***/ },
-/* 1 */
+
+/***/ 1:
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -134,7 +103,8 @@
 	}
 
 /***/ },
-/* 2 */
+
+/***/ 2:
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -142,13 +112,14 @@
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView li {\n    position: absolute;\n    overflow: hidden; }\n    #listView li div {\n      position: absolute;\n      width: 100%;\n      height: 100%;\n      opacity: 0;\n      transform: translate3d(0, -400px, -100px) rotateX(200deg);\n      background-color: white;\n      border: 1px solid #000; }\n  #listView img {\n    position: absolute;\n    left: 50%;\n    top: 50%;\n    width: 60%;\n    max-width: 80%;\n    max-height: 80%;\n    transform: translate(-50%, -50%); }\n\n#listView.active li div {\n  opacity: 1;\n  transform: none; }\n\n#listView.active li:nth-child(1) div {\n  transition: all 2s 0.1s; }\n\n#listView.active li:nth-child(2) div {\n  transition: all 2s 0.2s; }\n\n#listView.active li:nth-child(3) div {\n  transition: all 2s 0.3s; }\n\n#listView.active li:nth-child(4) div {\n  transition: all 2s 0.4s; }\n\n#listView.active li:nth-child(5) div {\n  transition: all 2s 0.5s; }\n\n#listView.active li:nth-child(6) div {\n  transition: all 2s 0.6s; }\n\n#listView.active li:nth-child(7) div {\n  transition: all 2s 0.7s; }\n\n#listView.active li:nth-child(8) div {\n  transition: all 2s 0.8s; }\n\n#listView.active li:nth-child(9) div {\n  transition: all 2s 0.9s; }\n\n#listView.active li:nth-child(10) div {\n  transition: all 2s 1s; }\n\n#listView.active li:nth-child(11) div {\n  transition: all 2s 1.1s; }\n\n#listView.active li:nth-child(12) div {\n  transition: all 2s 1.2s; }\n\n#listView.active li:nth-child(13) div {\n  transition: all 2s 1.3s; }\n\n#listView.active li:nth-child(14) div {\n  transition: all 2s 1.4s; }\n\n#listView.active li:nth-child(15) div {\n  transition: all 2s 1.5s; }\n\n#listView.active li:nth-child(16) div {\n  transition: all 2s 1.6s; }\n\n#listView.active li:nth-child(17) div {\n  transition: all 2s 1.7s; }\n\n#listView.active li:nth-child(18) div {\n  transition: all 2s 1.8s; }\n\n#listView.active li:nth-child(19) div {\n  transition: all 2s 1.9s; }\n\n#listView.active li:nth-child(20) div {\n  transition: all 2s 2s; }\n\n#listView.active li:nth-child(21) div {\n  transition: all 2s 2.1s; }\n\n#listView.active li:nth-child(22) div {\n  transition: all 2s 2.2s; }\n\n#listView.active li:nth-child(23) div {\n  transition: all 2s 2.3s; }\n\n#listView.active li:nth-child(24) div {\n  transition: all 2s 2.4s; }\n\n#listView.active li:nth-child(25) div {\n  transition: all 2s 2.5s; }\n\n#listView.active li:nth-child(26) div {\n  transition: all 2s 2.6s; }\n\n#listView.active li:nth-child(27) div {\n  transition: all 2s 2.7s; }\n\n#listView.active li:nth-child(28) div {\n  transition: all 2s 2.8s; }\n\n#listView.active li:nth-child(29) div {\n  transition: all 2s 2.9s; }\n\n#listView.active li:nth-child(30) div {\n  transition: all 2s 3s; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, -400px, -100px) rotateX(200deg);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 60%;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 2s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 2s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 2s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 2s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 2s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 2s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 2s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 2s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 2s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 2s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 2s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 2s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 2s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 2s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 2s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 2s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 2s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 2s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 2s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 2s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 2s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 2s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 2s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 2s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 2s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 2s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 2s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 2s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 2s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 2s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 3 */
+
+/***/ 3:
 /***/ function(module, exports) {
 
 	/*
@@ -204,7 +175,8 @@
 
 
 /***/ },
-/* 4 */
+
+/***/ 4:
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -456,63 +428,35 @@
 
 
 /***/ },
-/* 5 */
+
+/***/ 5:
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 6 */
+
+/***/ 6:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
-	var Loader = __webpack_require__(11);
-	var LogoAni = __webpack_require__(12);
-	var ProductPreview = __webpack_require__(13);
+	var Loader = __webpack_require__(145);
 	var loader = new Loader();
 	
-	var ViewList = View.extend(function() {
+	var List = View.extend(function() {
 		var that = this;
-		var renderer; // render 外部提供
-		var scene; // 场景 外部提供
-		var camera; // 自身创建 camera
 		var assetsLoaded = false; // 资源是否已加载
-		var isActive = false;
+	
+		var logoUrl = CONFIG.MEIZU_LOGO;
 	
 		var productCfg = []; // 产品配置信息 from config.products
 		var col = 4; // 一列展示的产品数量
-		var initCrood = new THREE.Vector3(0, 0, -10); // 初始坐标
-		var baseCrood = new THREE.Vector3(0, 0, 0); // 基准坐标，产品陈列中心点
 	
-		var logoUrl = CONFIG.meizulogo;
-		var logoAni;
 	
-		var spriteBox = new THREE.Object3D(); // 精灵容器
-	
-		this.viewDisPlayManagerId; // 展示视图的ID
-	
-		this.constructor = function(_renderer, _scene) {
-			renderer = _renderer;
-			scene = _scene;
-	        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
-	
-			productCfg = $.extend(true, [], CONFIG.products);
-			//productCfg.length = 1;
-			
-			logoAni = new LogoAni(scene);
-			productPreview = new ProductPreview();
-	
+		this.constructor = function() {
 			this.super();
-		}
-	
-		this.destory = function() {
-	
-		}
-	
-		// 切换其他视图使当前视图 inactive
-		this.inActivate = function() {
-			isActive = false;
-			this.removeTick(); // 移除全部tick 
+			productCfg = $.extend(true, [], CONFIG.products);
+			
 		}
 	
 		// 激活当前视图， data 激活附带参数
@@ -524,36 +468,12 @@
 				return;
 			}
 	
-			// window render 设置
-			resetWindow();
-	
 			// 精灵动画
 			init();
-	
-			// render frame
-			render();
-	
 		}
 	
 		function init() {
-			resetWindow();
-			logoAni.playEntryAnimation(function() {
-				that.gotoView(productPreview.getViewId());
-			});
-		}
-	
-		// 窗口变化调整
-		function resetWindow() {
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
-	
-			renderer.setSize(winWidth, winHeight);
-			camera.position.set(0, 0, 250);
-			camera.lookAt(baseCrood);
-			scene.add(camera);
-	
-			logoAni.reset();
-			productPreview.reset();
+			that.activateView('welcome');
 		}
 	
 	
@@ -583,25 +503,19 @@
 			});
 		}	
 	
-		// render 
-		function render() {
-			var renderTick = that.addTick(function() {
-				renderer.render(scene, camera);
-			});
-		}
-	
 	});
 	
 	
-	module.exports = ViewList;
+	module.exports = List;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ },
-/* 7 */
+
+/***/ 7:
 /***/ function(module, exports) {
 
 	var CONFIG = {
-		meizulogo: './assets/logo.png',
+		MEIZU_LOGO: './assets/logo.png',
 		products: [
 			{
 				'name': 'pro6',
@@ -622,8 +536,10 @@
 			'name': product,
 			'imgUrl': './assets/pro6/phone-silver.jpg',
 			'modelUrl': './assets/pro6/pro6.dae',
+			'modelPos': {x: i * 10, y: 0, z: -100},
 			'title': 'PRO 6',
 			'desc' : 'PRO 6 was produced in 2016'
+	
 		}
 	});
 	CONFIG.products = _products;
@@ -632,7 +548,8 @@
 	module.exports = CONFIG;
 
 /***/ },
-/* 8 */
+
+/***/ 8:
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10675,37 +10592,72 @@
 
 
 /***/ },
-/* 9 */
+
+/***/ 9:
 /***/ function(module, exports, __webpack_require__) {
 
 	var TimeBody = __webpack_require__(10);
 	var views = [];
 	
 	var View = TimeBody.extend(function() {
+	    this.active = false;
+	    this.getName = function() {
+	        if (!this.name) {
+	            this.name = 'm3view' + parseInt(Math.random() * 100000);
+	        }
+	        return this.name;
+	    }
+	
 	    this.constructor = function() {
-	        this._id = parseInt(Math.random() * 100000000);
-	        views[this._id] = this;
+	        this.getName();
+	        views[this.name] = this;
 	        this.super();
 	    }
 	
-	    this.gotoView = function(viewId, data) {
-	        views[viewId].activate(data);
+	    this.activateView = function(name, data) {
+	        if (!views[name]) {
+	            var viewConstructors = {
+	                'welcome': __webpack_require__(148),
+	                'product-preview': __webpack_require__(146),
+	                'display-manager': __webpack_require__(13),
+	                'display': __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())),
+	                'list': __webpack_require__(6)
+	            };
+	            views[name] = new viewConstructors[name]();
+	        }
+	        views[name].activate(data);
+	        
 	    }
 	
-	    this.activate = function(data) {
-	
+	    this.inactivateView = function(name, data) {
+	        if (!views[name]) {
+	            views[name] = new viewConstructors[name]();
+	        }
+	        views[name].inactivate(data);
 	    }
 	
-	    this.getViewId = function() {
-	        return this._id;
-	    }
+	    this.activate = function(data) {}
+	
+	    this.inactivate = function() {}
+	
+	    this.reset = function() {}
 	
 	    this.distroy = function() {
 	        this.super.distroy();
-	        delete views[this._id];
+	        delete views[this.name];
 	    }
 	
 	});
+	
+	View.addConstructor = function(name, _constructor) {
+	    viewConstructors[name] = _constructor
+	}
+	
+	window.onresize = function() {
+	    for (var name in views) {
+	        views[name].active && views[name].reset();
+	    }
+	}
 	
 	module.exports = View;
 	
@@ -10748,7 +10700,8 @@
 
 
 /***/ },
-/* 10 */
+
+/***/ 10:
 /***/ function(module, exports) {
 
 	/* 时间 */
@@ -10917,7 +10870,53 @@
 
 
 /***/ },
-/* 11 */
+
+/***/ 13:
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
+	var DisplayWindow = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var DisplayManager = View.extend(function() {
+		var that = this;
+		this.name = 'display-manager';
+		this.displayWindows = [];
+	
+		this.constructor = function() {
+			
+		}
+	
+		this.activate = function(data) {
+			var productDatas = $.extend(true, {}, data.productDatas);
+			var sizePos = calculateSubWindowSize(productDatas.length);
+	
+			productDatas.forEach(function(productData, i) {
+				var displayWindowData = {
+					'productData': productData,
+					'size': sizePos[i],
+				}
+	
+				that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
+	
+				if (!that.displayWindows[i].displayView) {
+					that.displayWindows[i].displayView = new DisplayWindow();
+				}
+	
+				that.displayWindows[i].displayView.activate(displayWindowData);
+			});
+		}
+	
+		function createDisplayView() {
+	
+		}
+	});
+	
+	module.exports = DisplayManager;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+
+/***/ 145:
 /***/ function(module, exports) {
 
 	/*
@@ -10979,7 +10978,10 @@
 	
 		// 下载模型
 		'model': function(url, callback) {
-			//
+	        loader.load(url, function (result) {
+	            mesh = result.scene.children[0].children[0].clone();
+	            callback(mesh);
+	        });
 		}
 	}
 	
@@ -10989,176 +10991,16 @@
 
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var Time = __webpack_require__(10);
-	
-	var Logo = Time.extend(function() {
-		var that = this;
-		var logoUrl = './assets/logo.png';
-		var particleDatas = [];
-	
-		var scene;
-		var cloud;
-	
-		this.constructor = function(_scene) {
-			this.super();
-	
-			scene = _scene;
-	
-			var img = new Image();
-			img.src = logoUrl;
-			img.onload = function() {
-				particleDatas = that.getParticlesData(img);
-				createParticle();
-			}
-		}
-	
-		this.reset = function() {
-	
-		}
-	
-		this.getParticlesData = function(img) {
-			var particleDatas = [];
-			var width = img.width;
-			var height = img.height;
-	
-			// 从canvas 读取颜色信息，创建粒子
-			var cvs = document.createElement('canvas');
-			cvs.width = width;
-			cvs.height = height;
-			var ctx = cvs.getContext('2d');
-	
-			ctx.drawImage(img, 0, 0);	
-	
-			var pixs = ctx.getImageData(0, 0, width, height).data;
-	
-			for (var i = 0; i < pixs.length; i += 4) {
-			    var r = pixs[i],
-			        g = pixs[i + 1],
-			        b = pixs[i + 2],
-			        a = pixs[i + 3];
-	
-			    if (b > 50) {
-			        var x = (i % (4 * width)) / 4 - width/2;
-			        var y = -(parseInt(i / (4 * width)) - height/2);
-	
-			        particleDatas.push({
-			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
-			        	//'color': '#abcdef',
-			        	'size': {'x': x, 'y': y}
-			        });
-			    }
-			}
-	
-			// 动画相关设置
-			var circleNum = 2;
-			var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
-			var radiusV = 30; // 每旋转一圈半径增长长度
-	
-			particleDatas.forEach(function(particleData, i) {
-	
-				particleData.radiusV = radiusV;
-				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
-				particleData.percent = 0;
-				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
-				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
-				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
-	
-				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
-				particleData.currentAngle = particleData.initAngle;
-				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
-				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
-	
-			});
-	
-			return particleDatas;
-		}
-	
-		function createParticle() {
-	
-	        var geom = new THREE.Geometry();
-	        var material = new THREE.PointCloudMaterial({
-	            size: 1,
-	            transparent: true,
-	            opacity: 0.6,
-	            vertexColors: true,
-	
-	            sizeAttenuation: true,
-	            color: 0xffffff
-	        });
-	
-			particleDatas.forEach(function(particleData) {
-				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
-				geom.vertices.push(particle);
-	
-				var color = new THREE.Color(particleData.color);
-				geom.colors.push(color);
-			});
-	
-	        cloud = new THREE.PointCloud(geom, material);
-	        cloud.name = "particles";
-	        scene.add(cloud);
-		}
-	
-		this.playEntryAnimation = function(callback) {
-			var timePass = 0;
-			var aniDatas = $.extend(true, [], particleDatas);
-			//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
-			var aniDoneNum = 0;
-	
-			var aniTick = that.addTick(function(detal) {
-				timePass += detal;
-				aniDoneNum = 0;
-	
-				aniDatas.forEach(function(aniData, i) {
-					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
-					aniData.percent = (timePass - aniData.delay) / aniData.dur;
-					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
-	
-					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
-	
-					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
-	
-					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
-					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
-					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
-	
-					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
-	
-					//console.log(aniData.size.x, aniData.size.y, aniData.size.z, aniData.currentRadius);
-				});
-	
-				cloud.geometry.verticesNeedUpdate = true;
-	
-				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 50000) {
-					callback && callback(); callback = false;
-				}
-	
-				if (aniDoneNum/aniDatas.length > 0.99) {
-					that.removeTick(aniTick);
-				}
-			});
-		}
-	
-	});
-	
-	module.exports = Logo;
-	
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
-
-/***/ },
-/* 13 */
+/***/ 146:
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(9);
 	
 	var ProductsPreview = View.extend(function() {
-		var that = this;
+		this.name = 'product-preview';
 	
+		var that = this;
 		var $domWrap;
 	
 		var gridNumHor;
@@ -11167,6 +11009,7 @@
 		var gridHeightPercent;
 	
 		var productDatas = [];
+		var productSelected = [];
 		var itemElems = [];
 	
 		var maxSelect = 4; // 最多选择个数
@@ -11184,14 +11027,17 @@
 		}
 	
 		this.activate = function() {
+			this.active = true;
 			$domWrap.show();
 			setTimeout(function() {
 				$domWrap.addClass('active');
 			}, 50);
 		}
 	
-		this.gotoView = function() {
+		this.inactivate = function() {
+			this.active = false;
 			$domWrap.addClass('inactive');
+			setTimeout(function() {$domWrap.hide();}, 1000);
 		}
 	
 		// 重置大小，位置
@@ -11212,8 +11058,9 @@
 			var left;
 			var top;
 		 	if (itemElems.length) {
+		 		var max = Math.max(productDatas.length, gridNumHor * gridNumVer);
 	
-		 		for (var i = 0; i < productDatas.length || i < gridNumHor * gridNumVer; i++) {
+		 		for (var i = 0; i < max; i++) {
 			 		left = (i % gridNumHor) * gridWidthPercent;
 			 		top = Math.floor(i / gridNumHor) * gridHeightPercent;
 	
@@ -11229,6 +11076,8 @@
 		 				height: gridHeightPercent + '%'
 		 			});
 		 		}
+		 		itemElems.length = max;
+		 		$domWrap.find('.list-wrap li:gt(' + (max - 1) + ')').remove();
 		 	}
 		}
 	
@@ -11242,8 +11091,8 @@
 		 	productDatas.forEach(function(productData, i) {
 		 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.imgUrl + '" alt=""></div></li>'
 		 	});	
-		 	htmlStr = '<ul>' + htmlStr + '</ul>';
-		 	$domWrap.html(htmlStr);
+		 	htmlStr = htmlStr;
+		 	$domWrap.find('.list-wrap').html(htmlStr);
 	
 		 	itemElems = [];
 		 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
@@ -11251,14 +11100,72 @@
 		}
 	
 		function initEvent() {
-			$domWrap.on('click', 'li', function() {
-				$(this).toggleClass('selected');
-				productDatas[$(this).data('previewIndex')].selected = true;
+			function selectProducts(indexes) {
+				var $li = $domWrap.find('.list-wrap li');
+				$li.removeClass('selected');
+	
+				if (indexes)
+				indexes.forEach(function(index) {
+					$li.eq(index).addClass('selected');
+				});
+	
+				if (indexes && indexes.length) {
+					$domWrap.addClass('show-control');
+				} else {
+					$domWrap.removeClass('show-control');
+				}
+			}
+	
+			$domWrap.on('click', 'li:lt(' + productDatas.length + ')', function() {
+				var previewIndex = $(this).data('previewIndex');
+	
+				var productData = productDatas[previewIndex];
+	
+				if (productSelected.indexOf(productData) < 0) {
+					productSelected.push(productData);
+					if (productSelected.length > maxSelect) {
+						productSelected.shift();
+					}
+				} else {
+					productSelected = productSelected.filter(function(product) {
+						return product !== productData;
+					});
+				}
+	
+				selectProducts(productSelected.map(function(product) {
+					return productDatas.indexOf(product);
+				}));
+			});
+	
+			$domWrap.on('click', '#clear', function() {
+				productSelected.length = 0;
+				selectProducts();
+			});
+			$domWrap.on('click', '#go', function() {
+				goDisplay();
 			});
 		}
 	
+		function goDisplay() {
+			$domWrap.removeClass('show-control').addClass('choosed');
+			var $li = $domWrap.find('.list-wrap li');
+			var selectedPos = calculateSubWindowSize(productSelected.length);
+			var index = 0;
 	
+			productDatas.forEach(function(product, i) {
+				if (index > productSelected.length - 1) return false;
+				if (productSelected.indexOf(product) != -1) {
+					$li.eq(i).css(selectedPos[index]);
+				    index++;			
+				}
+			});
 	
+			setTimeout(function() {
+				that.inactivate();
+				that.inactivateView('welcome');
+				that.activateView('display-manager', {'productDatas': productSelected});
+			}, 1000);
+		}
 	});
 	
 	module.exports = ProductsPreview;
@@ -11364,18 +11271,209 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
 
 /***/ },
-/* 14 */
+
+/***/ 148:
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(9);
-	var ViewDisplayManager = View.extend(function() {
-		
-		this.viewListId;
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
+	var Welcome = View.extend(function() {
+		this.name = 'welcome';
+		this.isInit = false;
 	
+		var that = this;
+		var logoUrl = CONFIG.MEIZU_LOGO;
+		var particleDatas = [];
+		var camera; // 自身创建 camera
+		var cloud;
+		var baseCrood = new THREE.Vector3(0, 0, 0);
+		var renderTick;
+	
+		this.constructor = function() {
+			this.super();
+	        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+	
+			M3.scene.add(camera);
+		}
+	
+		this.activate = function() {
+			if (!particleDatas.length) {
+				var img = new Image();
+				img.src = logoUrl;
+				img.onload = function() {
+					particleDatas = getParticlesData(img);
+					createParticle();
+					init();
+				}
+			} else {
+				init();		
+			}
+		}
+	
+		this.inactivate = function() {
+			//this.removeTick(renderTick); // 移除renderTick 
+		}
+	
+		this.reset = function() {
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
+	
+			M3.renderer.setSize(winWidth, winHeight);
+			camera.aspect = window.innerWidth / window.innerHeight;
+	        camera.updateProjectionMatrix();
+	
+			camera.position.set(0, 0, 250);
+			camera.lookAt(baseCrood);
+		}
+	
+	
+		function init() {
+			that.reset();
+			playEntryAnimation(function() {
+				that.activateView('product-preview');
+			});	
+			render();
+		} 
+	
+		function getParticlesData(img) {
+			var particleDatas = [];
+			var width = img.width;
+			var height = img.height;
+	
+			// 从canvas 读取颜色信息，创建粒子
+			var cvs = document.createElement('canvas');
+			cvs.width = width;
+			cvs.height = height;
+			var ctx = cvs.getContext('2d');
+	
+			ctx.drawImage(img, 0, 0);	
+	
+			var pixs = ctx.getImageData(0, 0, width, height).data;
+	
+			for (var i = 0; i < pixs.length; i += 4) {
+			    var r = pixs[i],
+			        g = pixs[i + 1],
+			        b = pixs[i + 2],
+			        a = pixs[i + 3];
+	
+			    if (b > 50) {
+			        var x = (i % (4 * width)) / 4 - width/2;
+			        var y = -(parseInt(i / (4 * width)) - height/2);
+	
+			        particleDatas.push({
+			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
+			        	//'color': '#abcdef',
+			        	'size': {'x': x, 'y': y}
+			        });
+			    }
+			}
+	
+			// 动画相关设置
+			var circleNum = 2;
+			var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
+			var radiusV = 30; // 每旋转一圈半径增长长度
+	
+			particleDatas.forEach(function(particleData, i) {
+	
+				particleData.radiusV = radiusV;
+				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
+				particleData.percent = 0;
+				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
+				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
+				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
+	
+				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
+				particleData.currentAngle = particleData.initAngle;
+				particleData.finalAngle = (circleNum * Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
+				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
+	
+			});
+	
+			return particleDatas;
+		}
+	
+		function createParticle() {
+	
+	        var geom = new THREE.Geometry();
+	        var material = new THREE.PointCloudMaterial({
+	            size: 1,
+	            transparent: true,
+	            opacity: 0.6,
+	            vertexColors: true,
+	
+	            sizeAttenuation: true,
+	            color: 0xffffff
+	        });
+	
+			particleDatas.forEach(function(particleData) {
+				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
+				geom.vertices.push(particle);
+	
+				var color = new THREE.Color(particleData.color);
+				geom.colors.push(color);
+			});
+	
+	        cloud = new THREE.PointCloud(geom, material);
+	        cloud.name = "particles";
+	        M3.scene.add(cloud);
+		}
+	
+		function playEntryAnimation(callback) {
+			var timePass = 0;
+			var aniDatas = $.extend(true, [], particleDatas);
+			//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
+			var aniDoneNum = 0;
+	
+			var aniTick = that.addTick(function(detal) {
+				timePass += detal;
+				aniDoneNum = 0;
+	
+				aniDatas.forEach(function(aniData, i) {
+					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
+					aniData.percent = (timePass - aniData.delay) / aniData.dur;
+					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
+	
+					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
+	
+					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+	
+					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
+					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
+					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
+	
+					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
+	
+				});
+	
+				cloud.geometry.verticesNeedUpdate = true;
+	
+				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
+					callback && callback(); callback = false;
+				}
+	
+				cloud.rotation.x += 0.0005;
+				cloud.rotation.y += 0.0005;
+				cloud.rotation.z += 0.0005;
+				if (aniDoneNum/aniDatas.length > 0.99) {
+					//that.removeTick(aniTick);
+				}
+			});
+		}
+	
+		// render 
+		function render() {
+			renderTick = that.addTick(function() {
+				M3.renderer.render(M3.scene, camera);
+			});
+		}
 	});
 	
-	module.exports = ViewDisplayManager;
+	module.exports = Welcome;
+	
+	
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ }
-/******/ ]);
+
+/******/ });
 //# sourceMappingURL=index.js.map

@@ -57,7 +57,10 @@ var loadMethod = {
 
 	// 下载模型
 	'model': function(url, callback) {
-		//
+        loader.load(url, function (result) {
+            mesh = result.scene.children[0].children[0].clone();
+            callback(mesh);
+        });
 	}
 }
 
