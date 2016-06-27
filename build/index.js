@@ -40,9 +40,8 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	window.M3 = {};
@@ -63,21 +62,27 @@
 	
 	
 		// 基本场景
-		M3.renderer = new THREE.WebGLRenderer();
+		M3.renderer = new THREE.WebGLRenderer({ antialias: true });
+	
 		M3.scene = new THREE.Scene();
 	    document.body.appendChild(M3.renderer.domElement);
 	    M3.renderer.setClearColor(0x000000);
 	
+		var winWidth = window.innerWidth;
+		var winHeight = window.innerHeight;
 	
+		M3.renderer.setSize(winWidth, winHeight);
 	
 		var list = new List();
 		list.activate();	
+	
+		// var displayManager = new DisplayManager();
+		// displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
 	})();
 
 
 /***/ },
-
-/***/ 1:
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
@@ -92,8 +97,8 @@
 	if(false) {
 		// When the styles change, update the <style> tags
 		if(!content.locals) {
-			module.hot.accept("!!./../../../../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
-				var newContent = require("!!./../../../../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
 				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
 				update(newContent);
 			});
@@ -103,8 +108,7 @@
 	}
 
 /***/ },
-
-/***/ 2:
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	exports = module.exports = __webpack_require__(3)();
@@ -112,14 +116,13 @@
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, -400px, -100px) rotateX(200deg);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 60%;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 2s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 2s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 2s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 2s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 2s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 2s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 2s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 2s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 2s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 2s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 2s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 2s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 2s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 2s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 2s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 2s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 2s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 2s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 2s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 2s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 2s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 2s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 2s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 2s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 2s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 2s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 2s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 2s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 2s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 2s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-
-/***/ 3:
+/* 3 */
 /***/ function(module, exports) {
 
 	/*
@@ -175,8 +178,7 @@
 
 
 /***/ },
-
-/***/ 4:
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -428,19 +430,17 @@
 
 
 /***/ },
-
-/***/ 5:
+/* 5 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-
-/***/ 6:
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
-	var Loader = __webpack_require__(145);
+	var Loader = __webpack_require__(15);
 	var loader = new Loader();
 	
 	var List = View.extend(function() {
@@ -482,18 +482,20 @@
 			var loadConfigs = [];
 	
 			productCfg.forEach(function(item, i) {
-				loadConfigs[i] = {};
-				loadConfigs[i].type = 'img';
-				loadConfigs[i].url = item.imgUrl;
+				loadConfigs[i] = {
+					type: 'img',
+					params: { 'url': item.previewImg }
+				};
 			});
 	
 			loadConfigs.push({
 				type: 'img',
-				url: logoUrl
+				params: { 'url': logoUrl }
 			});
 	
 			loader.load(loadConfigs, function(progress) {
 				// 进度显示	
+				console.log('list progress', progress);
 			}, function(res) {
 				// 成功回调	
 				assetsLoaded = true;
@@ -510,8 +512,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ },
-
-/***/ 7:
+/* 7 */
 /***/ function(module, exports) {
 
 	var CONFIG = {
@@ -534,9 +535,15 @@
 	products.forEach(function(product, i) {
 		_products[i] = {
 			'name': product,
-			'imgUrl': './assets/pro6/phone-silver.jpg',
-			'modelUrl': './assets/pro6/pro6.dae',
-			'modelPos': {x: i * 10, y: 0, z: -100},
+			'previewImg': './assets/pro6/phone-silver.jpg',
+			'model': {
+				type: 'dae',
+				geometry: './assets/pro6/pro6.dae',
+				textures: {
+					'white': './assets/pro6/pro6.jpg'
+				},
+			},
+			'modelPos': {x: (i - 5) * 30, y: 0, z: 0},
 			'title': 'PRO 6',
 			'desc' : 'PRO 6 was produced in 2016'
 	
@@ -548,8 +555,7 @@
 	module.exports = CONFIG;
 
 /***/ },
-
-/***/ 8:
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10592,8 +10598,7 @@
 
 
 /***/ },
-
-/***/ 9:
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var TimeBody = __webpack_require__(10);
@@ -10617,10 +10622,10 @@
 	    this.activateView = function(name, data) {
 	        if (!views[name]) {
 	            var viewConstructors = {
-	                'welcome': __webpack_require__(148),
-	                'product-preview': __webpack_require__(146),
+	                'welcome': __webpack_require__(11),
+	                'product-preview': __webpack_require__(12),
 	                'display-manager': __webpack_require__(13),
-	                'display': __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())),
+	                'display-window': __webpack_require__(14),
 	                'list': __webpack_require__(6)
 	            };
 	            views[name] = new viewConstructors[name]();
@@ -10700,8 +10705,7 @@
 
 
 /***/ },
-
-/***/ 10:
+/* 10 */
 /***/ function(module, exports) {
 
 	/* 时间 */
@@ -10817,14 +10821,7 @@
 		 * 包装tween
 		 * @param timegap 与上一帧的时间间隔
 		 */
-		this.addTween = function(A, B, time, updateFn, endFn) {
-			var tween = new TWEEN.Tween(A).to(B, time).onUpdate(function() {
-				updateFn(this);
-			}).onComplete(function() {
-				that.removeTween(tween);
-				endFn();
-			}).start();
-	
+		this.addTween = function(tween) {
 			this.tweens.push(tween);
 		}
 	
@@ -10870,129 +10867,206 @@
 
 
 /***/ },
-
-/***/ 13:
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
-	var DisplayWindow = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
+	var Welcome = View.extend(function() {
+		this.name = 'welcome';
+		this.isInit = false;
 	
-	var DisplayManager = View.extend(function() {
 		var that = this;
-		this.name = 'display-manager';
-		this.displayWindows = [];
+		var logoUrl = CONFIG.MEIZU_LOGO;
+		var particleDatas = [];
+		var camera; // 自身创建 camera
+		var cloud;
+		var baseCrood = new THREE.Vector3(0, 0, 0);
+		var renderTick;
 	
 		this.constructor = function() {
-			
+			this.super();
+	        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+	
+			M3.scene.add(camera);
 		}
 	
-		this.activate = function(data) {
-			var productDatas = $.extend(true, {}, data.productDatas);
-			var sizePos = calculateSubWindowSize(productDatas.length);
+		this.activate = function() {
+			if (!particleDatas.length) {
+				var img = new Image();
+				img.src = logoUrl;
+				img.onload = function() {
+					particleDatas = getParticlesData(img);
+					createParticle();
+					init();
+				}
+			} else {
+				init();		
+			}
+		}
 	
-			productDatas.forEach(function(productData, i) {
-				var displayWindowData = {
-					'productData': productData,
-					'size': sizePos[i],
+		this.inactivate = function() {
+			//this.removeTick(renderTick); // 移除renderTick 
+		}
+	
+		this.reset = function() {
+	
+			camera.aspect = window.innerWidth / window.innerHeight;
+	        camera.updateProjectionMatrix();
+	
+			camera.position.set(0, 0, 250);
+			camera.lookAt(baseCrood);
+		}
+	
+	
+		function init() {
+			that.reset();
+			playEntryAnimation(function() {
+				that.activateView('product-preview');
+			});	
+			render();
+		} 
+	
+		function getParticlesData(img) {
+			var particleDatas = [];
+			var width = img.width;
+			var height = img.height;
+	
+			// 从canvas 读取颜色信息，创建粒子
+			var cvs = document.createElement('canvas');
+			cvs.width = width;
+			cvs.height = height;
+			var ctx = cvs.getContext('2d');
+	
+			ctx.drawImage(img, 0, 0);	
+	
+			var pixs = ctx.getImageData(0, 0, width, height).data;
+	
+			for (var i = 0; i < pixs.length; i += 4) {
+			    var r = pixs[i],
+			        g = pixs[i + 1],
+			        b = pixs[i + 2],
+			        a = pixs[i + 3];
+	
+			    if (b > 50) {
+			        var x = (i % (4 * width)) / 4 - width/2;
+			        var y = -(parseInt(i / (4 * width)) - height/2);
+	
+			        particleDatas.push({
+			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
+			        	//'color': '#abcdef',
+			        	'size': {'x': x, 'y': y}
+			        });
+			    }
+			}
+	
+			// 动画相关设置
+			var circleNum = 4;
+			var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
+			var radiusV = 50; // 每旋转一圈半径增长长度
+	
+			particleDatas.forEach(function(particleData, i) {
+	
+				particleData.radiusV = radiusV;
+				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
+				particleData.percent = 0;
+				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
+				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
+				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
+	
+				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
+				particleData.currentAngle = particleData.initAngle;
+				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
+				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
+	
+			});
+	
+			return particleDatas;
+		}
+	
+		function createParticle() {
+	
+	        var geom = new THREE.Geometry();
+	        var material = new THREE.PointCloudMaterial({
+	            size: 1,
+	            transparent: true,
+	            opacity: 0.6,
+	            vertexColors: true,
+	
+	            sizeAttenuation: true,
+	            color: 0xffffff
+	        });
+	
+			particleDatas.forEach(function(particleData) {
+				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
+				geom.vertices.push(particle);
+	
+				var color = new THREE.Color(particleData.color);
+				geom.colors.push(color);
+			});
+	
+	        cloud = new THREE.PointCloud(geom, material);
+	        cloud.name = "particles";
+	        M3.scene.add(cloud);
+		}
+	
+		function playEntryAnimation(callback) {
+			var timePass = 0;
+			var aniDatas = $.extend(true, [], particleDatas);
+			//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
+			var aniDoneNum = 0;
+	
+			var aniTick = that.addTick(function(detal) {
+				timePass += detal;
+				aniDoneNum = 0;
+	
+				aniDatas.forEach(function(aniData, i) {
+					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
+					aniData.percent = (timePass - aniData.delay) / aniData.dur;
+					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
+	
+					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
+	
+					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+	
+					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
+					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
+					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
+	
+					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
+	
+				});
+	
+				cloud.geometry.verticesNeedUpdate = true;
+	
+				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
+					callback && callback(); callback = false;
 				}
 	
-				that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
-	
-				if (!that.displayWindows[i].displayView) {
-					that.displayWindows[i].displayView = new DisplayWindow();
+				cloud.rotation.x += 0.0005;
+				cloud.rotation.y += 0.0005;
+				cloud.rotation.z += 0.0005;
+				if (aniDoneNum/aniDatas.length > 0.99) {
+					//that.removeTick(aniTick);
 				}
-	
-				that.displayWindows[i].displayView.activate(displayWindowData);
 			});
 		}
 	
-		function createDisplayView() {
-	
+		// render 
+		function render() {
+			renderTick = that.addTick(function() {
+				M3.renderer.render(M3.scene, camera);
+			});
 		}
 	});
 	
-	module.exports = DisplayManager;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	module.exports = Welcome;
+	
+	
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ },
-
-/***/ 145:
-/***/ function(module, exports) {
-
-	/*
-	 * loaderconfig format {type: img/model, url: xxx}
-	 */
-	
-	var Loader = Class.extend(function() {
-		sizeInfo = {
-			'img': 1,
-			'model': 3	
-		}
-	
-	
-		this.constructor = function() {
-	
-		}
-	
-		this.load = function(loadConfigs, progressCallback, successCallback) {
-			var totalSize = 0;
-			var loadedSize = 0;
-			var loadedReses = [];
-			var loadConfig;
-	
-			for (var i = 0; i < loadConfigs.length; i++) {
-				loadConfig = loadConfigs[i];
-	
-				totalSize += sizeInfo[loadConfig['type']];
-	
-				loadMethod[loadConfig['type']](loadConfig['url'], (function(type, _i) {
-					
-					return function(res) {
-						loadedSize += sizeInfo[type];
-	
-						loadedReses[_i] = res;
-	
-						// 进度回调
-						progressCallback(loadedSize/totalSize, loadedReses);
-	
-						// 成功回调
-						if (loadedSize/totalSize === 1) {
-							successCallback(loadedReses);
-						}
-					}
-				})(loadConfig['type'], i));
-			}
-		}
-	});
-	
-	var loadMethod = {
-	
-		// 下载图片
-		'img': function(url, callback) {
-			var img = new Image();
-			img.onload = function() {
-				callback(img);
-			}
-			img.src = url;
-		},
-	
-		// 下载模型
-		'model': function(url, callback) {
-	        loader.load(url, function (result) {
-	            mesh = result.scene.children[0].children[0].clone();
-	            callback(mesh);
-	        });
-		}
-	}
-	
-	module.exports = Loader;
-	
-	
-
-
-/***/ },
-
-/***/ 146:
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(9);
@@ -11089,7 +11163,7 @@
 			var htmlStr = '';
 	
 		 	productDatas.forEach(function(productData, i) {
-		 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.imgUrl + '" alt=""></div></li>'
+		 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.previewImg + '" alt=""></div></li>'
 		 	});	
 		 	htmlStr = htmlStr;
 		 	$domWrap.find('.list-wrap').html(htmlStr);
@@ -11163,7 +11237,7 @@
 			setTimeout(function() {
 				that.inactivate();
 				that.inactivateView('welcome');
-				that.activateView('display-manager', {'productDatas': productSelected});
+				that.activateView('display-manager', {'productDatas': productSelected, 'cameraPos': new THREE.Vector3(0,0,0)});
 			}, 1000);
 		}
 	});
@@ -11271,209 +11345,390 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
 
 /***/ },
-
-/***/ 148:
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
-	var Welcome = View.extend(function() {
-		this.name = 'welcome';
-		this.isInit = false;
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
+	var DisplayWindow = __webpack_require__(14);
 	
+	var DisplayManager = View.extend(function() {
 		var that = this;
-		var logoUrl = CONFIG.MEIZU_LOGO;
-		var particleDatas = [];
-		var camera; // 自身创建 camera
-		var cloud;
-		var baseCrood = new THREE.Vector3(0, 0, 0);
-		var renderTick;
+		this.name = 'display-manager';
+		this.displayWindows = [];
+	
+		this.constructor = function() {
+			
+		}
+	
+		this.activate = function(data) { 
+			var productDatas = $.extend(true, [], data.productDatas);
+			var sizePos = calculateSubWindowSize(productDatas.length);
+	
+			productDatas.forEach(function(productData, i) {
+				var displayWindowData = {
+					'productData': productData,
+					'cameraPos': data.cameraPos,
+					'windowSize': sizePos[i],
+				}
+	
+				that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
+	
+				if (!that.displayWindows[i].displayView) {
+					that.displayWindows[i].displayView = new DisplayWindow();
+				}
+				that.displayWindows[i].displayView.activate(displayWindowData);
+			});
+		}
+	
+		function createDisplayView() {
+	
+		}
+	});
+	
+	module.exports = DisplayManager;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(9);
+	var Loader = __webpack_require__(15);
+	var loader = new Loader();
+	
+	var DisplayWindow = View.extend(function() {
+		var that = this;
+		var windowSize;
+		var windowSizePX;
+		var spotLight;
+	
+	
+		this.model;
+		this.camera;
+		this.target;
+		this.productData;
+	
+	
+		this.state;
 	
 		this.constructor = function() {
 			this.super();
-	        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+	        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 	
-			M3.scene.add(camera);
+	 		spotLight = new THREE.SpotLight(0xffffff);
+	        // spotLight.shadowCameraNear = 2;
+	        // spotLight.shadowCameraFar = 200;
+	        // spotLight.shadowCameraFov = 30;
+	        // spotLight.distance = 0;
+	        // spotLight.angle = 0.4;
+	
+	
+	        M3.scene.add(spotLight);
+			M3.scene.add(this.camera);
 		}
 	
-		this.activate = function() {
-			if (!particleDatas.length) {
-				var img = new Image();
-				img.src = logoUrl;
-				img.onload = function() {
-					particleDatas = getParticlesData(img);
-					createParticle();
-					init();
-				}
-			} else {
-				init();		
-			}
-		}
+		this.activate = function(data) {
 	
-		this.inactivate = function() {
-			//this.removeTick(renderTick); // 移除renderTick 
+			windowSize = data.windowSize;
+	
+			this.productData = data.productData;
+			this.camera.position.copy(data.cameraPos);
+	
+			this.target = new THREE.Vector3(this.productData.modelPos.x, this.productData.modelPos.y, this.productData.modelPos.z);
+			changeProduct(this.productData, Object.keys(this.productData.model.textures)[0]);
+			this.reset();
+			render();
 		}
 	
 		this.reset = function() {
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 	
-			M3.renderer.setSize(winWidth, winHeight);
-			camera.aspect = window.innerWidth / window.innerHeight;
-	        camera.updateProjectionMatrix();
+			windowSizePX = {};
+			windowSizePX['left'] = parseInt(winWidth * parseInt(windowSize['left'])/100);
+			windowSizePX['width'] = parseInt(winWidth * parseInt(windowSize['width'])/100);
+			windowSizePX['top'] = parseInt(winHeight * parseInt(windowSize['top'])/100);
+			windowSizePX['height'] = parseInt(winHeight * parseInt(windowSize['height'])/100);
 	
-			camera.position.set(0, 0, 250);
-			camera.lookAt(baseCrood);
+			windowSizePX['bottom'] = winHeight - windowSizePX['height'] - windowSizePX['top'];
+	
+	        spotLight.position.copy(this.target);
+	        spotLight.position.y += 100;
+	        spotLight.position.x += 100;
+	        spotLight.lookAt(this.target);
+	
+	
+	        // create a cube
+	        /*var sphereGeometry = new THREE.SphereGeometry(3, 30,30);
+	        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+	        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
+	        sphere.position.copy(target);
+	        M3.scene.add(sphere);*/
+	
+			this.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
+			this.camera.updateProjectionMatrix();
+			this.camera.position.z += 50;
 		}
 	
-	
-		function init() {
-			that.reset();
-			playEntryAnimation(function() {
-				that.activateView('product-preview');
-			});	
-			render();
-		} 
-	
-		function getParticlesData(img) {
-			var particleDatas = [];
-			var width = img.width;
-			var height = img.height;
-	
-			// 从canvas 读取颜色信息，创建粒子
-			var cvs = document.createElement('canvas');
-			cvs.width = width;
-			cvs.height = height;
-			var ctx = cvs.getContext('2d');
-	
-			ctx.drawImage(img, 0, 0);	
-	
-			var pixs = ctx.getImageData(0, 0, width, height).data;
-	
-			for (var i = 0; i < pixs.length; i += 4) {
-			    var r = pixs[i],
-			        g = pixs[i + 1],
-			        b = pixs[i + 2],
-			        a = pixs[i + 3];
-	
-			    if (b > 50) {
-			        var x = (i % (4 * width)) / 4 - width/2;
-			        var y = -(parseInt(i / (4 * width)) - height/2);
-	
-			        particleDatas.push({
-			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
-			        	//'color': '#abcdef',
-			        	'size': {'x': x, 'y': y}
-			        });
-			    }
-			}
-	
-			// 动画相关设置
-			var circleNum = 2;
-			var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
-			var radiusV = 30; // 每旋转一圈半径增长长度
-	
-			particleDatas.forEach(function(particleData, i) {
-	
-				particleData.radiusV = radiusV;
-				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
-				particleData.percent = 0;
-				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
-				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
-				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
-	
-				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
-				particleData.currentAngle = particleData.initAngle;
-				particleData.finalAngle = (circleNum * Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
-				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
-	
-			});
-	
-			return particleDatas;
+		this.setState = function(state) {
+			this.state = state;
+			displayWindowState[state](this);
 		}
 	
-		function createParticle() {
-	
-	        var geom = new THREE.Geometry();
-	        var material = new THREE.PointCloudMaterial({
-	            size: 1,
-	            transparent: true,
-	            opacity: 0.6,
-	            vertexColors: true,
-	
-	            sizeAttenuation: true,
-	            color: 0xffffff
-	        });
-	
-			particleDatas.forEach(function(particleData) {
-				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
-				geom.vertices.push(particle);
-	
-				var color = new THREE.Color(particleData.color);
-				geom.colors.push(color);
-			});
-	
-	        cloud = new THREE.PointCloud(geom, material);
-	        cloud.name = "particles";
-	        M3.scene.add(cloud);
+		// 下载进度
+		this.showProgress = function (progress) {
+			console.log('displayWindow progress', progress);
 		}
 	
-		function playEntryAnimation(callback) {
-			var timePass = 0;
-			var aniDatas = $.extend(true, [], particleDatas);
-			//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
-			var aniDoneNum = 0;
-	
-			var aniTick = that.addTick(function(detal) {
-				timePass += detal;
-				aniDoneNum = 0;
-	
-				aniDatas.forEach(function(aniData, i) {
-					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
-					aniData.percent = (timePass - aniData.delay) / aniData.dur;
-					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
-	
-					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
-	
-					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
-	
-					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
-					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
-					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
-	
-					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
-	
-				});
-	
-				cloud.geometry.verticesNeedUpdate = true;
-	
-				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
-					callback && callback(); callback = false;
-				}
-	
-				cloud.rotation.x += 0.0005;
-				cloud.rotation.y += 0.0005;
-				cloud.rotation.z += 0.0005;
-				if (aniDoneNum/aniDatas.length > 0.99) {
-					//that.removeTick(aniTick);
-				}
-			});
+		// 模型切换
+		function changeProduct(productData) {
+			that.productData = productData;
+			that.setState('loading');
 		}
 	
-		// render 
 		function render() {
-			renderTick = that.addTick(function() {
-				M3.renderer.render(M3.scene, camera);
+			that.addTick(function() {
+				M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
+				M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
+				M3.renderer.setScissorTest(true);
+				//M3.renderer.setClearColor(0xffffff);
+				that.camera.updateProjectionMatrix();
+				M3.renderer.render( M3.scene, that.camera );			
 			});
 		}
 	});
 	
-	module.exports = Welcome;
+	var displayWindowState = {
+		// 下载状态
+		loading: function(displayWindow) {
+			function setModel() {
+				var color = Object.keys(displayWindow.productData.model.textures)[0];
+	        	var texture = THREE.ImageUtils.loadTexture(displayWindow.productData.model.textures[color]);
+				var material = new THREE.MeshBasicMaterial({map: texture});
+				var _model;
+	
+				_model = new THREE.Mesh(displayWindow.productData.model.geometry, material);
+				_model.scale.set(0.1, 0.1, 0.1);
+				_model.position.copy(displayWindow.target);
+				_model.rotation.x = Math.PI/2;
+				M3.scene.remove(displayWindow.model);
+				M3.scene.add(_model);
+				displayWindow.model = _model;
+				displayWindow.camera.lookAt(_model);
+			}
+	
+			// 加载模型资源
+			loader.load(displayWindow.productData.model, function(p) {displayWindow.showProgress(p)}, function(res) {	
+				displayWindow.productData.model = res;
+				setModel();
+				displayWindow.setState('animate');
+			});
+		},
+	
+		// 动画播放
+		animate: function(displayWindow, first) {
+			displayWindow.model.rotation.x = Math.random();
+			displayWindow.model.rotation.y = Math.random();
+			displayWindow.model.rotation.z = Math.random();
+			displayWindow.addTick(function() {
+				var speed =  0.003;
+				displayWindow.model.rotation.x += speed;
+				displayWindow.model.rotation.y += speed;
+				displayWindow.model.rotation.z += speed;
+			});
+	
+			var aniInit = {
+					modelRx: Math.PI / 2, 
+					modelRy: 0, 
+					modelRz: Math.PI * 2, 
+					cameraPx: displayWindow.target.x,
+					cameraPy: displayWindow.target.y,
+					cameraPz: displayWindow.target.z + 300,
+					cameraOffset: 10
+				};
+			var aniFinal = {
+					modelRx: Math.PI / 2, 
+					modelRy: 0, 
+					modelRz: 0, 
+					cameraPx: displayWindow.target.x,
+					cameraPy: displayWindow.target.y,
+					cameraPz: displayWindow.target.z + 25,
+					cameraOffset: 10000
+				};
+	
+	
+			var tween = new TWEEN.Tween(aniInit).to(aniFinal, 3000).onUpdate(function() {
+				// displayWindow.model.rotation.x = this.modelRx;
+				// displayWindow.model.rotation.y = this.modelRy;
+				// displayWindow.model.rotation.z = this.modelRz;
+	
+				var offset = 0//(parseInt(this.cameraOffset) % 20 - 10) / 20;
+	
+				displayWindow.camera.position.x = this.cameraPx + offset;
+				displayWindow.camera.position.y = this.cameraPy;
+				displayWindow.camera.position.z = this.cameraPz;
+	
+			}).onComplete(function() { 
+				displayWindow.removeTween(tween);
+				displayWindow.setState('handle');
+	
+	
+			}).easing(TWEEN.Easing.Cubic.InOut).start();
+	
+			displayWindow.addTween(tween);
+		},
+	
+		// 可操作状态
+		handle: function(displayWindow) {
+	
+		}
+	}
+	
+	
+	module.exports = DisplayWindow;
+
+
+/***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {// 下载缓存
+	loadedCache = {};
+	
+	var Loader = Class.extend(function() {
+		var that = this;
+		var sizeInfo = {
+			'img': 1,
+			'dae': 2	
+		};
+	
+		this.load = function(loadParams, progressCallback, successCallback) {
+			var totalSize = 0; // 总大小
+			var loadedSize = 0; // 已经下载大小
+			var loadUrls = [];
+			var loadUrl;
+			var resType;
+	
+			loadUrls = getUrls(loadParams);
+	
+			for (var i = 0; i < loadUrls.length; i++) {
+				loadUrl = loadUrls[i];
+				resType = getLoaderType(loadUrl.match(/\.(\w+)$/)[1]);
+				totalSize += sizeInfo[resType];
+				loadMethod[resType](loadUrl, (function(type, url) {
+					
+					return function(res) {
+						loadedSize += sizeInfo[type];
+	
+						loadedCache[url] = res;
+	
+						// 进度回调
+						progressCallback(loadedSize/totalSize);
+	
+						// 成功回调
+						if (loadedSize/totalSize === 1) {
+							successCallback(getResults(loadParams));
+						}
+					}
+				})(resType, loadUrl));
+			}
+		}
+	
+		// 获取下载类型
+		function getLoaderType(ext) {
+			var typeExtMap = {
+				'img': /(jpg|jpeg|gif|png)/,
+				'dae': /dae/
+			};
+	
+			for (var type in typeExtMap) {
+				if (typeExtMap[type].test(ext)) {
+					return type;
+				}
+			}
+		}
+	
+		// 收集下载参数里的 url
+		function getUrls(_params) { 
+			var urlRegx = /.+\.\w{1,6}$/;
+	
+			function _getUrls(params) {
+				var urls = [];
+	
+				if (typeof params === 'string') {
+					urlRegx.test(params) && urls.push(params);
+				} else if (Object.prototype.toString.call(params) === '[object Array]') {
+					params.forEach(function(param) {
+						urls = urls.concat(_getUrls(param));
+					});
+				} else if (typeof params === 'object'){
+					for (var key in params) {
+						urls = urls.concat(_getUrls(params[key]));
+					}
+				}
+				return urls;
+			}
+	
+			return _getUrls(_params);
+		}
+	
+		// 遍历下载参数里的 url， 替换成下载结果缓存
+		function getResults(_params) {
+			var params = $.extend(true, {}, _params);
+			var urlRegx = /.+\.\w{1,6}$/;
+	
+			function _getResults(params) {
+				if (typeof params === 'string') {
+					return (loadedCache[params] || params);
+				} else if (Object.prototype.toString.call(params) === '[object Array]') {
+					return (urls.map(function(url) {
+						return loadedCache[url];
+					}));
+				} else {
+					for (var key in params) {
+						params[key] =  _getResults(params[key]);
+					}
+					return params;
+				}
+			}
+			return _getResults(params);
+		}
+	});
+	
+	
+	/*
+	 * 下载 URL等配置在loadconfig.params 中
+	 * loadMethod 根据不同type 应用相应策略下载资源缓存在 loaded cache 中
+	 * img直接缓存 url 
+	 */
+	var loadMethod = {
+	
+		// 下载图片
+		'img': function(url, success) {
+			var img = new Image();
+			img.onload = function() {
+				success(url);
+			}
+			img.src = url;
+		},
+	
+		// 下载 dae 模型
+		'dae': function(url, callback) {
+			var loader = new THREE.ColladaLoader();
+	        loader.load(url, function (result) {
+	            mesh = result.scene.children[0].children[0].clone();
+	            callback(mesh.geometry);
+	        });
+		}
+	}
+	
+	
+	module.exports = Loader;
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ }
-
-/******/ });
+/******/ ]);
 //# sourceMappingURL=index.js.map

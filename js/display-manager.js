@@ -1,5 +1,5 @@
 var View = require('./view.js');
-var DisplayWindow = require('./display.js');
+var DisplayWindow = require('./display-window.js');
 
 var DisplayManager = View.extend(function() {
 	var that = this;
@@ -10,14 +10,15 @@ var DisplayManager = View.extend(function() {
 		
 	}
 
-	this.activate = function(data) {
-		var productDatas = $.extend(true, {}, data.productDatas);
+	this.activate = function(data) { 
+		var productDatas = $.extend(true, [], data.productDatas);
 		var sizePos = calculateSubWindowSize(productDatas.length);
 
 		productDatas.forEach(function(productData, i) {
 			var displayWindowData = {
 				'productData': productData,
-				'size': sizePos[i],
+				'cameraPos': data.cameraPos,
+				'windowSize': sizePos[i],
 			}
 
 			that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
@@ -25,7 +26,6 @@ var DisplayManager = View.extend(function() {
 			if (!that.displayWindows[i].displayView) {
 				that.displayWindows[i].displayView = new DisplayWindow();
 			}
-
 			that.displayWindows[i].displayView.activate(displayWindowData);
 		});
 	}

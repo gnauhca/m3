@@ -41,18 +41,20 @@ var List = View.extend(function() {
 		var loadConfigs = [];
 
 		productCfg.forEach(function(item, i) {
-			loadConfigs[i] = {};
-			loadConfigs[i].type = 'img';
-			loadConfigs[i].url = item.imgUrl;
+			loadConfigs[i] = {
+				type: 'img',
+				params: { 'url': item.previewImg }
+			};
 		});
 
 		loadConfigs.push({
 			type: 'img',
-			url: logoUrl
+			params: { 'url': logoUrl }
 		});
 
 		loader.load(loadConfigs, function(progress) {
 			// 进度显示	
+			console.log('list progress', progress);
 		}, function(res) {
 			// 成功回调	
 			assetsLoaded = true;

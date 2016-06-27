@@ -111,14 +111,7 @@ var TimeBody = Class.extend(function TimeBody() {
 	 * 包装tween
 	 * @param timegap 与上一帧的时间间隔
 	 */
-	this.addTween = function(A, B, time, updateFn, endFn) {
-		var tween = new TWEEN.Tween(A).to(B, time).onUpdate(function() {
-			updateFn(this);
-		}).onComplete(function() {
-			that.removeTween(tween);
-			endFn();
-		}).start();
-
+	this.addTween = function(tween) {
 		this.tweens.push(tween);
 	}
 

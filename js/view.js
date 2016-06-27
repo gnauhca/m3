@@ -22,7 +22,7 @@ var View = TimeBody.extend(function() {
                 'welcome': require('./welcome.js'),
                 'product-preview': require('./product-preview.js'),
                 'display-manager': require('./display-manager.js'),
-                'display': require('./display.js'),
+                'display-window': require('./display-window.js'),
                 'list': require('./list.js')
             };
             views[name] = new viewConstructors[name]();

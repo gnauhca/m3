@@ -92,7 +92,7 @@ var ProductsPreview = View.extend(function() {
 		var htmlStr = '';
 
 	 	productDatas.forEach(function(productData, i) {
-	 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.imgUrl + '" alt=""></div></li>'
+	 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.previewImg + '" alt=""></div></li>'
 	 	});	
 	 	htmlStr = htmlStr;
 	 	$domWrap.find('.list-wrap').html(htmlStr);
@@ -166,7 +166,7 @@ var ProductsPreview = View.extend(function() {
 		setTimeout(function() {
 			that.inactivate();
 			that.inactivateView('welcome');
-			that.activateView('display-manager', {'productDatas': productSelected});
+			that.activateView('display-manager', {'productDatas': productSelected, 'cameraPos': new THREE.Vector3(0,0,0)});
 		}, 1000);
 	}
 });

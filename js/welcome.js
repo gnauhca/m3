@@ -37,10 +37,7 @@ var Welcome = View.extend(function() {
 	}
 
 	this.reset = function() {
-		var winWidth = window.innerWidth;
-		var winHeight = window.innerHeight;
 
-		M3.renderer.setSize(winWidth, winHeight);
 		camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();
 
@@ -91,9 +88,9 @@ var Welcome = View.extend(function() {
 		}
 
 		// 动画相关设置
-		var circleNum = 2;
-		var angleV = Math.PI * 2 / 4000; // 每秒转一圈, 转速
-		var radiusV = 30; // 每旋转一圈半径增长长度
+		var circleNum = 4;
+		var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
+		var radiusV = 50; // 每旋转一圈半径增长长度
 
 		particleDatas.forEach(function(particleData, i) {
 
@@ -106,7 +103,7 @@ var Welcome = View.extend(function() {
 
 			particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
 			particleData.currentAngle = particleData.initAngle;
-			particleData.finalAngle = (circleNum * Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
+			particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
 			particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
 
 		});
