@@ -1,5 +1,7 @@
 var View = require('./view.js');
 var Loader = require('./loader.js');
+var TrackballControls = require('./m3-trackballcontrol');
+
 var loader = new Loader();
 
 var DisplayWindow = View.extend(function() {
@@ -14,12 +16,15 @@ var DisplayWindow = View.extend(function() {
 	this.target;
 	this.productData;
 
+	this.trackball;
 
 	this.state;
 
 	this.constructor = function() {
 		this.super();
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+        this.trackball = new TrackballControls(this.camera);
+        this.trackball.enabled = false;
 
  		spotLight = new THREE.SpotLight(0xffffff);
         // spotLight.shadowCameraNear = 2;
@@ -73,7 +78,8 @@ var DisplayWindow = View.extend(function() {
 
 		this.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
 		this.camera.updateProjectionMatrix();
-		this.camera.position.z += 50;
+
+		this.trackball.handleResize(windowSizePX);
 	}
 
 	this.setState = function(state) {
@@ -99,7 +105,8 @@ var DisplayWindow = View.extend(function() {
 			M3.renderer.setScissorTest(true);
 			//M3.renderer.setClearColor(0xffffff);
 			that.camera.updateProjectionMatrix();
-			M3.renderer.render( M3.scene, that.camera );			
+			M3.renderer.render( M3.scene, that.camera );	
+			that.trackball.update();		
 		});
 	}
 });
@@ -133,15 +140,15 @@ var displayWindowState = {
 
 	// 动画播放
 	animate: function(displayWindow, first) {
-		displayWindow.model.rotation.x = Math.random();
+		/*displayWindow.model.rotation.x = Math.random();
 		displayWindow.model.rotation.y = Math.random();
-		displayWindow.model.rotation.z = Math.random();
-		displayWindow.addTick(function() {
+		displayWindow.model.rotation.z = Math.random();*/
+		/*displayWindow.addTick(function() {
 			var speed =  0.003;
 			displayWindow.model.rotation.x += speed;
 			displayWindow.model.rotation.y += speed;
 			displayWindow.model.rotation.z += speed;
-		});
+		});*/
 
 		var aniInit = {
 				modelRx: Math.PI / 2, 
@@ -164,9 +171,9 @@ var displayWindowState = {
 
 
 		var tween = new TWEEN.Tween(aniInit).to(aniFinal, 3000).onUpdate(function() {
-			// displayWindow.model.rotation.x = this.modelRx;
-			// displayWindow.model.rotation.y = this.modelRy;
-			// displayWindow.model.rotation.z = this.modelRz;
+			displayWindow.model.rotation.x = this.modelRx;
+			displayWindow.model.rotation.y = this.modelRy;
+			displayWindow.model.rotation.z = this.modelRz;
 
 			var offset = 0//(parseInt(this.cameraOffset) % 20 - 10) / 20;
 
@@ -178,6 +185,9 @@ var displayWindowState = {
 			displayWindow.removeTween(tween);
 			displayWindow.setState('handle');
 
+			displayWindow.trackball.init(displayWindow.camera, displayWindow.model);
+			displayWindow.reset();
+			displayWindow.trackball.enabled = true;
 
 		}).easing(TWEEN.Easing.Cubic.InOut).start();
 

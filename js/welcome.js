@@ -170,9 +170,9 @@ var Welcome = View.extend(function() {
 				callback && callback(); callback = false;
 			}
 
-			cloud.rotation.x += 0.0005;
-			cloud.rotation.y += 0.0005;
-			cloud.rotation.z += 0.0005;
+			cloud.rotation.x += 0.0001;
+			cloud.rotation.y += 0.0001;
+			cloud.rotation.z += 0.0001;
 			if (aniDoneNum/aniDatas.length > 0.99) {
 				//that.removeTick(aniTick);
 			}
