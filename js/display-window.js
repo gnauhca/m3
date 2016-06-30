@@ -8,34 +8,50 @@ var DisplayWindow = View.extend(function() {
 	var that = this;
 	var windowSize;
 	var windowSizePX;
-	var spotLight;
 
 
+	// 3D 资源
+	this.spotLight;
 	this.model;
 	this.camera;
 	this.target;
 	this.productData;
-
 	this.trackball;
 
+	// 状态
 	this.state;
+	this.color;
+
+	// UI (DOM)
+	var domTemplate = 
+	'<div class="display-window">' + 
+		'<div class="window-control">' + 
+			'<i class="btn reset-btn fa fa-refresh fa-2x"></i>' + 
+			'<i class="btn close-btn fa fa-close fa-2x"></i>' + 			
+		'</div>' + 
+		'<div class="colors-control"></div>' + 
+	'</div>';
+
+	var colorTemplate = '<i class="color @color fa fa-square" data-color="@color"></i>'
+
+	this.$domWrap = $('#displayView');
+	this.$domElem;
 
 	this.constructor = function() {
 		this.super();
+
+		// 3D 相关资源创建
         this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
         this.trackball = new TrackballControls(this.camera);
         this.trackball.enabled = false;
+ 		this.spotLight = new THREE.SpotLight(0xffffff);
 
- 		spotLight = new THREE.SpotLight(0xffffff);
-        // spotLight.shadowCameraNear = 2;
-        // spotLight.shadowCameraFar = 200;
-        // spotLight.shadowCameraFov = 30;
-        // spotLight.distance = 0;
-        // spotLight.angle = 0.4;
-
-
-        M3.scene.add(spotLight);
+        M3.scene.add(this.spotLight);
 		M3.scene.add(this.camera);
+
+		// UI相关
+		this.$domElem = $(domTemplate); 
+		initEvent();
 	}
 
 	this.activate = function(data) {
@@ -46,11 +62,32 @@ var DisplayWindow = View.extend(function() {
 		this.camera.position.copy(data.cameraPos);
 
 		this.target = new THREE.Vector3(this.productData.modelPos.x, this.productData.modelPos.y, this.productData.modelPos.z);
+
 		changeProduct(this.productData, Object.keys(this.productData.model.textures)[0]);
+
+		// UI 初始化
+		this.$domElem.appendTo(this.$domWrap);
+		var colorHTML = '';
+		Object.keys(this.productData.model.textures).forEach(function(color) {
+			colorHTML += colorTemplate.replace(/\@color/g, color);
+		});
+		this.$domElem.find('.colors-control').empty().html(colorHTML);
+
 		this.reset();
 		render();
 	}
 
+	// 窗口关闭
+	this.inActivate = function() {
+
+		// 移除模型
+		M3.scene.remove(this.camera);
+		M3.scene.remove(this.model);
+		M3.scene.remove(this.spotLight);
+		this.$domElem.remove();
+	}
+
+	// 窗口重置
 	this.reset = function() {
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
@@ -63,18 +100,25 @@ var DisplayWindow = View.extend(function() {
 
 		windowSizePX['bottom'] = winHeight - windowSizePX['height'] - windowSizePX['top'];
 
-        spotLight.position.copy(this.target);
-        spotLight.position.y += 100;
-        spotLight.position.x += 100;
-        spotLight.lookAt(this.target);
+        this.spotLight.position.copy(this.target);
+        this.spotLight.position.y += 200;
+        this.spotLight.position.x += 300;
+        this.spotLight.position.z += 100;
+        this.spotLight.lookAt(this.target);
+
+        // dom size & position
+        this.$domElem.css(windowSize);
+
+        // test
+        var geometry = new THREE.CylinderGeometry( 6, 6, 0.5, 6);
+        var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+        var mesh = new THREE.Mesh(geometry, material);
+        mesh.position.copy(this.target);
+        mesh.position.y -= 10;
+        M3.scene.add(mesh);
 
 
-        // create a cube
-        /*var sphereGeometry = new THREE.SphereGeometry(3, 30,30);
-        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
-        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-        sphere.position.copy(target);
-        M3.scene.add(sphere);*/
+
 
 		this.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
 		this.camera.updateProjectionMatrix();
@@ -82,19 +126,51 @@ var DisplayWindow = View.extend(function() {
 		this.trackball.handleResize(windowSizePX);
 	}
 
+	// model，trackball 重置
+	this.refresh = function() {
+
+	}
+
 	this.setState = function(state) {
 		this.state = state;
 		displayWindowState[state](this);
+		if (state === 'handle') {
+			this.trackball.init(this.camera, this.model);
+			this.reset();
+			this.trackball.enabled = true;
+		} else {
+			this.trackball.enabled = false;
+		}
 	}
 
 	// 下载进度
-	this.showProgress = function (progress) {
+	this.showProgress = function(progress) {
 		console.log('displayWindow progress', progress);
 	}
 
+	this.loaded = function() {
+
+	}
+
+	/* private method */
+
+	// DOM 事件
+	function initEvent() {
+		that.$domElem.on('click', '.reset-btn', function() {that.refresh()});
+		that.$domElem.on('click', '.close-btn', function() {that.inActivate()});
+		that.$domElem.on('click', '.color', function() {changeColor($(this).data('color'))});
+	}
+
+	function changeColor(color) {
+		if (color = that.color) return;
+		that.$domElem.find('.color').removeClass('selected');
+		that.$domElem.find('.color.' + color).addClass('selected');
+	}
+
 	// 模型切换
-	function changeProduct(productData) {
+	function changeProduct(productData, color) {
 		that.productData = productData;
+		that.color = color;
 		that.setState('loading');
 	}
 
@@ -103,7 +179,7 @@ var DisplayWindow = View.extend(function() {
 			M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 			M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 			M3.renderer.setScissorTest(true);
-			//M3.renderer.setClearColor(0xffffff);
+			M3.renderer.setClearColor(0x000000);
 			that.camera.updateProjectionMatrix();
 			M3.renderer.render( M3.scene, that.camera );	
 			that.trackball.update();		
@@ -111,7 +187,9 @@ var DisplayWindow = View.extend(function() {
 	}
 });
 
+// 窗口状态管理
 var displayWindowState = {
+
 	// 下载状态
 	loading: function(displayWindow) {
 		function setModel() {
@@ -140,15 +218,6 @@ var displayWindowState = {
 
 	// 动画播放
 	animate: function(displayWindow, first) {
-		/*displayWindow.model.rotation.x = Math.random();
-		displayWindow.model.rotation.y = Math.random();
-		displayWindow.model.rotation.z = Math.random();*/
-		/*displayWindow.addTick(function() {
-			var speed =  0.003;
-			displayWindow.model.rotation.x += speed;
-			displayWindow.model.rotation.y += speed;
-			displayWindow.model.rotation.z += speed;
-		});*/
 
 		var aniInit = {
 				modelRx: Math.PI / 2, 
@@ -165,12 +234,12 @@ var displayWindowState = {
 				modelRz: 0, 
 				cameraPx: displayWindow.target.x,
 				cameraPy: displayWindow.target.y,
-				cameraPz: displayWindow.target.z + 25,
+				cameraPz: displayWindow.target.z + 40,
 				cameraOffset: 10000
 			};
 
 
-		var tween = new TWEEN.Tween(aniInit).to(aniFinal, 3000).onUpdate(function() {
+		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
 			displayWindow.model.rotation.x = this.modelRx;
 			displayWindow.model.rotation.y = this.modelRy;
 			displayWindow.model.rotation.z = this.modelRz;
@@ -184,12 +253,7 @@ var displayWindowState = {
 		}).onComplete(function() { 
 			displayWindow.removeTween(tween);
 			displayWindow.setState('handle');
-
-			displayWindow.trackball.init(displayWindow.camera, displayWindow.model);
-			displayWindow.reset();
-			displayWindow.trackball.enabled = true;
-
-		}).easing(TWEEN.Easing.Cubic.InOut).start();
+		}).start();
 
 		displayWindow.addTween(tween);
 	},
@@ -199,6 +263,5 @@ var displayWindowState = {
 
 	}
 }
-
 
 module.exports = DisplayWindow;

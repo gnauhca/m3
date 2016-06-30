@@ -27,9 +27,10 @@ window.M3 = {};
 
 	M3.renderer.setSize(winWidth, winHeight);
 
-	var list = new List();
-	list.activate();	
+	// var list = new List();
+	// list.activate();	
 
-	//var displayManager = new DisplayManager();
-	//displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+	var displayManager = new DisplayManager();
+	displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
 })();
+

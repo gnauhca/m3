@@ -44,12 +44,12 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	window.M3 = {};
+	/* WEBPACK VAR INJECTION */(function(CONFIG) {window.M3 = {};
 	(function() {
-		__webpack_require__(1);
+		__webpack_require__(2);
 	
-		var ViewUpdate = __webpack_require__(5);
-		var List = __webpack_require__(6);
+		var ViewUpdate = __webpack_require__(6);
+		var List = __webpack_require__(7);
 		var DisplayManager = __webpack_require__(13);
 	
 		// todo: webgl 检查
@@ -73,25 +73,72 @@
 	
 		M3.renderer.setSize(winWidth, winHeight);
 	
-		var list = new List();
-		list.activate();	
+		// var list = new List();
+		// list.activate();	
 	
-		//var displayManager = new DisplayManager();
-		//displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+		var displayManager = new DisplayManager();
+		displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
 	})();
-
+	
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	var CONFIG = {
+		MEIZU_LOGO: './assets/logo.png',
+		products: [
+			{
+				'name': 'pro6',
+				'imgUrl': './assets/pro6/phone-silver.jpg',
+				'modelUrl': './assets/pro6/pro6.dae',
+				'title': 'PRO 6',
+				'desc' : 'PRO 6 was produced in 2016'
+			}
+		]
+	};
+	
+	// test 
+	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
+	var _products = [];
+	
+	products.forEach(function(product, i) {
+		_products[i] = {
+			'name': product,
+			'previewImg': './assets/pro6/phone-silver.jpg',
+			'model': {
+				type: 'dae',
+				geometry: './assets/pro6/pro6.dae',
+				textures: {
+					'white': './assets/pro6/pro6.jpg',
+					'black': './assets/pro6/pro6.jpg',
+					'red': './assets/pro6/pro6.jpg'
+				},
+			},
+			'modelPos': {x: (i) * 30, y: 0, z: 0},
+			'title': 'PRO 6',
+			'desc' : 'PRO 6 was produced in 2016'
+	
+		}
+	});
+	CONFIG.products = _products;
+	
+	
+	module.exports = CONFIG;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(2);
+	var content = __webpack_require__(3);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
+	var update = __webpack_require__(5)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -108,21 +155,21 @@
 	}
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(3)();
+	exports = module.exports = __webpack_require__(4)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  display: none;\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n  #displayView .display-window {\n    position: absolute; }\n    #displayView .display-window .window-control {\n      text-align: right; }\n      #displayView .display-window .window-control i.btn {\n        cursor: pointer;\n        margin-left: 10px; }\n    #displayView .display-window .colors-control {\n      position: absolute;\n      width: 100%;\n      bottom: 0;\n      font-size: 30px;\n      text-align: right; }\n      #displayView .display-window .colors-control .color {\n        margin: 10px;\n        opacity: 0.6;\n        cursor: pointer; }\n        #displayView .display-window .colors-control .color.selected {\n          opacity: 1; }\n        #displayView .display-window .colors-control .color.white {\n          color: #fff; }\n        #displayView .display-window .colors-control .color.black {\n          color: #333; }\n        #displayView .display-window .colors-control .color.red {\n          color: #f00; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/*
@@ -178,7 +225,7 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -430,13 +477,13 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
@@ -509,50 +556,7 @@
 	
 	
 	module.exports = List;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	var CONFIG = {
-		MEIZU_LOGO: './assets/logo.png',
-		products: [
-			{
-				'name': 'pro6',
-				'imgUrl': './assets/pro6/phone-silver.jpg',
-				'modelUrl': './assets/pro6/pro6.dae',
-				'title': 'PRO 6',
-				'desc' : 'PRO 6 was produced in 2016'
-			}
-		]
-	};
-	
-	// test 
-	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
-	var _products = [];
-	
-	products.forEach(function(product, i) {
-		_products[i] = {
-			'name': product,
-			'previewImg': './assets/pro6/phone-silver.jpg',
-			'model': {
-				type: 'dae',
-				geometry: './assets/pro6/pro6.dae',
-				textures: {
-					'white': './assets/pro6/pro6.jpg'
-				},
-			},
-			'modelPos': {x: (i - 5) * 30, y: 0, z: 0},
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-	
-		}
-	});
-	CONFIG.products = _products;
-	
-	
-	module.exports = CONFIG;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
 
 /***/ },
 /* 8 */
@@ -10626,7 +10630,7 @@
 	                'product-preview': __webpack_require__(12),
 	                'display-manager': __webpack_require__(13),
 	                'display-window': __webpack_require__(14),
-	                'list': __webpack_require__(6)
+	                'list': __webpack_require__(7)
 	            };
 	            views[name] = new viewConstructors[name]();
 	        }
@@ -11063,7 +11067,7 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
 
 /***/ },
 /* 12 */
@@ -11342,7 +11346,7 @@
 			}
 		});	
 	}*/
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
 /* 13 */
@@ -11355,6 +11359,8 @@
 		var that = this;
 		this.name = 'display-manager';
 		this.displayWindows = [];
+	
+		this.$domWrap = $('#displayView');
 	
 		this.constructor = function() {
 			
@@ -11378,6 +11384,18 @@
 				}
 				that.displayWindows[i].displayView.activate(displayWindowData);
 			});
+	
+			// UI
+			this.$domWrap.show();
+		}
+	
+	
+		this.removeWindow = function(displayWindows) {
+	
+		}
+	
+		function addWindow() {
+	
 		}
 	
 		function createDisplayView() {
@@ -11392,7 +11410,7 @@
 /* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(9);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
 	var Loader = __webpack_require__(15);
 	var TrackballControls = __webpack_require__(16);
 	
@@ -11402,34 +11420,50 @@
 		var that = this;
 		var windowSize;
 		var windowSizePX;
-		var spotLight;
 	
 	
+		// 3D 资源
+		this.spotLight;
 		this.model;
 		this.camera;
 		this.target;
 		this.productData;
-	
 		this.trackball;
 	
+		// 状态
 		this.state;
+		this.color;
+	
+		// UI (DOM)
+		var domTemplate = 
+		'<div class="display-window">' + 
+			'<div class="window-control">' + 
+				'<i class="btn reset-btn fa fa-refresh fa-2x"></i>' + 
+				'<i class="btn close-btn fa fa-close fa-2x"></i>' + 			
+			'</div>' + 
+			'<div class="colors-control"></div>' + 
+		'</div>';
+	
+		var colorTemplate = '<i class="color @color fa fa-square" data-color="@color"></i>'
+	
+		this.$domWrap = $('#displayView');
+		this.$domElem;
 	
 		this.constructor = function() {
 			this.super();
+	
+			// 3D 相关资源创建
 	        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 	        this.trackball = new TrackballControls(this.camera);
 	        this.trackball.enabled = false;
+	 		this.spotLight = new THREE.SpotLight(0xffffff);
 	
-	 		spotLight = new THREE.SpotLight(0xffffff);
-	        // spotLight.shadowCameraNear = 2;
-	        // spotLight.shadowCameraFar = 200;
-	        // spotLight.shadowCameraFov = 30;
-	        // spotLight.distance = 0;
-	        // spotLight.angle = 0.4;
-	
-	
-	        M3.scene.add(spotLight);
+	        M3.scene.add(this.spotLight);
 			M3.scene.add(this.camera);
+	
+			// UI相关
+			this.$domElem = $(domTemplate); 
+			initEvent();
 		}
 	
 		this.activate = function(data) {
@@ -11440,11 +11474,32 @@
 			this.camera.position.copy(data.cameraPos);
 	
 			this.target = new THREE.Vector3(this.productData.modelPos.x, this.productData.modelPos.y, this.productData.modelPos.z);
+	
 			changeProduct(this.productData, Object.keys(this.productData.model.textures)[0]);
+	
+			// UI 初始化
+			this.$domElem.appendTo(this.$domWrap);
+			var colorHTML = '';
+			Object.keys(this.productData.model.textures).forEach(function(color) {
+				colorHTML += colorTemplate.replace(/\@color/g, color);
+			});
+			this.$domElem.find('.colors-control').empty().html(colorHTML);
+	
 			this.reset();
 			render();
 		}
 	
+		// 窗口关闭
+		this.inActivate = function() {
+	
+			// 移除模型
+			M3.scene.remove(this.camera);
+			M3.scene.remove(this.model);
+			M3.scene.remove(this.spotLight);
+			this.$domElem.remove();
+		}
+	
+		// 窗口重置
 		this.reset = function() {
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
@@ -11457,18 +11512,25 @@
 	
 			windowSizePX['bottom'] = winHeight - windowSizePX['height'] - windowSizePX['top'];
 	
-	        spotLight.position.copy(this.target);
-	        spotLight.position.y += 100;
-	        spotLight.position.x += 100;
-	        spotLight.lookAt(this.target);
+	        this.spotLight.position.copy(this.target);
+	        this.spotLight.position.y += 200;
+	        this.spotLight.position.x += 300;
+	        this.spotLight.position.z += 100;
+	        this.spotLight.lookAt(this.target);
+	
+	        // dom size & position
+	        this.$domElem.css(windowSize);
+	
+	        // test
+	        var geometry = new THREE.CylinderGeometry( 6, 6, 0.5, 6);
+	        var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+	        var mesh = new THREE.Mesh(geometry, material);
+	        mesh.position.copy(this.target);
+	        mesh.position.y -= 10;
+	        M3.scene.add(mesh);
 	
 	
-	        // create a cube
-	        /*var sphereGeometry = new THREE.SphereGeometry(3, 30,30);
-	        var sphereMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
-	        var sphere = new THREE.Mesh(sphereGeometry, sphereMaterial);
-	        sphere.position.copy(target);
-	        M3.scene.add(sphere);*/
+	
 	
 			this.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
 			this.camera.updateProjectionMatrix();
@@ -11476,19 +11538,51 @@
 			this.trackball.handleResize(windowSizePX);
 		}
 	
+		// model，trackball 重置
+		this.refresh = function() {
+	
+		}
+	
 		this.setState = function(state) {
 			this.state = state;
 			displayWindowState[state](this);
+			if (state === 'handle') {
+				this.trackball.init(this.camera, this.model);
+				this.reset();
+				this.trackball.enabled = true;
+			} else {
+				this.trackball.enabled = false;
+			}
 		}
 	
 		// 下载进度
-		this.showProgress = function (progress) {
+		this.showProgress = function(progress) {
 			console.log('displayWindow progress', progress);
 		}
 	
+		this.loaded = function() {
+	
+		}
+	
+		/* private method */
+	
+		// DOM 事件
+		function initEvent() {
+			that.$domElem.on('click', '.reset-btn', function() {that.refresh()});
+			that.$domElem.on('click', '.close-btn', function() {that.inActivate()});
+			that.$domElem.on('click', '.color', function() {changeColor($(this).data('color'))});
+		}
+	
+		function changeColor(color) {
+			if (color = that.color) return;
+			that.$domElem.find('.color').removeClass('selected');
+			that.$domElem.find('.color.' + color).addClass('selected');
+		}
+	
 		// 模型切换
-		function changeProduct(productData) {
+		function changeProduct(productData, color) {
 			that.productData = productData;
+			that.color = color;
 			that.setState('loading');
 		}
 	
@@ -11497,7 +11591,7 @@
 				M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 				M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 				M3.renderer.setScissorTest(true);
-				//M3.renderer.setClearColor(0xffffff);
+				M3.renderer.setClearColor(0x000000);
 				that.camera.updateProjectionMatrix();
 				M3.renderer.render( M3.scene, that.camera );	
 				that.trackball.update();		
@@ -11505,7 +11599,9 @@
 		}
 	});
 	
+	// 窗口状态管理
 	var displayWindowState = {
+	
 		// 下载状态
 		loading: function(displayWindow) {
 			function setModel() {
@@ -11534,15 +11630,6 @@
 	
 		// 动画播放
 		animate: function(displayWindow, first) {
-			/*displayWindow.model.rotation.x = Math.random();
-			displayWindow.model.rotation.y = Math.random();
-			displayWindow.model.rotation.z = Math.random();*/
-			/*displayWindow.addTick(function() {
-				var speed =  0.003;
-				displayWindow.model.rotation.x += speed;
-				displayWindow.model.rotation.y += speed;
-				displayWindow.model.rotation.z += speed;
-			});*/
 	
 			var aniInit = {
 					modelRx: Math.PI / 2, 
@@ -11559,12 +11646,12 @@
 					modelRz: 0, 
 					cameraPx: displayWindow.target.x,
 					cameraPy: displayWindow.target.y,
-					cameraPz: displayWindow.target.z + 25,
+					cameraPz: displayWindow.target.z + 40,
 					cameraOffset: 10000
 				};
 	
 	
-			var tween = new TWEEN.Tween(aniInit).to(aniFinal, 3000).onUpdate(function() {
+			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
 				displayWindow.model.rotation.x = this.modelRx;
 				displayWindow.model.rotation.y = this.modelRy;
 				displayWindow.model.rotation.z = this.modelRz;
@@ -11578,12 +11665,7 @@
 			}).onComplete(function() { 
 				displayWindow.removeTween(tween);
 				displayWindow.setState('handle');
-	
-				displayWindow.trackball.init(displayWindow.camera, displayWindow.model);
-				displayWindow.reset();
-				displayWindow.trackball.enabled = true;
-	
-			}).easing(TWEEN.Easing.Cubic.InOut).start();
+			}).start();
 	
 			displayWindow.addTween(tween);
 		},
@@ -11594,9 +11676,9 @@
 		}
 	}
 	
-	
 	module.exports = DisplayWindow;
-
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
 /* 15 */
@@ -11795,7 +11877,7 @@
 	
 		_eye = new THREE.Vector3(),
 	
-		_rotation;
+		_rotation,
 	
 		_zoomStart = new THREE.Vector2(),
 		_zoomEnd = new THREE.Vector2(),
@@ -11827,7 +11909,8 @@
 			this.cameraUp = camera.up.clone();
 			this.targetMesh = targetMesh;
 	
-			_rotation = targetMesh.rotation.clone();
+			_rotation = new THREE.Quaternion();
+			_rotation.setFromEuler(targetMesh.rotation.clone());
 			// for reset 
 			this.target = this.targetMesh.position.clone();
 			this.target0 = this.target.clone();
@@ -11874,30 +11957,24 @@
 	
 		}() );
 	
-		var getMouseProjectionOnBall = (function() {
-			var initTranInfo = {x:0,y:0,z:0,d:1};
-			var rotationAdd;
+		var getMouseProjectionOnBall = function(offsetX, offsetY) {
 	
-			return function(offsetX, offsetY) {
-	
-				var edge = Math.sqrt(offsetX*offsetX + offsetY*offsetY);
-				if (!edge) return;
-	
-				var n = [-offsetY/edge, offsetX/edge];
-	
-				rotationAdd = rotateCount.toRotation(rotateCount.multiply(rotateCount.fromRotation([n[0], n[1], 0], edge/2), initTranInfo)); 
-	
-				_rotation.x += -rotationAdd.x;
-				_rotation.y += -rotationAdd.z;
-				_rotation.z += -rotationAdd.y;
-				return _rotation;
-			}
-		})();
+			var radio = 0.5;
+	        var deltaRotationQuaternion = new THREE.Quaternion()
+	            .setFromEuler(new THREE.Euler(
+	                offsetY * (Math.PI / 180) * radio,
+	                offsetX * (Math.PI / 180) * radio,
+	                0,
+	                'XYZ'
+	            ));
+	        
+	        _this.targetMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, _this.targetMesh.quaternion);
+		};
 	
 	
 		this.rotateTarget = function() { 
-			//console.log(_rotation.x, _rotation.y, _rotation.z);
-			this.targetMesh.rotation.copy(_rotation);
+			
+			//this.targetMesh.rotation.setFromQuaternion(_rotation, 'XYZ'); 
 		}
 	
 		this.zoomCamera = function () {
@@ -12168,8 +12245,8 @@
 			switch ( event.touches.length ) {
 	
 				case 1:
-					mousePreX = event.pageX;
-					mousePreY = event.pageY;
+					mousePreX = event.touches[ 0 ].pageX;
+					mousePreY = event.touches[ 0 ].pageY;
 					break;
 	
 				case 2:
@@ -12201,7 +12278,7 @@
 			switch ( event.touches.length ) {
 	
 				case 1:
-					getMouseProjectionOnBall( event.pageX - mousePreX, event.pageY - mousePreY);
+					getMouseProjectionOnBall( event.touches[ 0 ].pageX - mousePreX, event.touches[ 0 ].pageY - mousePreY);
 					break;
 	
 				case 2:
@@ -12218,7 +12295,8 @@
 					_state = STATE.NONE;
 	
 			}
-	
+			mousePreX = event.touches[ 0 ].pageX;
+			mousePreY = event.touches[ 0 ].pageY;
 		}
 	
 		function touchend( event ) {
@@ -12245,7 +12323,6 @@
 	
 			_state = STATE.NONE;
 			//_this.dispatchEvent( endEvent );
-	
 		}
 	
 		function initEvent() {
@@ -12260,7 +12337,6 @@
 			_this.domElement.addEventListener( 'touchend', touchend, false );
 			_this.domElement.addEventListener( 'touchmove', touchmove, false );		
 		}
-	
 	});
 	
 	
@@ -12272,40 +12348,20 @@
 			var sin = Math.sin(a/2);
 			var cos = Math.cos(a/2);
 			
-			return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'd': cos};
+			return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'w': a/2};
 		},
 		multiply : function(r1, r2) {
+			var r1D = Math.cos(r1.w);
+			var r2D = Math.cos(r2.w);
+	
+			var x = r1D*r2.x + r1.x*r2D + r1.y*r2.z - r1.z*r2.y;
+			var y = r1D*r2.y + r1.y*r2D + r1.z*r2.x - r1.x*r2.z;
+			var z = r1D*r2.z + r1.z*r2D + r1.x*r2.y - r1.y*r2.x;
+			var d = r1D*r2D - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
 			
-			var x = r1.d*r2.x + r1.x*r2.d + r1.y*r2.z - r1.z*r2.y;
-			var y = r1.d*r2.y + r1.y*r2.d + r1.z*r2.x - r1.x*r2.z;
-			var z = r1.d*r2.z + r1.z*r2.d + r1.x*r2.y - r1.y*r2.x;
-			var d = r1.d*r2.d - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
-			
-			return {'x': x, 'y': y, 'z': z, 'd': d};
+			return {'x': x.toFixed(10), 'y': y.toFixed(10), 'z': z.toFixed(10), 'w': (Math.acos(d) * 2).toFixed(10)};
 		},
 	
-		toRotation : function(r) {
-			var axis = [r.x, r.y, r.z];;
-			var angle = Math.acos(r.d);
-			return {
-				x: axis[0].toFixed(10) * angle * 8,
-				y: axis[1].toFixed(10) * angle * 8,
-				z: axis[2].toFixed(10) * angle * 8
-			}
-		},
-	
-		toRotations : function(r) {
-			
-			var x = Math.atan2(2*(r.d*r.x + r.y*r.z), 1 - 2*(r.x*r.x + r.y*r.y));
-			var y = Math.asin(2*(r.d*r.y - r.x*r.z));
-			var z = Math.atan2(2*(r.d*r.z + r.x*r.y), 1 - 2*(r.y*r.y + r.z*r.z));
-			
-			// if (x < 0) { x += Math.PI*2; }
-			// if (y < 0) { y += Math.PI*2; }
-			// if (z < 0) { z += Math.PI*2; }
-			
-			return {x: x, y: y, z: z};
-		}
 	};
 	
 	module.exports = TrackballControls;

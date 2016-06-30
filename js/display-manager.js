@@ -6,6 +6,8 @@ var DisplayManager = View.extend(function() {
 	this.name = 'display-manager';
 	this.displayWindows = [];
 
+	this.$domWrap = $('#displayView');
+
 	this.constructor = function() {
 		
 	}
@@ -28,6 +30,18 @@ var DisplayManager = View.extend(function() {
 			}
 			that.displayWindows[i].displayView.activate(displayWindowData);
 		});
+
+		// UI
+		this.$domWrap.show();
+	}
+
+
+	this.removeWindow = function(displayWindows) {
+
+	}
+
+	function addWindow() {
+
 	}
 
 	function createDisplayView() {

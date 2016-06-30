@@ -50,7 +50,7 @@ TrackballControls = Class.extend(function () {
 
 	_eye = new THREE.Vector3(),
 
-	_rotation;
+	_rotation,
 
 	_zoomStart = new THREE.Vector2(),
 	_zoomEnd = new THREE.Vector2(),
@@ -82,7 +82,8 @@ TrackballControls = Class.extend(function () {
 		this.cameraUp = camera.up.clone();
 		this.targetMesh = targetMesh;
 
-		_rotation = targetMesh.rotation.clone();
+		_rotation = new THREE.Quaternion();
+		_rotation.setFromEuler(targetMesh.rotation.clone());
 		// for reset 
 		this.target = this.targetMesh.position.clone();
 		this.target0 = this.target.clone();
@@ -129,30 +130,24 @@ TrackballControls = Class.extend(function () {
 
 	}() );
 
-	var getMouseProjectionOnBall = (function() {
-		var initTranInfo = {x:0,y:0,z:0,d:1};
-		var rotationAdd;
+	var getMouseProjectionOnBall = function(offsetX, offsetY) {
 
-		return function(offsetX, offsetY) {
-
-			var edge = Math.sqrt(offsetX*offsetX + offsetY*offsetY);
-			if (!edge) return;
-
-			var n = [-offsetY/edge, offsetX/edge];
-
-			rotationAdd = rotateCount.toRotation(rotateCount.multiply(rotateCount.fromRotation([n[0], n[1], 0], edge/2), initTranInfo)); 
-
-			_rotation.x += -rotationAdd.x;
-			_rotation.y += -rotationAdd.z;
-			_rotation.z += -rotationAdd.y;
-			return _rotation;
-		}
-	})();
+		var radio = 0.5;
+        var deltaRotationQuaternion = new THREE.Quaternion()
+            .setFromEuler(new THREE.Euler(
+                offsetY * (Math.PI / 180) * radio,
+                offsetX * (Math.PI / 180) * radio,
+                0,
+                'XYZ'
+            ));
+        
+        _this.targetMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, _this.targetMesh.quaternion);
+	};
 
 
 	this.rotateTarget = function() { 
-		//console.log(_rotation.x, _rotation.y, _rotation.z);
-		this.targetMesh.rotation.copy(_rotation);
+		
+		//this.targetMesh.rotation.setFromQuaternion(_rotation, 'XYZ'); 
 	}
 
 	this.zoomCamera = function () {
@@ -423,8 +418,8 @@ TrackballControls = Class.extend(function () {
 		switch ( event.touches.length ) {
 
 			case 1:
-				mousePreX = event.pageX;
-				mousePreY = event.pageY;
+				mousePreX = event.touches[ 0 ].pageX;
+				mousePreY = event.touches[ 0 ].pageY;
 				break;
 
 			case 2:
@@ -456,7 +451,7 @@ TrackballControls = Class.extend(function () {
 		switch ( event.touches.length ) {
 
 			case 1:
-				getMouseProjectionOnBall( event.pageX - mousePreX, event.pageY - mousePreY);
+				getMouseProjectionOnBall( event.touches[ 0 ].pageX - mousePreX, event.touches[ 0 ].pageY - mousePreY);
 				break;
 
 			case 2:
@@ -473,7 +468,8 @@ TrackballControls = Class.extend(function () {
 				_state = STATE.NONE;
 
 		}
-
+		mousePreX = event.touches[ 0 ].pageX;
+		mousePreY = event.touches[ 0 ].pageY;
 	}
 
 	function touchend( event ) {
@@ -500,7 +496,6 @@ TrackballControls = Class.extend(function () {
 
 		_state = STATE.NONE;
 		//_this.dispatchEvent( endEvent );
-
 	}
 
 	function initEvent() {
@@ -515,7 +510,6 @@ TrackballControls = Class.extend(function () {
 		_this.domElement.addEventListener( 'touchend', touchend, false );
 		_this.domElement.addEventListener( 'touchmove', touchmove, false );		
 	}
-
 });
 
 
@@ -527,40 +521,20 @@ rotateCount = {
 		var sin = Math.sin(a/2);
 		var cos = Math.cos(a/2);
 		
-		return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'd': cos};
+		return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'w': a/2};
 	},
 	multiply : function(r1, r2) {
+		var r1D = Math.cos(r1.w);
+		var r2D = Math.cos(r2.w);
+
+		var x = r1D*r2.x + r1.x*r2D + r1.y*r2.z - r1.z*r2.y;
+		var y = r1D*r2.y + r1.y*r2D + r1.z*r2.x - r1.x*r2.z;
+		var z = r1D*r2.z + r1.z*r2D + r1.x*r2.y - r1.y*r2.x;
+		var d = r1D*r2D - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
 		
-		var x = r1.d*r2.x + r1.x*r2.d + r1.y*r2.z - r1.z*r2.y;
-		var y = r1.d*r2.y + r1.y*r2.d + r1.z*r2.x - r1.x*r2.z;
-		var z = r1.d*r2.z + r1.z*r2.d + r1.x*r2.y - r1.y*r2.x;
-		var d = r1.d*r2.d - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
-		
-		return {'x': x, 'y': y, 'z': z, 'd': d};
+		return {'x': x.toFixed(10), 'y': y.toFixed(10), 'z': z.toFixed(10), 'w': (Math.acos(d) * 2).toFixed(10)};
 	},
 
-	toRotation : function(r) {
-		var axis = [r.x, r.y, r.z];;
-		var angle = Math.acos(r.d);
-		return {
-			x: axis[0].toFixed(10) * angle * 8,
-			y: axis[1].toFixed(10) * angle * 8,
-			z: axis[2].toFixed(10) * angle * 8
-		}
-	},
-
-	toRotations : function(r) {
-		
-		var x = Math.atan2(2*(r.d*r.x + r.y*r.z), 1 - 2*(r.x*r.x + r.y*r.y));
-		var y = Math.asin(2*(r.d*r.y - r.x*r.z));
-		var z = Math.atan2(2*(r.d*r.z + r.x*r.y), 1 - 2*(r.y*r.y + r.z*r.z));
-		
-		// if (x < 0) { x += Math.PI*2; }
-		// if (y < 0) { y += Math.PI*2; }
-		// if (z < 0) { z += Math.PI*2; }
-		
-		return {x: x, y: y, z: z};
-	}
 };
 
 module.exports = TrackballControls;
