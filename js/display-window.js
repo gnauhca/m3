@@ -32,7 +32,7 @@ var DisplayWindow = View.extend(function() {
 		'<div class="colors-control"></div>' + 
 	'</div>';
 
-	var colorTemplate = '<i class="color @color fa fa-square" data-color="@color"></i>'
+	var colorTemplate = '<i class="color @color" data-color="@color"></i>'
 
 	this.$domWrap = $('#displayView');
 	this.$domElem;
@@ -106,17 +106,18 @@ var DisplayWindow = View.extend(function() {
         this.spotLight.position.z += 100;
         this.spotLight.lookAt(this.target);
 
+
         // dom size & position
         this.$domElem.css(windowSize);
 
-        // test
-        var geometry = new THREE.CylinderGeometry( 6, 6, 0.5, 6);
-        var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+        //test
+        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
+        var material = new THREE.MeshLambertMaterial({color: 0x333333});
         var mesh = new THREE.Mesh(geometry, material);
         mesh.position.copy(this.target);
         mesh.position.y -= 10;
+        mesh.rotation.y -= Math.PI * 0.16666666;
         M3.scene.add(mesh);
-
 
 
 
@@ -128,7 +129,10 @@ var DisplayWindow = View.extend(function() {
 
 	// model，trackball 重置
 	this.refresh = function() {
+		//var current
 
+		var tween = new Tween().to().easing().onUpdate().start();
+		this.addTween();
 	}
 
 	this.setState = function(state) {
@@ -148,8 +152,25 @@ var DisplayWindow = View.extend(function() {
 		console.log('displayWindow progress', progress);
 	}
 
-	this.loaded = function() {
+	this.handleModelLoaded = function(modelRes) {
+		this.productData.model = modelRes;
+		console.log(this.productData.model.textures['black']);
 
+		var color = Object.keys(this.productData.model.textures)[0];
+    	var texture = THREE.ImageUtils.loadTexture(this.productData.model.textures['black']);
+		var material = new THREE.MeshLambertMaterial();
+		var _model;
+
+		_model = new THREE.Mesh(this.productData.model.geometry, material);
+		_model.scale.set(0.1, 0.1, 0.1);
+		_model.position.copy(this.target);
+		_model.rotation.x = Math.PI/2;
+
+		M3.scene.remove(this.model);
+		M3.scene.add(_model);
+		this.model = _model;
+		changeColor(color);
+		this.setState('animate');
 	}
 
 	/* private method */
@@ -162,15 +183,20 @@ var DisplayWindow = View.extend(function() {
 	}
 
 	function changeColor(color) {
-		if (color = that.color) return;
+		if (color === that.color) return;
 		that.$domElem.find('.color').removeClass('selected');
 		that.$domElem.find('.color.' + color).addClass('selected');
+		that.color = color;
+
+		var loader = new THREE.TextureLoader(); 
+
+		that.model.material.map = THREE.ImageUtils.loadTexture(that.productData.model.textures[color]);
+		that.model.material.needsUpdate = true;
 	}
 
 	// 模型切换
-	function changeProduct(productData, color) {
+	function changeProduct(productData) {
 		that.productData = productData;
-		that.color = color;
 		that.setState('loading');
 	}
 
@@ -192,28 +218,12 @@ var displayWindowState = {
 
 	// 下载状态
 	loading: function(displayWindow) {
-		function setModel() {
-			var color = Object.keys(displayWindow.productData.model.textures)[0];
-        	var texture = THREE.ImageUtils.loadTexture(displayWindow.productData.model.textures[color]);
-			var material = new THREE.MeshBasicMaterial({map: texture});
-			var _model;
-
-			_model = new THREE.Mesh(displayWindow.productData.model.geometry, material);
-			_model.scale.set(0.1, 0.1, 0.1);
-			_model.position.copy(displayWindow.target);
-			_model.rotation.x = Math.PI/2;
-			M3.scene.remove(displayWindow.model);
-			M3.scene.add(_model);
-			displayWindow.model = _model;
-			displayWindow.camera.lookAt(_model);
-		}
-
 		// 加载模型资源
-		loader.load(displayWindow.productData.model, function(p) {displayWindow.showProgress(p)}, function(res) {	
-			displayWindow.productData.model = res;
-			setModel();
-			displayWindow.setState('animate');
-		});
+		loader.load(
+			displayWindow.productData.model, 
+			function(p) { displayWindow.showProgress(p); }, 
+			function(res) {	displayWindow.handleModelLoaded(res); }
+		);
 	},
 
 	// 动画播放
@@ -229,8 +239,8 @@ var displayWindowState = {
 				cameraOffset: 10
 			};
 		var aniFinal = {
-				modelRx: Math.PI / 2, 
-				modelRy: 0, 
+				modelRx: Math.PI / 2.5, 
+				modelRy: 0.2, 
 				modelRz: 0, 
 				cameraPx: displayWindow.target.x,
 				cameraPy: displayWindow.target.y,
@@ -239,7 +249,7 @@ var displayWindowState = {
 			};
 
 
-		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
+		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
 			displayWindow.model.rotation.x = this.modelRx;
 			displayWindow.model.rotation.y = this.modelRy;
 			displayWindow.model.rotation.z = this.modelRz;

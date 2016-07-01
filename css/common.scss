@@ -168,33 +168,47 @@ body {
         position: absolute;
 
         .window-control {
+            margin: 0 auto;
+            width: 99%;
             text-align: right;
+            background-color: rgba(255,255,255,0.3);
             i.btn {
                 cursor: pointer;
-                margin-left: 10px;
+                margin: 20px 10px;
             }
         }
         .colors-control {
             position: absolute;
-            width: 100%;
+            width: 99%;
+            left: 0.5%;
             bottom: 0;
             font-size: 30px;
             text-align: right;
+            background-color: rgba(255,255,255,0.3);
             .color {
-                margin: 10px;
-                opacity: 0.6;
+                display: inline-block;
+                box-sizing: border-box;
+                width: 40px;
+                height: 40px;
+                margin: 20px 10px;
+                opacity: 0.3;
                 cursor: pointer;
+                box-shadow: 0 0 4px #888;
+                outline: 1px solid #333;
                 &.selected {
                     opacity: 1;
                 }
                 &.white {
-                    color: #fff;
+                    background-color: #eee;
+                    outline-color: #eee;
                 }
                 &.black {
-                    color: #333;
+                    background-color: #333;
+                    outline-color: #333;
                 }
                 &.red {
-                    color: #f00;
+                    background-color: #f00;
+                    outline-color: #f00;
                 }
             }
         }

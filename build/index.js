@@ -112,9 +112,9 @@
 				type: 'dae',
 				geometry: './assets/pro6/pro6.dae',
 				textures: {
-					'white': './assets/pro6/pro6.jpg',
-					'black': './assets/pro6/pro6.jpg',
-					'red': './assets/pro6/pro6.jpg'
+					'white': './assets/pro6/pro6-white.jpg',
+					'black': './assets/pro6/pro6-black.jpg',
+					'red': './assets/pro6/pro6-red.jpg'
 				},
 			},
 			'modelPos': {x: (i) * 30, y: 0, z: 0},
@@ -163,7 +163,7 @@
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  display: none;\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n  #displayView .display-window {\n    position: absolute; }\n    #displayView .display-window .window-control {\n      text-align: right; }\n      #displayView .display-window .window-control i.btn {\n        cursor: pointer;\n        margin-left: 10px; }\n    #displayView .display-window .colors-control {\n      position: absolute;\n      width: 100%;\n      bottom: 0;\n      font-size: 30px;\n      text-align: right; }\n      #displayView .display-window .colors-control .color {\n        margin: 10px;\n        opacity: 0.6;\n        cursor: pointer; }\n        #displayView .display-window .colors-control .color.selected {\n          opacity: 1; }\n        #displayView .display-window .colors-control .color.white {\n          color: #fff; }\n        #displayView .display-window .colors-control .color.black {\n          color: #333; }\n        #displayView .display-window .colors-control .color.red {\n          color: #f00; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  display: none;\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n  #displayView .display-window {\n    position: absolute; }\n    #displayView .display-window .window-control {\n      margin: 0 auto;\n      width: 99%;\n      text-align: right;\n      background-color: rgba(255, 255, 255, 0.3); }\n      #displayView .display-window .window-control i.btn {\n        cursor: pointer;\n        margin: 20px 10px; }\n    #displayView .display-window .colors-control {\n      position: absolute;\n      width: 99%;\n      left: 0.5%;\n      bottom: 0;\n      font-size: 30px;\n      text-align: right;\n      background-color: rgba(255, 255, 255, 0.3); }\n      #displayView .display-window .colors-control .color {\n        display: inline-block;\n        box-sizing: border-box;\n        width: 40px;\n        height: 40px;\n        margin: 20px 10px;\n        opacity: 0.3;\n        cursor: pointer;\n        box-shadow: 0 0 4px #888;\n        outline: 1px solid #333; }\n        #displayView .display-window .colors-control .color.selected {\n          opacity: 1; }\n        #displayView .display-window .colors-control .color.white {\n          background-color: #eee;\n          outline-color: #eee; }\n        #displayView .display-window .colors-control .color.black {\n          background-color: #333;\n          outline-color: #333; }\n        #displayView .display-window .colors-control .color.red {\n          background-color: #f00;\n          outline-color: #f00; }\n", ""]);
 	
 	// exports
 
@@ -11444,7 +11444,7 @@
 			'<div class="colors-control"></div>' + 
 		'</div>';
 	
-		var colorTemplate = '<i class="color @color fa fa-square" data-color="@color"></i>'
+		var colorTemplate = '<i class="color @color" data-color="@color"></i>'
 	
 		this.$domWrap = $('#displayView');
 		this.$domElem;
@@ -11518,17 +11518,18 @@
 	        this.spotLight.position.z += 100;
 	        this.spotLight.lookAt(this.target);
 	
+	
 	        // dom size & position
 	        this.$domElem.css(windowSize);
 	
-	        // test
-	        var geometry = new THREE.CylinderGeometry( 6, 6, 0.5, 6);
-	        var material = new THREE.MeshLambertMaterial({color: 0xaaaaaa});
+	        //test
+	        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
+	        var material = new THREE.MeshLambertMaterial({color: 0x333333});
 	        var mesh = new THREE.Mesh(geometry, material);
 	        mesh.position.copy(this.target);
 	        mesh.position.y -= 10;
+	        mesh.rotation.y -= Math.PI * 0.16666666;
 	        M3.scene.add(mesh);
-	
 	
 	
 	
@@ -11540,7 +11541,10 @@
 	
 		// model，trackball 重置
 		this.refresh = function() {
+			//var current
 	
+			var tween = new Tween().to().easing().onUpdate().start();
+			this.addTween();
 		}
 	
 		this.setState = function(state) {
@@ -11560,8 +11564,25 @@
 			console.log('displayWindow progress', progress);
 		}
 	
-		this.loaded = function() {
+		this.handleModelLoaded = function(modelRes) {
+			this.productData.model = modelRes;
+			console.log(this.productData.model.textures['black']);
 	
+			var color = Object.keys(this.productData.model.textures)[0];
+	    	var texture = THREE.ImageUtils.loadTexture(this.productData.model.textures['black']);
+			var material = new THREE.MeshLambertMaterial();
+			var _model;
+	
+			_model = new THREE.Mesh(this.productData.model.geometry, material);
+			_model.scale.set(0.1, 0.1, 0.1);
+			_model.position.copy(this.target);
+			_model.rotation.x = Math.PI/2;
+	
+			M3.scene.remove(this.model);
+			M3.scene.add(_model);
+			this.model = _model;
+			changeColor(color);
+			this.setState('animate');
 		}
 	
 		/* private method */
@@ -11574,15 +11595,20 @@
 		}
 	
 		function changeColor(color) {
-			if (color = that.color) return;
+			if (color === that.color) return;
 			that.$domElem.find('.color').removeClass('selected');
 			that.$domElem.find('.color.' + color).addClass('selected');
+			that.color = color;
+	
+			var loader = new THREE.TextureLoader(); 
+	
+			that.model.material.map = THREE.ImageUtils.loadTexture(that.productData.model.textures[color]);
+			that.model.material.needsUpdate = true;
 		}
 	
 		// 模型切换
-		function changeProduct(productData, color) {
+		function changeProduct(productData) {
 			that.productData = productData;
-			that.color = color;
 			that.setState('loading');
 		}
 	
@@ -11604,28 +11630,12 @@
 	
 		// 下载状态
 		loading: function(displayWindow) {
-			function setModel() {
-				var color = Object.keys(displayWindow.productData.model.textures)[0];
-	        	var texture = THREE.ImageUtils.loadTexture(displayWindow.productData.model.textures[color]);
-				var material = new THREE.MeshBasicMaterial({map: texture});
-				var _model;
-	
-				_model = new THREE.Mesh(displayWindow.productData.model.geometry, material);
-				_model.scale.set(0.1, 0.1, 0.1);
-				_model.position.copy(displayWindow.target);
-				_model.rotation.x = Math.PI/2;
-				M3.scene.remove(displayWindow.model);
-				M3.scene.add(_model);
-				displayWindow.model = _model;
-				displayWindow.camera.lookAt(_model);
-			}
-	
 			// 加载模型资源
-			loader.load(displayWindow.productData.model, function(p) {displayWindow.showProgress(p)}, function(res) {	
-				displayWindow.productData.model = res;
-				setModel();
-				displayWindow.setState('animate');
-			});
+			loader.load(
+				displayWindow.productData.model, 
+				function(p) { displayWindow.showProgress(p); }, 
+				function(res) {	displayWindow.handleModelLoaded(res); }
+			);
 		},
 	
 		// 动画播放
@@ -11641,8 +11651,8 @@
 					cameraOffset: 10
 				};
 			var aniFinal = {
-					modelRx: Math.PI / 2, 
-					modelRy: 0, 
+					modelRx: Math.PI / 2.5, 
+					modelRy: 0.2, 
 					modelRz: 0, 
 					cameraPx: displayWindow.target.x,
 					cameraPy: displayWindow.target.y,
@@ -11651,7 +11661,7 @@
 				};
 	
 	
-			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
+			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
 				displayWindow.model.rotation.x = this.modelRx;
 				displayWindow.model.rotation.y = this.modelRy;
 				displayWindow.model.rotation.z = this.modelRz;
@@ -11924,10 +11934,17 @@
 		}
 	
 		this.handleResize = function (winSize) {
+			var maxDisBase = 80;
+			var minDisBase = 10;
+	
+	
 			this.screen.left = winSize.left;
 			this.screen.top = winSize.top;
 			this.screen.width = winSize.width;
 			this.screen.height = winSize.height;
+	
+			this.maxDistance = maxDisBase;
+			this.minDistance = minDisBase;
 		};
 	
 		this.handleEvent = function ( event ) {

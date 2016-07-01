@@ -23,9 +23,9 @@ products.forEach(function(product, i) {
 			type: 'dae',
 			geometry: './assets/pro6/pro6.dae',
 			textures: {
-				'white': './assets/pro6/pro6.jpg',
-				'black': './assets/pro6/pro6.jpg',
-				'red': './assets/pro6/pro6.jpg'
+				'white': './assets/pro6/pro6-white.jpg',
+				'black': './assets/pro6/pro6-black.jpg',
+				'red': './assets/pro6/pro6-red.jpg'
 			},
 		},
 		'modelPos': {x: (i) * 30, y: 0, z: 0},

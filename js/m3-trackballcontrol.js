@@ -97,10 +97,17 @@ TrackballControls = Class.extend(function () {
 	}
 
 	this.handleResize = function (winSize) {
+		var maxDisBase = 80;
+		var minDisBase = 10;
+
+
 		this.screen.left = winSize.left;
 		this.screen.top = winSize.top;
 		this.screen.width = winSize.width;
 		this.screen.height = winSize.height;
+
+		this.maxDistance = maxDisBase;
+		this.minDistance = minDisBase;
 	};
 
 	this.handleEvent = function ( event ) {
