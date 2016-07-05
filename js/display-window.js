@@ -73,7 +73,7 @@ var DisplayWindow = View.extend(function() {
 		});
 		this.$domElem.find('.colors-control').empty().html(colorHTML);
 
-		this.reset();
+		this.resize();
 		render();
 	}
 
@@ -88,7 +88,7 @@ var DisplayWindow = View.extend(function() {
 	}
 
 	// 窗口重置
-	this.reset = function() {
+	this.resize = function() {
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
 
@@ -140,7 +140,7 @@ var DisplayWindow = View.extend(function() {
 		displayWindowState[state](this);
 		if (state === 'handle') {
 			this.trackball.init(this.camera, this.model);
-			this.reset();
+			this.resize();
 			this.trackball.enabled = true;
 		} else {
 			this.trackball.enabled = false;

@@ -283,7 +283,7 @@ TrackballControls = Class.extend(function () {
 
 	};
 
-	this.reset = function () {
+	this.resize = function () {
 
 		_state = STATE.NONE;
 		_prevState = STATE.NONE;

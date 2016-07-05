@@ -12,6 +12,10 @@ var DisplayManager = View.extend(function() {
 		
 	}
 
+	this.setup = function() {
+		
+	}
+
 	this.activate = function(data) { 
 		var productDatas = $.extend(true, [], data.productDatas);
 		var sizePos = calculateSubWindowSize(productDatas.length);

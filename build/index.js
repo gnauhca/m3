@@ -44,12 +44,12 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG) {window.M3 = {};
+	window.M3 = {};
 	(function() {
-		__webpack_require__(2);
+		__webpack_require__(1);
 	
-		var ViewUpdate = __webpack_require__(6);
-		var List = __webpack_require__(7);
+		var ViewUpdate = __webpack_require__(5);
+		var List = __webpack_require__(6);
 		var DisplayManager = __webpack_require__(13);
 	
 		// todo: webgl 检查
@@ -76,69 +76,29 @@
 		// var list = new List();
 		// list.activate();	
 	
-		var displayManager = new DisplayManager();
-		displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+		// var displayManager = new DisplayManager();
+		// displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+		
+	
+		var Room = __webpack_require__(17);
+		var room = new Room();
+		room.activate();
+	
 	})();
 	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
 
 /***/ },
 /* 1 */
-/***/ function(module, exports) {
-
-	var CONFIG = {
-		MEIZU_LOGO: './assets/logo.png',
-		products: [
-			{
-				'name': 'pro6',
-				'imgUrl': './assets/pro6/phone-silver.jpg',
-				'modelUrl': './assets/pro6/pro6.dae',
-				'title': 'PRO 6',
-				'desc' : 'PRO 6 was produced in 2016'
-			}
-		]
-	};
-	
-	// test 
-	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
-	var _products = [];
-	
-	products.forEach(function(product, i) {
-		_products[i] = {
-			'name': product,
-			'previewImg': './assets/pro6/phone-silver.jpg',
-			'model': {
-				type: 'dae',
-				geometry: './assets/pro6/pro6.dae',
-				textures: {
-					'white': './assets/pro6/pro6-white.jpg',
-					'black': './assets/pro6/pro6-black.jpg',
-					'red': './assets/pro6/pro6-red.jpg'
-				},
-			},
-			'modelPos': {x: (i) * 30, y: 0, z: 0},
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-	
-		}
-	});
-	CONFIG.products = _products;
-	
-	
-	module.exports = CONFIG;
-
-/***/ },
-/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(3);
+	var content = __webpack_require__(2);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(5)(content, {});
+	var update = __webpack_require__(4)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -155,10 +115,10 @@
 	}
 
 /***/ },
-/* 3 */
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(4)();
+	exports = module.exports = __webpack_require__(3)();
 	// imports
 	
 	
@@ -169,7 +129,7 @@
 
 
 /***/ },
-/* 4 */
+/* 3 */
 /***/ function(module, exports) {
 
 	/*
@@ -225,7 +185,7 @@
 
 
 /***/ },
-/* 5 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -477,13 +437,13 @@
 
 
 /***/ },
-/* 6 */
+/* 5 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 7 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
@@ -556,7 +516,52 @@
 	
 	
 	module.exports = List;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
+
+/***/ },
+/* 7 */
+/***/ function(module, exports) {
+
+	var CONFIG = {
+		MEIZU_LOGO: './assets/logo.png',
+		products: [
+			{
+				'name': 'pro6',
+				'imgUrl': './assets/pro6/phone-silver.jpg',
+				'modelUrl': './assets/pro6/pro6.dae',
+				'title': 'PRO 6',
+				'desc' : 'PRO 6 was produced in 2016'
+			}
+		]
+	};
+	
+	// test 
+	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
+	var _products = [];
+	
+	products.forEach(function(product, i) {
+		_products[i] = {
+			'name': product,
+			'previewImg': './assets/pro6/phone-silver.jpg',
+			'model': {
+				type: 'dae',
+				geometry: './assets/pro6/pro6.dae',
+				textures: {
+					'white': './assets/pro6/pro6-white.jpg',
+					'black': './assets/pro6/pro6-black.jpg',
+					'red': './assets/pro6/pro6-red.jpg'
+				},
+			},
+			'modelPos': {x: (i) * 30, y: 0, z: 0},
+			'title': 'PRO 6',
+			'desc' : 'PRO 6 was produced in 2016'
+	
+		}
+	});
+	CONFIG.products = _products;
+	
+	
+	module.exports = CONFIG;
 
 /***/ },
 /* 8 */
@@ -10630,7 +10635,7 @@
 	                'product-preview': __webpack_require__(12),
 	                'display-manager': __webpack_require__(13),
 	                'display-window': __webpack_require__(14),
-	                'list': __webpack_require__(7)
+	                'list': __webpack_require__(6)
 	            };
 	            views[name] = new viewConstructors[name]();
 	        }
@@ -10649,7 +10654,7 @@
 	
 	    this.inactivate = function() {}
 	
-	    this.reset = function() {}
+	    this.resize = function() {}
 	
 	    this.distroy = function() {
 	        this.super.distroy();
@@ -10664,7 +10669,7 @@
 	
 	window.onresize = function() {
 	    for (var name in views) {
-	        views[name].active && views[name].reset();
+	        views[name].active && views[name].resize();
 	    }
 	}
 	
@@ -10912,7 +10917,7 @@
 			//this.removeTick(renderTick); // 移除renderTick 
 		}
 	
-		this.reset = function() {
+		this.resize = function() {
 	
 			camera.aspect = window.innerWidth / window.innerHeight;
 	        camera.updateProjectionMatrix();
@@ -11067,7 +11072,7 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
 
 /***/ },
 /* 12 */
@@ -11119,7 +11124,7 @@
 		}
 	
 		// 重置大小，位置
-		this.reset = function() {
+		this.resize = function() {
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 	
@@ -11174,7 +11179,7 @@
 	
 		 	itemElems = [];
 		 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
-		 	that.reset();
+		 	that.resize();
 		}
 	
 		function initEvent() {
@@ -11346,7 +11351,7 @@
 			}
 		});	
 	}*/
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
 
 /***/ },
 /* 13 */
@@ -11363,6 +11368,10 @@
 		this.$domWrap = $('#displayView');
 	
 		this.constructor = function() {
+			
+		}
+	
+		this.setup = function() {
 			
 		}
 	
@@ -11485,7 +11494,7 @@
 			});
 			this.$domElem.find('.colors-control').empty().html(colorHTML);
 	
-			this.reset();
+			this.resize();
 			render();
 		}
 	
@@ -11500,7 +11509,7 @@
 		}
 	
 		// 窗口重置
-		this.reset = function() {
+		this.resize = function() {
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 	
@@ -11552,7 +11561,7 @@
 			displayWindowState[state](this);
 			if (state === 'handle') {
 				this.trackball.init(this.camera, this.model);
-				this.reset();
+				this.resize();
 				this.trackball.enabled = true;
 			} else {
 				this.trackball.enabled = false;
@@ -11725,7 +11734,7 @@
 						loadedCache[url] = res;
 	
 						// 进度回调
-						progressCallback(loadedSize/totalSize);
+						progressCallback && progressCallback(loadedSize/totalSize);
 	
 						// 成功回调
 						if (loadedSize/totalSize === 1) {
@@ -11783,8 +11792,8 @@
 				if (typeof params === 'string') {
 					return (loadedCache[params] || params);
 				} else if (Object.prototype.toString.call(params) === '[object Array]') {
-					return (urls.map(function(url) {
-						return loadedCache[url];
+					return (params.map(function(param) {
+						return loadedCache[param];
 					}));
 				} else {
 					for (var key in params) {
@@ -12120,7 +12129,7 @@
 	
 		};
 	
-		this.reset = function () {
+		this.resize = function () {
 	
 			_state = STATE.NONE;
 			_prevState = STATE.NONE;
@@ -12382,6 +12391,246 @@
 	};
 	
 	module.exports = TrackballControls;
+
+/***/ },
+/* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(9);
+	var Loader = __webpack_require__(15);
+	
+	
+	var DisplayRoom = View.extend(function() {
+		var that = this;
+		var active = false;
+		var initialized = false;
+		var config; // 配置
+		var assets;
+		var loader = new Loader();
+		var sizeInfo;
+	
+		// scene
+		var camera;
+		var trackball;
+	
+		this.state; // 状态
+	
+	
+	
+		this.constructor = function() {
+			this.super();
+			config = $.extend(true, {}, CONFIG);
+		}
+	
+		this.activate = function() {
+			active = true;
+			if (!initialized) {
+				init(); return;
+			}
+			render();
+		}
+	
+		this.inActivate = function() {
+			M3.scene.remove(camera);
+		}
+	
+		this.resize = function() {
+			if (!initialized && active) return;
+			camera.aspect = window.innerWidth / window.innerHeight;
+	        camera.updateProjectionMatrix();
+	
+			camera.position.set(0, 0, 250);
+			camera.lookAt(baseCrood);
+		}
+	
+		// 场景搭建，ui创建
+		function init() {
+			if (!assets) {
+				loadAsset(); return;
+			}
+			initialized = true;
+	
+			// scene
+			setupScene();
+	
+			// ui
+			setupUI();
+	
+			that.activate();
+		}
+	
+		// 加载资源
+		function loadAsset() { 
+			var assetsConfig = $.extend(true, {}, config);
+	
+			assetsConfig.scene = {
+				room: [
+					'./assets/room/wall.jpg',
+					'./assets/room/wall.jpg',
+					'./assets/room/wall.jpg',
+					'./assets/room/floor.jpg',
+					'./assets/room/wall.jpg',
+					'./assets/room/wall.jpg',
+				]
+			}
+	
+			loader.load(assetsConfig, null, function(res) {
+				assets = res;
+				init();
+			});
+		}
+	
+		function setupScene() {
+	
+			// room
+			var wallMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
+	
+			var loader = new THREE.CubeTextureLoader();
+			var textureCube = loader.load(assets.scene.room);
+	
+			textureCube.repeat.set(5,5);
+			textureCube.wrapS = THREE.RepeatWrapping;
+			textureCube.wrapT = THREE.RepeatWrapping;
+	        // var shader = THREE.ShaderLib["cube"];
+	        // shader.uniforms["tCube"].value = textureCube;
+	        // var roomMaterial = new THREE.ShaderMaterial({
+	        //     fragmentShader: shader.fragmentShader,
+	        //     vertexShader: shader.vertexShader,
+	        //     uniforms: shader.uniforms,
+	        //     depthWrite: false,
+	        //     side: THREE.BackSide
+	        // });
+			// roomMaterial.map.repeat.set(5,5);
+		 //    roomMaterial.map.wrapS = THREE.RepeatWrapping;
+		 //    roomMaterial.map.wrapT = THREE.RepeatWrapping;
+	
+			var roomMaterials = [];
+			var material;
+			for (var i = 0; i < assets.scene.room.length; i++) {
+				if (i == 3) {
+					material = new THREE.MeshBasicMaterial({
+						'map': THREE.ImageUtils.loadTexture(assets.scene.room[i]),
+						'side': THREE.BackSide
+					});	
+					material.reflectivity = 1;
+				} else {
+					material = new THREE.MeshBasicMaterial({
+						'map': THREE.ImageUtils.loadTexture(assets.scene.room[i]),
+						'side': THREE.BackSide
+					});				
+				}
+	
+	
+				material.map.repeat.set(5,5);
+	            material.map.wrapS = THREE.RepeatWrapping;
+	            material.map.wrapT = THREE.RepeatWrapping;
+	
+				roomMaterials.push(material);
+			}
+			var roomMaterial = new THREE.MeshFaceMaterial( roomMaterials );
+	
+			var roomCube = new THREE.CubeGeometry(100, 80, 100);
+			var room = new THREE.Mesh(roomCube, roomMaterial);
+	
+			M3.scene.add(room);
+	
+			// logo 
+			var logoCube = new THREE.CubeGeometry(50, 20, 1);
+			var logoMaterial = wallMaterial;
+			logoMaterial.envMap = textureCube;
+			var logo = new THREE.Mesh(logoCube, logoMaterial);
+			logo.position.set(0, 0, -47);
+			M3.scene.add(logo);
+	
+			// table
+			var tableTopCyliner = new THREE.CylinderGeometry(20, 19.8, 0.5, 60);
+			var tableMaterial = wallMaterial;
+			tableMaterial.envMap = textureCube;
+	
+			var tableTop = new THREE.Mesh(tableTopCyliner, tableMaterial);
+			tableTop.position.set(0, -29, 0);
+			M3.scene.add(tableTop);
+	
+			var tableBottomCyliner = new THREE.CylinderGeometry(19.5, 16, 10, 60);
+			var tableBottom = new THREE.Mesh(tableBottomCyliner, tableMaterial);
+			tableBottom.position.set(0, -35, 0);
+			M3.scene.add(tableBottom);
+	
+			// light 
+	        var ambiColor = "#333333";
+	        var ambientLight = new THREE.AmbientLight(ambiColor);
+	        M3.scene.add(ambientLight);
+	
+	        var roomLight = {};
+	        roomLight.lightCenter = new THREE.SpotLight(0xffffff);
+			roomLight.lightLeftTop = new THREE.SpotLight(0xffffff);
+			roomLight.lightRightTop = new THREE.SpotLight(0xffffff);
+			roomLight.lightLeftBottom = new THREE.SpotLight(0xffffff);
+			roomLight.lightRightBottom = new THREE.SpotLight(0xffffff);
+	
+	        roomLight.lightCenter = new THREE.SpotLight(0, 40, 0);
+			roomLight.lightLeftTop.position.set(-49, 49, -49);
+			roomLight.lightRightTop.position.set(49, 49, -49);
+			roomLight.lightLeftBottom.position.set(-49, 49, 49);
+			roomLight.lightRightBottom.position.set(49, 49, 49);
+	
+			for (var light in roomLight) {
+		        roomLight[light].castShadow = true;
+		        roomLight[light].shadowCameraNear = 2;
+		        roomLight[light].shadowCameraFar = 100;
+		        roomLight[light].shadowCameraFov = 40;
+		        roomLight[light].distance = 0;
+		        roomLight[light].angle = 0.4;
+		        roomLight[light].intensity = 0.3;
+				M3.scene.add(roomLight[light]);
+			}
+	
+	
+	
+			// camera
+	        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
+	        camera.position.set(-50, 20, 50);
+	        camera.lookAt(new THREE.Vector3(0, 0, 0));
+	        M3.scene.add(camera);
+	
+	        trackball = new THREE.TrackballControls(camera);
+		}
+	
+		function setupUI() {
+	
+		}
+	
+	
+	
+		function render() {
+			that.addTick(function() {
+				M3.renderer.render(M3.scene, camera);
+				trackball.update();
+			});
+		}
+	});
+	
+	module.exports = DisplayRoom;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
 
 /***/ }
 /******/ ]);

@@ -36,7 +36,7 @@ var Welcome = View.extend(function() {
 		//this.removeTick(renderTick); // 移除renderTick 
 	}
 
-	this.reset = function() {
+	this.resize = function() {
 
 		camera.aspect = window.innerWidth / window.innerHeight;
         camera.updateProjectionMatrix();

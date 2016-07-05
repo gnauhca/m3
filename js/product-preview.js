@@ -44,7 +44,7 @@ var ProductsPreview = View.extend(function() {
 	}
 
 	// 重置大小，位置
-	this.reset = function() {
+	this.resize = function() {
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
 
@@ -99,7 +99,7 @@ var ProductsPreview = View.extend(function() {
 
 	 	itemElems = [];
 	 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
-	 	that.reset();
+	 	that.resize();
 	}
 
 	function initEvent() {

@@ -29,7 +29,7 @@ var Loader = Class.extend(function() {
 					loadedCache[url] = res;
 
 					// 进度回调
-					progressCallback(loadedSize/totalSize);
+					progressCallback && progressCallback(loadedSize/totalSize);
 
 					// 成功回调
 					if (loadedSize/totalSize === 1) {
@@ -87,8 +87,8 @@ var Loader = Class.extend(function() {
 			if (typeof params === 'string') {
 				return (loadedCache[params] || params);
 			} else if (Object.prototype.toString.call(params) === '[object Array]') {
-				return (urls.map(function(url) {
-					return loadedCache[url];
+				return (params.map(function(param) {
+					return loadedCache[param];
 				}));
 			} else {
 				for (var key in params) {

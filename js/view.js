@@ -42,7 +42,7 @@ var View = TimeBody.extend(function() {
 
     this.inactivate = function() {}
 
-    this.reset = function() {}
+    this.resize = function() {}
 
     this.distroy = function() {
         this.super.distroy();
@@ -57,7 +57,7 @@ View.addConstructor = function(name, _constructor) {
 
 window.onresize = function() {
     for (var name in views) {
-        views[name].active && views[name].reset();
+        views[name].active && views[name].resize();
     }
 }
 
