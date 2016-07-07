@@ -30,13 +30,13 @@ window.M3 = {};
 	// var list = new List();
 	// list.activate();	
 
-	// var displayManager = new DisplayManager();
-	// displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+	var displayManager = new DisplayManager();
+	displayManager.activate({productDatas:CONFIG.products.slice(0,3),'cameraPos': new THREE.Vector3(0,0,0)});
 	
 
-	var Room = require('./display-room');
-	var room = new Room();
-	room.activate();
+	// var Room = require('./display-room');
+	// var room = new Room();
+	// room.activate();
 
 })();
 

@@ -44,12 +44,12 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	window.M3 = {};
+	/* WEBPACK VAR INJECTION */(function(CONFIG) {window.M3 = {};
 	(function() {
-		__webpack_require__(1);
+		__webpack_require__(2);
 	
-		var ViewUpdate = __webpack_require__(5);
-		var List = __webpack_require__(6);
+		var ViewUpdate = __webpack_require__(6);
+		var List = __webpack_require__(7);
 		var DisplayManager = __webpack_require__(13);
 	
 		// todo: webgl 检查
@@ -76,29 +76,75 @@
 		// var list = new List();
 		// list.activate();	
 	
-		// var displayManager = new DisplayManager();
-		// displayManager.activate({productDatas:CONFIG.products.slice(0,2),'cameraPos': new THREE.Vector3(0,0,0)});
+		var displayManager = new DisplayManager();
+		displayManager.activate({productDatas:CONFIG.products.slice(0,3),'cameraPos': new THREE.Vector3(0,0,0)});
 		
 	
-		var Room = __webpack_require__(17);
-		var room = new Room();
-		room.activate();
+		// var Room = require('./display-room');
+		// var room = new Room();
+		// room.activate();
 	
 	})();
 	
-
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	var CONFIG = {
+		MEIZU_LOGO: './assets/logo.png',
+		products: [
+			{
+				'name': 'pro6',
+				'imgUrl': './assets/pro6/phone-silver.jpg',
+				'modelUrl': './assets/pro6/pro6.dae',
+				'title': 'PRO 6',
+				'desc' : 'PRO 6 was produced in 2016'
+			}
+		]
+	};
+	
+	// test 
+	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
+	var _products = [];
+	
+	products.forEach(function(product, i) {
+		_products[i] = {
+			'name': product,
+			'previewImg': './assets/pro6/phone-silver.jpg',
+			'model': {
+				type: 'dae',
+				geometry: './assets/pro6/pro6.dae',
+				textures: {
+					'white': './assets/pro6/pro6-white.jpg',
+					'black': './assets/pro6/pro6-black.jpg',
+					'red': './assets/pro6/pro6-red.jpg'
+				},
+			},
+			'modelPos': {x: (i) * 30, y: 0, z: 0},
+			'title': 'PRO 6',
+			'desc' : 'PRO 6 was produced in 2016'
+	
+		}
+	});
+	CONFIG.products = _products;
+	
+	
+	module.exports = CONFIG;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(2);
+	var content = __webpack_require__(3);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
+	var update = __webpack_require__(5)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -115,21 +161,21 @@
 	}
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(3)();
+	exports = module.exports = __webpack_require__(4)();
 	// imports
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  display: none;\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n  #displayView .display-window {\n    position: absolute; }\n    #displayView .display-window .window-control {\n      margin: 0 auto;\n      width: 99%;\n      text-align: right;\n      background-color: rgba(255, 255, 255, 0.3); }\n      #displayView .display-window .window-control i.btn {\n        cursor: pointer;\n        margin: 20px 10px; }\n    #displayView .display-window .colors-control {\n      position: absolute;\n      width: 99%;\n      left: 0.5%;\n      bottom: 0;\n      font-size: 30px;\n      text-align: right;\n      background-color: rgba(255, 255, 255, 0.3); }\n      #displayView .display-window .colors-control .color {\n        display: inline-block;\n        box-sizing: border-box;\n        width: 40px;\n        height: 40px;\n        margin: 20px 10px;\n        opacity: 0.3;\n        cursor: pointer;\n        box-shadow: 0 0 4px #888;\n        outline: 1px solid #333; }\n        #displayView .display-window .colors-control .color.selected {\n          opacity: 1; }\n        #displayView .display-window .colors-control .color.white {\n          background-color: #eee;\n          outline-color: #eee; }\n        #displayView .display-window .colors-control .color.black {\n          background-color: #333;\n          outline-color: #333; }\n        #displayView .display-window .colors-control .color.red {\n          background-color: #f00;\n          outline-color: #f00; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei'; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: white; }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  display: none;\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n  #displayView .display-window {\n    box-sizing: border-box;\n    position: absolute;\n    border: 1px solid #888; }\n    #displayView .display-window .window-control {\n      margin: 0 auto;\n      width: 100%;\n      text-align: right;\n      background-color: rgba(255, 255, 255, 0.3);\n      font-size: 40px; }\n      #displayView .display-window .window-control i.btn {\n        cursor: pointer;\n        margin: 10px 10px;\n        vertical-align: middle; }\n      #displayView .display-window .window-control i.close-btn {\n        font-size: 70px;\n        line-height: 40px;\n        margin-right: 20px; }\n    #displayView .display-window .colors-control {\n      position: absolute;\n      width: 100%;\n      left: 0%;\n      bottom: 0;\n      font-size: 30px;\n      text-align: right; }\n      #displayView .display-window .colors-control .color {\n        display: inline-block;\n        box-sizing: border-box;\n        width: 40px;\n        height: 40px;\n        margin: 20px 10px;\n        opacity: 0.3;\n        cursor: pointer;\n        box-shadow: 0 0 4px #888;\n        outline: 1px solid #333; }\n        #displayView .display-window .colors-control .color.selected {\n          opacity: 1; }\n        #displayView .display-window .colors-control .color.white {\n          background-color: #eee;\n          outline-color: #eee; }\n        #displayView .display-window .colors-control .color.black {\n          background-color: #333;\n          outline-color: #333; }\n        #displayView .display-window .colors-control .color.red {\n          background-color: #f00;\n          outline-color: #f00; }\n", ""]);
 	
 	// exports
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/*
@@ -185,7 +231,7 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -437,13 +483,13 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports) {
 
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(9);
@@ -516,52 +562,7 @@
 	
 	
 	module.exports = List;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
-
-/***/ },
-/* 7 */
-/***/ function(module, exports) {
-
-	var CONFIG = {
-		MEIZU_LOGO: './assets/logo.png',
-		products: [
-			{
-				'name': 'pro6',
-				'imgUrl': './assets/pro6/phone-silver.jpg',
-				'modelUrl': './assets/pro6/pro6.dae',
-				'title': 'PRO 6',
-				'desc' : 'PRO 6 was produced in 2016'
-			}
-		]
-	};
-	
-	// test 
-	var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
-	var _products = [];
-	
-	products.forEach(function(product, i) {
-		_products[i] = {
-			'name': product,
-			'previewImg': './assets/pro6/phone-silver.jpg',
-			'model': {
-				type: 'dae',
-				geometry: './assets/pro6/pro6.dae',
-				textures: {
-					'white': './assets/pro6/pro6-white.jpg',
-					'black': './assets/pro6/pro6-black.jpg',
-					'red': './assets/pro6/pro6-red.jpg'
-				},
-			},
-			'modelPos': {x: (i) * 30, y: 0, z: 0},
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-	
-		}
-	});
-	CONFIG.products = _products;
-	
-	
-	module.exports = CONFIG;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
 
 /***/ },
 /* 8 */
@@ -10613,6 +10614,8 @@
 	var TimeBody = __webpack_require__(10);
 	var views = [];
 	
+	var viewConstructors;
+	
 	var View = TimeBody.extend(function() {
 	    this.active = false;
 	    this.getName = function() {
@@ -10626,17 +10629,18 @@
 	        this.getName();
 	        views[this.name] = this;
 	        this.super();
+	
+	        viewConstructors = {
+	            'welcome': __webpack_require__(11),
+	            'product-preview': __webpack_require__(12),
+	            'display-manager': __webpack_require__(13),
+	            'display-window': __webpack_require__(14),
+	            'list': __webpack_require__(7)
+	        };
 	    }
 	
 	    this.activateView = function(name, data) {
 	        if (!views[name]) {
-	            var viewConstructors = {
-	                'welcome': __webpack_require__(11),
-	                'product-preview': __webpack_require__(12),
-	                'display-manager': __webpack_require__(13),
-	                'display-window': __webpack_require__(14),
-	                'list': __webpack_require__(6)
-	            };
 	            views[name] = new viewConstructors[name]();
 	        }
 	        views[name].activate(data);
@@ -10648,6 +10652,13 @@
 	            views[name] = new viewConstructors[name]();
 	        }
 	        views[name].inactivate(data);
+	    }
+	
+	    this.getView = function(name) {
+	        if (!views[name]) {
+	            views[name] = new viewConstructors[name]();
+	        }
+	        return views[name];
 	    }
 	
 	    this.activate = function(data) {}
@@ -11072,7 +11083,7 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
 
 /***/ },
 /* 12 */
@@ -11233,12 +11244,16 @@
 			$domWrap.removeClass('show-control').addClass('choosed');
 			var $li = $domWrap.find('.list-wrap li');
 			var selectedPos = calculateSubWindowSize(productSelected.length);
+			var selectedPosCSS = $.extend(true, {}, selectedPos);
 			var index = 0;
 	
+			for (var key in selectedPosCSS) {
+				selectedPosCSS[key] = selectedPosCSS[key] * 100 + '%';
+			}
 			productDatas.forEach(function(product, i) {
 				if (index > productSelected.length - 1) return false;
 				if (productSelected.indexOf(product) != -1) {
-					$li.eq(i).css(selectedPos[index]);
+					$li.eq(i).css(selectedPosCSS);
 				    index++;			
 				}
 			});
@@ -11351,7 +11366,7 @@
 			}
 		});	
 	}*/
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
 /* 13 */
@@ -11364,15 +11379,16 @@
 		var that = this;
 		this.name = 'display-manager';
 		this.displayWindows = [];
+		this.activeWindows = [];
 	
 		this.$domWrap = $('#displayView');
 	
 		this.constructor = function() {
-			
+			this.super();
 		}
 	
 		this.setup = function() {
-			
+	
 		}
 	
 		this.activate = function(data) { 
@@ -11380,39 +11396,61 @@
 			var sizePos = calculateSubWindowSize(productDatas.length);
 	
 			productDatas.forEach(function(productData, i) {
+	
 				var displayWindowData = {
 					'productData': productData,
 					'cameraPos': data.cameraPos,
 					'windowSize': sizePos[i],
+				};
+				var displayWindow;
+	
+				if (that.displayWindows.length) {
+					displayWindow = that.displayWindows.pop();
+				} else {
+					displayWindow = new DisplayWindow();
 				}
 	
-				that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
-	
-				if (!that.displayWindows[i].displayView) {
-					that.displayWindows[i].displayView = new DisplayWindow();
-				}
-				that.displayWindows[i].displayView.activate(displayWindowData);
+				displayWindow.activate(displayWindowData);
+				that.activeWindows.push(displayWindow);
 			});
 	
 			// UI
 			this.$domWrap.show();
 		}
 	
+		this.inActivate = function() {}
 	
-		this.removeWindow = function(displayWindows) {
+		this.removeWindow = function(displayWindow) {
+			this.activeWindows.some(function(activeWindow, i) {
+				if (activeWindow === displayWindow) {
+					that.displayWindows.push(activeWindow);
+					that.activeWindows.splice(i, 1);
+					return true;
+				} 
+			});
+			
 	
+			resetWindow();
 		}
 	
 		function addWindow() {
 	
 		}
 	
-		function createDisplayView() {
-	
+		function resetWindow() {
+			var sizePos = calculateSubWindowSize(that.activeWindows.length);
+			that.activeWindows.forEach(function(activeWindow, i) {
+				activeWindow.resizeWindow(sizePos[i]);
+			});
 		}
+	
 	});
 	
 	module.exports = DisplayManager;
+	
+	
+	
+	
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
@@ -11427,74 +11465,79 @@
 	
 	var DisplayWindow = View.extend(function() {
 		var that = this;
-		var windowSize;
+		var initialized = false;
+	
 		var windowSizePX;
 	
+		// config (from other manager view)
+		var config;
+	
+		// assets from loader
+		var assets;
 	
 		// 3D 资源
-		this.spotLight;
-		this.model;
-		this.camera;
-		this.target;
-		this.productData;
 		this.trackball;
+		this.scene = {};
+		this.sceneOffline = {};
+		this.target;
+	
+		// 模型位置，旋转等信息
+		this.sceneObjSizes = {
+			model : {position: null, rotation: null},
+			camera : {position: null, lookAt: null}
+		}; 
 	
 		// 状态
 		this.state;
 		this.color;
 	
-		// UI (DOM)
-		var domTemplate = 
-		'<div class="display-window">' + 
-			'<div class="window-control">' + 
-				'<i class="btn reset-btn fa fa-refresh fa-2x"></i>' + 
-				'<i class="btn close-btn fa fa-close fa-2x"></i>' + 			
-			'</div>' + 
-			'<div class="colors-control"></div>' + 
-		'</div>';
-	
-		var colorTemplate = '<i class="color @color" data-color="@color"></i>'
 	
 		this.$domWrap = $('#displayView');
 		this.$domElem;
 	
 		this.constructor = function() {
 			this.super();
-	
-			// 3D 相关资源创建
-	        this.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
-	        this.trackball = new TrackballControls(this.camera);
-	        this.trackball.enabled = false;
-	 		this.spotLight = new THREE.SpotLight(0xffffff);
-	
-	        M3.scene.add(this.spotLight);
-			M3.scene.add(this.camera);
-	
-			// UI相关
-			this.$domElem = $(domTemplate); 
-			initEvent();
 		}
 	
 		this.activate = function(data) {
+			if (data)
+			config = $.extend(true, {}, data);
 	
-			windowSize = data.windowSize;
+			if (!initialized) {
+				init(); return;
+			}
 	
-			this.productData = data.productData;
-			this.camera.position.copy(data.cameraPos);
+			// 3d
+			this.target = new THREE.Vector3(config.productData.modelPos.x, config.productData.modelPos.y, config.productData.modelPos.z);
 	
-			this.target = new THREE.Vector3(this.productData.modelPos.x, this.productData.modelPos.y, this.productData.modelPos.z);
 	
-			changeProduct(this.productData, Object.keys(this.productData.model.textures)[0]);
+			this.scene.camera.position.copy(config.cameraPos);
+			this.scene.camera.position.x += 20
+			this.scene.platform.position.copy(this.target);
+	        this.scene.platform.position.y -= 10;
+	        this.scene.platform.rotation.y -= Math.PI * 0.16666666;
 	
-			// UI 初始化
+	        this.scene.model.position.copy(this.target);
+			this.scene.camera.lookAt(this.target);
+	
+			// initial size info
+			this.sceneObjSizes.model.position = this.target.clone();
+			this.sceneObjSizes.model.rotation = new THREE.Euler(Math.PI/2.5, 0, 0, 'XYZ' );
+	
+			this.sceneObjSizes.camera.position = this.target.clone();
+			this.sceneObjSizes.camera.position.z += 40;
+			this.sceneObjSizes.camera.lookAt = this.target.clone();
+	
+			Object.keys(this.scene).forEach(function(o) { M3.scene.add(that.scene[o]);});
+			
+			// dom
 			this.$domElem.appendTo(this.$domWrap);
-			var colorHTML = '';
-			Object.keys(this.productData.model.textures).forEach(function(color) {
-				colorHTML += colorTemplate.replace(/\@color/g, color);
-			});
-			this.$domElem.find('.colors-control').empty().html(colorHTML);
 	
 			this.resize();
+	
+			changeColor(Object.keys(config.productData.model.textures)[0]);
+			playEntryAnimation();
+	
 			render();
 		}
 	
@@ -11502,69 +11545,118 @@
 		this.inActivate = function() {
 	
 			// 移除模型
-			M3.scene.remove(this.camera);
-			M3.scene.remove(this.model);
-			M3.scene.remove(this.spotLight);
+			Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
 			this.$domElem.remove();
+	
+			this.getView('display-manager').removeWindow(this);
+			this.removeTween();
+			this.removeTick();
 		}
 	
 		// 窗口重置
-		this.resize = function() {
+		this.resize = function() { 
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 	
 			windowSizePX = {};
-			windowSizePX['left'] = parseInt(winWidth * parseInt(windowSize['left'])/100);
-			windowSizePX['width'] = parseInt(winWidth * parseInt(windowSize['width'])/100);
-			windowSizePX['top'] = parseInt(winHeight * parseInt(windowSize['top'])/100);
-			windowSizePX['height'] = parseInt(winHeight * parseInt(windowSize['height'])/100);
+			windowSizePX['left'] = parseInt(winWidth * config.windowSize['left']);
+			windowSizePX['width'] = parseInt(winWidth * config.windowSize['width']);
+			windowSizePX['top'] = parseInt(winHeight * config.windowSize['top']);
+			windowSizePX['height'] = parseInt(winHeight * config.windowSize['height']);
 	
 			windowSizePX['bottom'] = winHeight - windowSizePX['height'] - windowSizePX['top'];
 	
-	        this.spotLight.position.copy(this.target);
-	        this.spotLight.position.y += 200;
-	        this.spotLight.position.x += 300;
-	        this.spotLight.position.z += 100;
-	        this.spotLight.lookAt(this.target);
-	
+	        this.scene.spotLight.position.copy(this.target);
+	        this.scene.spotLight.position.y += 200;
+	        this.scene.spotLight.position.x += 300;
+	        this.scene.spotLight.position.z += 100;
+	        this.scene.spotLight.lookAt(this.target); 
 	
 	        // dom size & position
-	        this.$domElem.css(windowSize);
+	        for (var key in config.windowSize) {
+	        	this.$domElem.css(key, config.windowSize[key] * 100 + '%');
+	        }
 	
-	        //test
-	        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
-	        var material = new THREE.MeshLambertMaterial({color: 0x333333});
-	        var mesh = new THREE.Mesh(geometry, material);
-	        mesh.position.copy(this.target);
-	        mesh.position.y -= 10;
-	        mesh.rotation.y -= Math.PI * 0.16666666;
-	        M3.scene.add(mesh);
-	
-	
-	
-			this.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
-			this.camera.updateProjectionMatrix();
+			this.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
+			this.scene.camera.updateProjectionMatrix();
 	
 			this.trackball.handleResize(windowSizePX);
 		}
 	
+		this.resizeWindow = function(windowSize) {
+			var initSize = config.windowSize;
+			var finalSize = windowSize;
+	
+			that.setState('animate');
+			var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
+				config.windowSize = this;
+				that.resize();
+			}).onComplete(function() {
+				that.removeTween(resizeTween);
+				that.setState('handle');
+			}).start();
+		}
+	
 		// model，trackball 重置
 		this.refresh = function() {
-			//var current
+			that.setState('animate');
+			var initModelPosition = that.sceneObjSizes.model.position;
+			var initModelRotation = that.sceneObjSizes.model.rotation;
 	
-			var tween = new Tween().to().easing().onUpdate().start();
-			this.addTween();
+			var initCameraPosition = that.sceneObjSizes.camera.position;
+			var initCameraLookAtPosition = that.sceneObjSizes.camera.position;
+	
+	
+			var cameraLookAt = new THREE.Vector3(0, 0, -1);
+	        cameraLookAt.applyEuler(this.scene.camera.rotation, this.scene.camera.eulerOrder);
+	
+			var aniInit = {
+					modelRx: this.scene.model.rotation.x, 
+					modelRy: this.scene.model.rotation.y, 
+					modelRz: this.scene.model.rotation.z, 
+					cameraPx: this.scene.camera.position.x,
+					cameraPy: this.scene.camera.position.y,
+					cameraPz: this.scene.camera.position.z,
+					cameraLx: cameraLookAt.x,
+					cameraLy: cameraLookAt.y,
+					cameraLz: cameraLookAt.z,
+				};
+	
+			var aniFinal = {
+					modelRx: initModelRotation.x, 
+					modelRy: initModelRotation.y, 
+					modelRz: initModelRotation.z, 
+					cameraPx: initCameraPosition.x,
+					cameraPy: initCameraPosition.y,
+					cameraPz: initCameraPosition.z,
+					cameraLx: initCameraLookAtPosition.x,
+					cameraLy: initCameraLookAtPosition.y,
+					cameraLz: initCameraLookAtPosition.z,
+				};
+	
+			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
+				that.scene.model.rotation.x = this.modelRx;
+				that.scene.model.rotation.y = this.modelRy;
+				that.scene.model.rotation.z = this.modelRz;
+	
+				that.scene.camera.position.x = this.cameraPx;
+				that.scene.camera.position.y = this.cameraPy;
+				that.scene.camera.position.z = this.cameraPz;
+				that.scene.camera.lookAt(this.cameraLx, this.cameraLy, this.cameraLz);
+			}).onComplete(function() { 
+				that.removeTween(tween);
+				that.setState('handle');
+			}).start();
 		}
 	
 		this.setState = function(state) {
 			this.state = state;
-			displayWindowState[state](this);
-			if (state === 'handle') {
-				this.trackball.init(this.camera, this.model);
-				this.resize();
-				this.trackball.enabled = true;
+			if (state === 'handle') { 
+				this.trackball.init(this.scene.camera, this.scene.model);
+				this.resize(); 
+				this.trackball && (this.trackball.enabled = true);
 			} else {
-				this.trackball.enabled = false;
+				this.trackball && (this.trackball.enabled = false);
 			}
 		}
 	
@@ -11573,34 +11665,88 @@
 			console.log('displayWindow progress', progress);
 		}
 	
-		this.handleModelLoaded = function(modelRes) {
-			this.productData.model = modelRes;
-			console.log(this.productData.model.textures['black']);
+		/* private method */
+		// 场景搭建，ui创建
+		function init() {
+			if (!assets) {
+				loadAsset(); return;
+			}
+			initialized = true;
 	
-			var color = Object.keys(this.productData.model.textures)[0];
-	    	var texture = THREE.ImageUtils.loadTexture(this.productData.model.textures['black']);
-			var material = new THREE.MeshLambertMaterial();
-			var _model;
+			// scene
+			setupScene();
 	
-			_model = new THREE.Mesh(this.productData.model.geometry, material);
-			_model.scale.set(0.1, 0.1, 0.1);
-			_model.position.copy(this.target);
-			_model.rotation.x = Math.PI/2;
+			// ui
+			setupUI();
 	
-			M3.scene.remove(this.model);
-			M3.scene.add(_model);
-			this.model = _model;
-			changeColor(color);
-			this.setState('animate');
+			that.activate();
 		}
 	
-		/* private method */
+		function loadAsset() {
+			that.setState('loading');
+			var assetConifg = $.extend(true, {}, config.productData.model);
 	
-		// DOM 事件
-		function initEvent() {
+			// 加载模型资源
+			loader.load(
+				assetConifg, 
+				function(p) { that.showProgress(p); }, 
+				function(res) {	assets = res; init(); }
+			);
+		}
+	
+		function setupScene() {
+	
+			// 3D 相关资源创建
+	 		that.scene.spotLight = new THREE.SpotLight(0xffffff);
+			that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+	
+	
+			var color = Object.keys(assets.textures)[0];
+	    	var texture = THREE.ImageUtils.loadTexture(assets.textures['black']);
+			var material = new THREE.MeshLambertMaterial();
+	
+			var model = new THREE.Mesh(assets.geometry, material);
+			model.scale.set(0.1, 0.1, 0.1);
+			model.rotation.x = Math.PI/2;
+	
+			that.scene.model = model;
+	
+	        //test
+	        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
+	        var material = new THREE.MeshLambertMaterial({color: 0x333333});
+	        var platform = new THREE.Mesh(geometry, material);
+	        that.scene.platform = platform;
+	
+			// trackball
+	        that.trackball = new TrackballControls(that.scene.camera);
+	        that.trackball.enabled = false;
+		}
+	
+		// UI 初始化
+		function setupUI() {
+			// UI (DOM)
+			var domTemplate = 
+			'<div class="display-window">' + 
+				'<div class="window-control">' + 
+					'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
+					'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
+				'</div>' + 
+				'<div class="colors-control"></div>' + 
+			'</div>';
+	
+			var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+	
+			var colorHTML = '';
+			Object.keys(config.productData.model.textures).forEach(function(color) {
+				colorHTML += colorTemplate.replace(/\@color/g, color);
+			});
+			that.$domElem = $(domTemplate);
+			that.$domElem.find('.colors-control').empty().html(colorHTML);
+	
+			// 事件
 			that.$domElem.on('click', '.reset-btn', function() {that.refresh()});
 			that.$domElem.on('click', '.close-btn', function() {that.inActivate()});
-			that.$domElem.on('click', '.color', function() {changeColor($(this).data('color'))});
+			that.$domElem.on('click', '.color', function() {changeColor($(this).data('color'))});	
 		}
 	
 		function changeColor(color) {
@@ -11611,89 +11757,79 @@
 	
 			var loader = new THREE.TextureLoader(); 
 	
-			that.model.material.map = THREE.ImageUtils.loadTexture(that.productData.model.textures[color]);
-			that.model.material.needsUpdate = true;
+			that.scene.model.material.map = THREE.ImageUtils.loadTexture(assets.textures[color]);
+			that.scene.model.material.needsUpdate = true;
 		}
 	
 		// 模型切换
 		function changeProduct(productData) {
 			that.productData = productData;
-			that.setState('loading');
+			loadAsset();
+		}
+	
+	
+		/* 动画 */
+		function playEntryAnimation() {
+			that.setState('animate');
+	
+			var initModelPosition = that.sceneObjSizes.model.position;
+			var initModelRotation = that.sceneObjSizes.model.rotation;
+	
+			var initCameraPosition = that.sceneObjSizes.camera.position;
+	
+			var aniInit = {
+					modelRx: initModelRotation.x - Math.PI * 0.5, 
+					modelRy: initModelRotation.y, 
+					modelRz: initModelRotation.z + Math.PI * 2, 
+					cameraPx: initCameraPosition.x,
+					cameraPy: initCameraPosition.y,
+					cameraPz: initCameraPosition.z + 300,
+					cameraOffset: 10
+				};
+	
+			var aniFinal = {
+					modelRx: initModelRotation.x, 
+					modelRy: initModelRotation.y, 
+					modelRz: initModelRotation.z, 
+					cameraPx: initCameraPosition.x,
+					cameraPy: initCameraPosition.y,
+					cameraPz: initCameraPosition.z,
+					cameraOffset: 10000
+				};
+	
+			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
+				that.scene.model.rotation.x = this.modelRx;
+				that.scene.model.rotation.y = this.modelRy;
+				that.scene.model.rotation.z = this.modelRz;
+	
+				var offset = 0;
+	
+				that.scene.camera.position.x = this.cameraPx + offset;
+				that.scene.camera.position.y = this.cameraPy;
+				that.scene.camera.position.z = this.cameraPz;
+				that.scene.camera.lookAt(that.target);
+			}).onComplete(function() { 
+				that.removeTween(tween);
+				that.setState('handle');
+			}).start();
+	
+			that.addTween(tween)
 		}
 	
 		function render() {
 			that.addTick(function() {
+				//console.log(windowSizePX);
 				M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 				M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
 				M3.renderer.setScissorTest(true);
 				M3.renderer.setClearColor(0x000000);
-				that.camera.updateProjectionMatrix();
-				M3.renderer.render( M3.scene, that.camera );	
+				that.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
+				that.scene.camera.updateProjectionMatrix();
+				M3.renderer.render( M3.scene, that.scene.camera );	
 				that.trackball.update();		
 			});
 		}
 	});
-	
-	// 窗口状态管理
-	var displayWindowState = {
-	
-		// 下载状态
-		loading: function(displayWindow) {
-			// 加载模型资源
-			loader.load(
-				displayWindow.productData.model, 
-				function(p) { displayWindow.showProgress(p); }, 
-				function(res) {	displayWindow.handleModelLoaded(res); }
-			);
-		},
-	
-		// 动画播放
-		animate: function(displayWindow, first) {
-	
-			var aniInit = {
-					modelRx: Math.PI / 2, 
-					modelRy: 0, 
-					modelRz: Math.PI * 2, 
-					cameraPx: displayWindow.target.x,
-					cameraPy: displayWindow.target.y,
-					cameraPz: displayWindow.target.z + 300,
-					cameraOffset: 10
-				};
-			var aniFinal = {
-					modelRx: Math.PI / 2.5, 
-					modelRy: 0.2, 
-					modelRz: 0, 
-					cameraPx: displayWindow.target.x,
-					cameraPy: displayWindow.target.y,
-					cameraPz: displayWindow.target.z + 40,
-					cameraOffset: 10000
-				};
-	
-	
-			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
-				displayWindow.model.rotation.x = this.modelRx;
-				displayWindow.model.rotation.y = this.modelRy;
-				displayWindow.model.rotation.z = this.modelRz;
-	
-				var offset = 0//(parseInt(this.cameraOffset) % 20 - 10) / 20;
-	
-				displayWindow.camera.position.x = this.cameraPx + offset;
-				displayWindow.camera.position.y = this.cameraPy;
-				displayWindow.camera.position.z = this.cameraPz;
-	
-			}).onComplete(function() { 
-				displayWindow.removeTween(tween);
-				displayWindow.setState('handle');
-			}).start();
-	
-			displayWindow.addTween(tween);
-		},
-	
-		// 可操作状态
-		handle: function(displayWindow) {
-	
-		}
-	}
 	
 	module.exports = DisplayWindow;
 	
@@ -12391,246 +12527,6 @@
 	};
 	
 	module.exports = TrackballControls;
-
-/***/ },
-/* 17 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(9);
-	var Loader = __webpack_require__(15);
-	
-	
-	var DisplayRoom = View.extend(function() {
-		var that = this;
-		var active = false;
-		var initialized = false;
-		var config; // 配置
-		var assets;
-		var loader = new Loader();
-		var sizeInfo;
-	
-		// scene
-		var camera;
-		var trackball;
-	
-		this.state; // 状态
-	
-	
-	
-		this.constructor = function() {
-			this.super();
-			config = $.extend(true, {}, CONFIG);
-		}
-	
-		this.activate = function() {
-			active = true;
-			if (!initialized) {
-				init(); return;
-			}
-			render();
-		}
-	
-		this.inActivate = function() {
-			M3.scene.remove(camera);
-		}
-	
-		this.resize = function() {
-			if (!initialized && active) return;
-			camera.aspect = window.innerWidth / window.innerHeight;
-	        camera.updateProjectionMatrix();
-	
-			camera.position.set(0, 0, 250);
-			camera.lookAt(baseCrood);
-		}
-	
-		// 场景搭建，ui创建
-		function init() {
-			if (!assets) {
-				loadAsset(); return;
-			}
-			initialized = true;
-	
-			// scene
-			setupScene();
-	
-			// ui
-			setupUI();
-	
-			that.activate();
-		}
-	
-		// 加载资源
-		function loadAsset() { 
-			var assetsConfig = $.extend(true, {}, config);
-	
-			assetsConfig.scene = {
-				room: [
-					'./assets/room/wall.jpg',
-					'./assets/room/wall.jpg',
-					'./assets/room/wall.jpg',
-					'./assets/room/floor.jpg',
-					'./assets/room/wall.jpg',
-					'./assets/room/wall.jpg',
-				]
-			}
-	
-			loader.load(assetsConfig, null, function(res) {
-				assets = res;
-				init();
-			});
-		}
-	
-		function setupScene() {
-	
-			// room
-			var wallMaterial = new THREE.MeshLambertMaterial({color: 0xffffff});
-	
-			var loader = new THREE.CubeTextureLoader();
-			var textureCube = loader.load(assets.scene.room);
-	
-			textureCube.repeat.set(5,5);
-			textureCube.wrapS = THREE.RepeatWrapping;
-			textureCube.wrapT = THREE.RepeatWrapping;
-	        // var shader = THREE.ShaderLib["cube"];
-	        // shader.uniforms["tCube"].value = textureCube;
-	        // var roomMaterial = new THREE.ShaderMaterial({
-	        //     fragmentShader: shader.fragmentShader,
-	        //     vertexShader: shader.vertexShader,
-	        //     uniforms: shader.uniforms,
-	        //     depthWrite: false,
-	        //     side: THREE.BackSide
-	        // });
-			// roomMaterial.map.repeat.set(5,5);
-		 //    roomMaterial.map.wrapS = THREE.RepeatWrapping;
-		 //    roomMaterial.map.wrapT = THREE.RepeatWrapping;
-	
-			var roomMaterials = [];
-			var material;
-			for (var i = 0; i < assets.scene.room.length; i++) {
-				if (i == 3) {
-					material = new THREE.MeshBasicMaterial({
-						'map': THREE.ImageUtils.loadTexture(assets.scene.room[i]),
-						'side': THREE.BackSide
-					});	
-					material.reflectivity = 1;
-				} else {
-					material = new THREE.MeshBasicMaterial({
-						'map': THREE.ImageUtils.loadTexture(assets.scene.room[i]),
-						'side': THREE.BackSide
-					});				
-				}
-	
-	
-				material.map.repeat.set(5,5);
-	            material.map.wrapS = THREE.RepeatWrapping;
-	            material.map.wrapT = THREE.RepeatWrapping;
-	
-				roomMaterials.push(material);
-			}
-			var roomMaterial = new THREE.MeshFaceMaterial( roomMaterials );
-	
-			var roomCube = new THREE.CubeGeometry(100, 80, 100);
-			var room = new THREE.Mesh(roomCube, roomMaterial);
-	
-			M3.scene.add(room);
-	
-			// logo 
-			var logoCube = new THREE.CubeGeometry(50, 20, 1);
-			var logoMaterial = wallMaterial;
-			logoMaterial.envMap = textureCube;
-			var logo = new THREE.Mesh(logoCube, logoMaterial);
-			logo.position.set(0, 0, -47);
-			M3.scene.add(logo);
-	
-			// table
-			var tableTopCyliner = new THREE.CylinderGeometry(20, 19.8, 0.5, 60);
-			var tableMaterial = wallMaterial;
-			tableMaterial.envMap = textureCube;
-	
-			var tableTop = new THREE.Mesh(tableTopCyliner, tableMaterial);
-			tableTop.position.set(0, -29, 0);
-			M3.scene.add(tableTop);
-	
-			var tableBottomCyliner = new THREE.CylinderGeometry(19.5, 16, 10, 60);
-			var tableBottom = new THREE.Mesh(tableBottomCyliner, tableMaterial);
-			tableBottom.position.set(0, -35, 0);
-			M3.scene.add(tableBottom);
-	
-			// light 
-	        var ambiColor = "#333333";
-	        var ambientLight = new THREE.AmbientLight(ambiColor);
-	        M3.scene.add(ambientLight);
-	
-	        var roomLight = {};
-	        roomLight.lightCenter = new THREE.SpotLight(0xffffff);
-			roomLight.lightLeftTop = new THREE.SpotLight(0xffffff);
-			roomLight.lightRightTop = new THREE.SpotLight(0xffffff);
-			roomLight.lightLeftBottom = new THREE.SpotLight(0xffffff);
-			roomLight.lightRightBottom = new THREE.SpotLight(0xffffff);
-	
-	        roomLight.lightCenter = new THREE.SpotLight(0, 40, 0);
-			roomLight.lightLeftTop.position.set(-49, 49, -49);
-			roomLight.lightRightTop.position.set(49, 49, -49);
-			roomLight.lightLeftBottom.position.set(-49, 49, 49);
-			roomLight.lightRightBottom.position.set(49, 49, 49);
-	
-			for (var light in roomLight) {
-		        roomLight[light].castShadow = true;
-		        roomLight[light].shadowCameraNear = 2;
-		        roomLight[light].shadowCameraFar = 100;
-		        roomLight[light].shadowCameraFov = 40;
-		        roomLight[light].distance = 0;
-		        roomLight[light].angle = 0.4;
-		        roomLight[light].intensity = 0.3;
-				M3.scene.add(roomLight[light]);
-			}
-	
-	
-	
-			// camera
-	        camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 500);
-	        camera.position.set(-50, 20, 50);
-	        camera.lookAt(new THREE.Vector3(0, 0, 0));
-	        M3.scene.add(camera);
-	
-	        trackball = new THREE.TrackballControls(camera);
-		}
-	
-		function setupUI() {
-	
-		}
-	
-	
-	
-		function render() {
-			that.addTick(function() {
-				M3.renderer.render(M3.scene, camera);
-				trackball.update();
-			});
-		}
-	});
-	
-	module.exports = DisplayRoom;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(7)))
 
 /***/ }
 /******/ ]);

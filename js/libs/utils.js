@@ -337,22 +337,22 @@ function calculateSubWindowSize(windowNum) {
 	var sizes = [];
 	switch(windowNum) {
 		case 1: 
-			sizes = [{ left: 0, top: 0, width: '100%', height: '100%'}];
+			sizes = [{ left: 0, top: 0, width: 1, height: 1}];
 			break;
 		case 2: 
-			sizes = [{ left: 0, top: 0, width: '50%', height: '100%'},
-					 { left: '50%', top: 0, width: '50%', height: '100%'}];
+			sizes = [{ left: 0, top: 0, width: 0.5, height: 1},
+					 { left: 0.5, top: 0, width: 0.5, height: 1}];
 			break;
 		case 3: 
-			sizes = [{ left: 0, top: 0, width: '50%', height: '100%'},
-					 { left: '50%', top: 0,width: '50%', height: '50%'},
-					 { left: '50%', top: '50%',width: '50%', height: '50%'}];
+			sizes = [{ left: 0, top: 0, width: 0.5, height: 1},
+					 { left: 0.5, top: 0,width: 0.5, height: 0.5},
+					 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}];
 			break;
 		case 4: 
-			sizes = [{ left: 0, top: 0, width: '50%', height: '50%'},
-					 { left: '50%', top: 0,width: '50%', height: '50%'},
-					 { left: 0, top: '50%',width: '50%', height: '50%'},
-					 { left: '50%', top: '50%',width: '50%', height: '50%'}];
+			sizes = [{ left: 0, top: 0, width: 0.5, height: 0.5},
+					 { left: 0.5, top: 0,width: 0.5, height: 0.5},
+					 { left: 0, top: 0.5,width: 0.5, height: 0.5},
+					 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}];
 			break;
 	}
 	return sizes;

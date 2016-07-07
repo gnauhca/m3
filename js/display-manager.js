@@ -5,15 +5,16 @@ var DisplayManager = View.extend(function() {
 	var that = this;
 	this.name = 'display-manager';
 	this.displayWindows = [];
+	this.activeWindows = [];
 
 	this.$domWrap = $('#displayView');
 
 	this.constructor = function() {
-		
+		this.super();
 	}
 
 	this.setup = function() {
-		
+
 	}
 
 	this.activate = function(data) { 
@@ -21,36 +22,57 @@ var DisplayManager = View.extend(function() {
 		var sizePos = calculateSubWindowSize(productDatas.length);
 
 		productDatas.forEach(function(productData, i) {
+
 			var displayWindowData = {
 				'productData': productData,
 				'cameraPos': data.cameraPos,
 				'windowSize': sizePos[i],
+			};
+			var displayWindow;
+
+			if (that.displayWindows.length) {
+				displayWindow = that.displayWindows.pop();
+			} else {
+				displayWindow = new DisplayWindow();
 			}
 
-			that.displayWindows[i] = $.extend(that.displayWindows[i], displayWindowData);
-
-			if (!that.displayWindows[i].displayView) {
-				that.displayWindows[i].displayView = new DisplayWindow();
-			}
-			that.displayWindows[i].displayView.activate(displayWindowData);
+			displayWindow.activate(displayWindowData);
+			that.activeWindows.push(displayWindow);
 		});
 
 		// UI
 		this.$domWrap.show();
 	}
 
+	this.inActivate = function() {}
 
-	this.removeWindow = function(displayWindows) {
+	this.removeWindow = function(displayWindow) {
+		this.activeWindows.some(function(activeWindow, i) {
+			if (activeWindow === displayWindow) {
+				that.displayWindows.push(activeWindow);
+				that.activeWindows.splice(i, 1);
+				return true;
+			} 
+		});
+		
 
+		resetWindow();
 	}
 
 	function addWindow() {
 
 	}
 
-	function createDisplayView() {
-
+	function resetWindow() {
+		var sizePos = calculateSubWindowSize(that.activeWindows.length);
+		that.activeWindows.forEach(function(activeWindow, i) {
+			activeWindow.resizeWindow(sizePos[i]);
+		});
 	}
+
 });
 
 module.exports = DisplayManager;
+
+
+

@@ -153,12 +153,16 @@ var ProductsPreview = View.extend(function() {
 		$domWrap.removeClass('show-control').addClass('choosed');
 		var $li = $domWrap.find('.list-wrap li');
 		var selectedPos = calculateSubWindowSize(productSelected.length);
+		var selectedPosCSS = $.extend(true, {}, selectedPos);
 		var index = 0;
 
+		for (var key in selectedPosCSS) {
+			selectedPosCSS[key] = selectedPosCSS[key] * 100 + '%';
+		}
 		productDatas.forEach(function(product, i) {
 			if (index > productSelected.length - 1) return false;
 			if (productSelected.indexOf(product) != -1) {
-				$li.eq(i).css(selectedPos[index]);
+				$li.eq(i).css(selectedPosCSS);
 			    index++;			
 			}
 		});

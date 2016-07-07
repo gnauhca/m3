@@ -1,6 +1,8 @@
 var TimeBody = require('./time.js');
 var views = [];
 
+var viewConstructors;
+
 var View = TimeBody.extend(function() {
     this.active = false;
     this.getName = function() {
@@ -14,17 +16,18 @@ var View = TimeBody.extend(function() {
         this.getName();
         views[this.name] = this;
         this.super();
+
+        viewConstructors = {
+            'welcome': require('./welcome.js'),
+            'product-preview': require('./product-preview.js'),
+            'display-manager': require('./display-manager.js'),
+            'display-window': require('./display-window.js'),
+            'list': require('./list.js')
+        };
     }
 
     this.activateView = function(name, data) {
         if (!views[name]) {
-            var viewConstructors = {
-                'welcome': require('./welcome.js'),
-                'product-preview': require('./product-preview.js'),
-                'display-manager': require('./display-manager.js'),
-                'display-window': require('./display-window.js'),
-                'list': require('./list.js')
-            };
             views[name] = new viewConstructors[name]();
         }
         views[name].activate(data);
@@ -36,6 +39,13 @@ var View = TimeBody.extend(function() {
             views[name] = new viewConstructors[name]();
         }
         views[name].inactivate(data);
+    }
+
+    this.getView = function(name) {
+        if (!views[name]) {
+            views[name] = new viewConstructors[name]();
+        }
+        return views[name];
     }
 
     this.activate = function(data) {}
