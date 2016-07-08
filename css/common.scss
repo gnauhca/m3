@@ -164,69 +164,139 @@ body {
         color: rgba(0,0,0,0.6);
     }
     
-    .display-window {
-        box-sizing: border-box;
-        position: absolute;
-        border: 1px solid #888;
 
-        .window-control {
-            margin: 0 auto;
-            width: 100%;
-            text-align: right;
-            background-color: rgba(255,255,255,0.3);
-            font-size: 40px;
-            i.btn {
-                cursor: pointer;
-                margin: 10px 10px;
-                vertical-align: middle;
-            }
-            i.close-btn {
-                font-size: 70px;
-                line-height: 40px;
-                margin-right: 20px;
-            }
+}
+
+#displayView .display-window {
+    box-sizing: border-box;
+    position: absolute;
+    border: 1px solid #888;
+
+    .window-control {
+        margin: 0 auto;
+        width: 100%;
+        text-align: right;
+        background-color: rgba(255,255,255,0.3);
+        font-size: 40px;
+        i.btn {
+            cursor: pointer;
+            margin: 10px 10px;
+            vertical-align: middle;
         }
-        .colors-control {
-            position: absolute;
-            width: 100%;
-            left: 0%;
-            bottom: 0;
-            font-size: 30px;
-            text-align: right;
-            //background-color: rgba(255,255,255,0.3);
-            .color {
-                display: inline-block;
-                box-sizing: border-box;
-                width: 40px;
-                height: 40px;
-                margin: 20px 10px;
-                opacity: 0.3;
-                cursor: pointer;
-                box-shadow: 0 0 4px #888;
-                outline: 1px solid #333;
-                &.selected {
-                    opacity: 1;
-                }
-                &.white {
-                    background-color: #eee;
-                    outline-color: #eee;
-                }
-                &.black {
-                    background-color: #333;
-                    outline-color: #333;
-                }
-                &.red {
-                    background-color: #f00;
-                    outline-color: #f00;
-                }
+        i.close-btn {
+            font-size: 70px;
+            line-height: 40px;
+            margin-right: 20px;
+        }
+    }
+    .colors-control {
+        position: absolute;
+        width: 100%;
+        left: 0%;
+        bottom: 0;
+        font-size: 30px;
+        text-align: right;
+        //background-color: rgba(255,255,255,0.3);
+        .color {
+            display: inline-block;
+            box-sizing: border-box;
+            width: 40px;
+            height: 40px;
+            margin: 20px 10px;
+            opacity: 0.3;
+            cursor: pointer;
+            box-shadow: 0 0 4px #888;
+            outline: 1px solid #333;
+            &.selected {
+                opacity: 1;
+            }
+            &.white {
+                background-color: #eee;
+                outline-color: #eee;
+            }
+            &.black {
+                background-color: #333;
+                outline-color: #333;
+            }
+            &.red {
+                background-color: #f00;
+                outline-color: #f00;
             }
         }
     }
 }
 
+#displayView .display-manager {
+    position: absolute;
+    width: 100%;
+    height: 100%; 
 
+    .setting-btn {
+        position: absolute;
+        z-index: 102;
+        top: 0;
+        left: 0;
+        font-size: 60px;
+        line-height: 60px;
+        width: 60px;
+        height: 60px;
+        margin: 0.5rem;
 
+        opacity: 0.7;
+        cursor: pointer;
+        transition: all 1s;
+        &:hover {
+            opacity: 1;
+        }
+    }
+    .setting-wrap {
+        display: none;
+        position: absolute;
+        z-index: 102;
+        width: 100%;
+        height: 100%;    
+        background-color: rgba(0,0,0,0.8);    
 
+        transition: all 1s;
+        .btn-wrap {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            text-align: center;
+            font-size: 10rem;
+
+            .btn {
+                margin: 10%;
+                vertical-align: middle;
+                display: inline-block;
+                opacity: 0.7;
+                cursor: pointer;
+                &:hover {
+                    opacity: 1;
+                }
+            }
+
+            .lock-btn {
+                display: inline-block;
+            }
+            .unlock-btn {
+                display: inline-block;
+                display: none;
+            }
+        }
+    }
+
+    &.show {
+        .setting-btn {
+            transform: translate(-200%, -200%);
+        }
+        .setting-wrap {
+            display: block;
+        }
+    }
+
+}
 
 
 

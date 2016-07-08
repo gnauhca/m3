@@ -3,11 +3,15 @@ var DisplayWindow = require('./display-window.js');
 
 var DisplayManager = View.extend(function() {
 	var that = this;
+	var initialized = false;
+	var lockTick;
+
 	this.name = 'display-manager';
 	this.displayWindows = [];
 	this.activeWindows = [];
 
-	this.$domWrap = $('#displayView');
+	var $domWrap = $('#displayView');
+	var $domManager = $('.display-manager');
 
 	this.constructor = function() {
 		this.super();
@@ -18,6 +22,12 @@ var DisplayManager = View.extend(function() {
 	}
 
 	this.activate = function(data) { 
+
+		active = true;
+		if (!initialized) {
+			init();
+		}
+
 		var productDatas = $.extend(true, [], data.productDatas);
 		var sizePos = calculateSubWindowSize(productDatas.length);
 
@@ -41,10 +51,12 @@ var DisplayManager = View.extend(function() {
 		});
 
 		// UI
-		this.$domWrap.show();
+		$domWrap.show();
 	}
 
-	this.inActivate = function() {}
+	this.inActivate = function() {
+		$domWrap.hide();
+	}
 
 	this.removeWindow = function(displayWindow) {
 		this.activeWindows.some(function(activeWindow, i) {
@@ -54,13 +66,67 @@ var DisplayManager = View.extend(function() {
 				return true;
 			} 
 		});
-		
 
 		resetWindow();
 	}
 
-	function addWindow() {
 
+
+	function init() {
+		setupUI();
+	}
+
+	function setupUI() {
+		var $lockBtn = $domManager.find('.lock-btn');
+		var $unlockBtn = $domManager.find('.unlock-btn');
+		var $backBtn = $domManager.find('.back-btn');
+
+		$domManager.on('click', '.setting-btn', function() {
+			$domManager.addClass('show');
+		});
+
+		$domManager.on('click', '.lock-btn', function() {
+			$lockBtn.hide();
+			$unlockBtn.show();
+			$domManager.removeClass('show');
+			lock();
+		});
+
+		$domManager.on('click', '.unlock-btn', function() {
+			$unlockBtn.hide();
+			$lockBtn.show();
+			$domManager.removeClass('show');
+			unlock();
+		});
+
+		$domManager.on('click', '.backBtn', function() {
+			that.inActivate();
+		});
+	}
+
+
+	function lock() {
+		that.activeWindows.forEach(function(activeWindow, i) {
+			var isMain = (i === 0);
+			activeWindow.lock(isMain);
+		});
+
+		lockTick = that.addTick(function() {
+			var sizeInfo = that.activeWindows[0].getSize();
+			//console.log(sizeInfo);
+			that.activeWindows.forEach(function(activeWindow, i) {
+				if (i > 0)
+				activeWindow.setSize(sizeInfo);
+			});
+		});
+	}
+
+	function unlock() {
+		that.activeWindows.forEach(function(activeWindow, i) {
+			activeWindow.unlock();
+		});
+
+		that.removeTick(lockTick);
 	}
 
 	function resetWindow() {
