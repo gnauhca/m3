@@ -65,11 +65,24 @@ View.addConstructor = function(name, _constructor) {
     viewConstructors[name] = _constructor
 }
 
-window.onresize = function() {
-    for (var name in views) {
-        views[name].active && views[name].resize();
+
+
+
+window.onresize = (function() {
+
+    var winWidth;
+    var htmlElem = document.querySelector('html');
+
+
+    return function() {
+        winWidth = window.innerWidth;
+        htmlElem.style.fontSize = winWidth/100 + 'px';
+
+        for (var name in views) {
+            views[name].active && views[name].resize();
+        }        
     }
-}
+})();
 
 module.exports = View;
 

@@ -32,6 +32,9 @@ var DisplayWindow = View.extend(function() {
 	this.state;
 	this.color;
 
+	this.locked = false;
+
+
 
 	this.$domWrap = $('#displayView');
 	this.$domElem;
@@ -138,72 +141,53 @@ var DisplayWindow = View.extend(function() {
 		}).start();
 	}
 
-	// model，trackball 重置
-	this.refresh = function() {
-		that.setState('animate');
-		var initModelPosition = that.sceneObjSizes.model.position;
-		var initModelRotation = that.sceneObjSizes.model.rotation;
-
-		var initCameraPosition = that.sceneObjSizes.camera.position;
-		var initCameraLookAtPosition = that.sceneObjSizes.camera.position;
-
-
-		var cameraLookAt = new THREE.Vector3(0, 0, -1);
-        cameraLookAt.applyEuler(this.scene.camera.rotation, this.scene.camera.eulerOrder);
-
-		var aniInit = {
-				modelRx: this.scene.model.rotation.x, 
-				modelRy: this.scene.model.rotation.y, 
-				modelRz: this.scene.model.rotation.z, 
-				cameraPx: this.scene.camera.position.x,
-				cameraPy: this.scene.camera.position.y,
-				cameraPz: this.scene.camera.position.z,
-				cameraLx: cameraLookAt.x,
-				cameraLy: cameraLookAt.y,
-				cameraLz: cameraLookAt.z,
-			};
-
-		var aniFinal = {
-				modelRx: initModelRotation.x, 
-				modelRy: initModelRotation.y, 
-				modelRz: initModelRotation.z, 
-				cameraPx: initCameraPosition.x,
-				cameraPy: initCameraPosition.y,
-				cameraPz: initCameraPosition.z,
-				cameraLx: initCameraLookAtPosition.x,
-				cameraLy: initCameraLookAtPosition.y,
-				cameraLz: initCameraLookAtPosition.z,
-			};
-
-		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
-			that.scene.model.rotation.x = this.modelRx;
-			that.scene.model.rotation.y = this.modelRy;
-			that.scene.model.rotation.z = this.modelRz;
-
-			that.scene.camera.position.x = this.cameraPx;
-			that.scene.camera.position.y = this.cameraPy;
-			that.scene.camera.position.z = this.cameraPz;
-			that.scene.camera.lookAt(this.cameraLx, this.cameraLy, this.cameraLz);
-		}).onComplete(function() { 
-			that.removeTween(tween);
-			that.setState('handle');
-		}).start();
-	}
-
 	this.setState = function(state) {
 		this.state = state;
 		if (state === 'handle') { 
 			this.trackball.init(this.scene.camera, this.scene.model);
 			this.resize(); 
-			this.trackball && (this.trackball.enabled = true);
+			!this.locked && this.trackball && (this.trackball.enabled = true);
 		} else {
-			this.trackball && (this.trackball.enabled = false);
+			!this.locked && this.trackball && (this.trackball.enabled = false);
 		}
 	}
 
-	// 下载进度
-	this.showProgress = function(progress) {
-		console.log('displayWindow progress', progress);
+	// 获取模型旋转信息，相机相对信息，用于设置其他 displayWindow 使表现一致；
+	this.getSize = function() {
+		var size = {};
+
+		size.modelRotation = this.scene.model.rotation.clone();
+		size.cameraRotation = this.scene.camera.rotation.clone();
+		size.cameraUp = this.scene.camera.up.clone();
+		size.eye = (new THREE.Vector3).subVectors(this.scene.model.position, this.scene.camera.position);
+
+		return size;
+	}
+
+	this.setSize = function(size) {
+		this.scene.model.rotation.copy(size.modelRotation);
+		// this.scene.camera.rotation.copy(size.cameraRotation);
+		// this.scene.camera.up = size.cameraUp;
+		// this.scene.camera.position.addVectors(this.scene.model.position, size.eye);
+	}
+
+	this.lock = function(isMain) {
+		this.locked = true;
+		if (isMain) {
+			this.trackball.enabled = true;
+			this.trackball.fullScreen = true;
+		} else {
+			this.trackball.enabled = false;
+		}
+		refresh();
+	}
+
+	this.unlock = function() {
+		this.locked = false;
+
+		this.trackball.enabled = true;
+		this.trackball.fullScreen = false;
+		refresh();
 	}
 
 	/* private method */
@@ -223,6 +207,7 @@ var DisplayWindow = View.extend(function() {
 		that.activate();
 	}
 
+	// 加载模型资源
 	function loadAsset() {
 		that.setState('loading');
 		var assetConifg = $.extend(true, {}, config.productData.model);
@@ -230,9 +215,14 @@ var DisplayWindow = View.extend(function() {
 		// 加载模型资源
 		loader.load(
 			assetConifg, 
-			function(p) { that.showProgress(p); }, 
+			function(p) { showProgress(p); }, 
 			function(res) {	assets = res; init(); }
 		);
+	}
+
+	// 下载进度
+	function showProgress(progress) {
+		console.log('displayWindow progress', progress);
 	}
 
 	function setupScene() {
@@ -285,9 +275,9 @@ var DisplayWindow = View.extend(function() {
 		that.$domElem.find('.colors-control').empty().html(colorHTML);
 
 		// 事件
-		that.$domElem.on('click', '.reset-btn', function() {that.refresh()});
-		that.$domElem.on('click', '.close-btn', function() {that.inActivate()});
-		that.$domElem.on('click', '.color', function() {changeColor($(this).data('color'))});	
+		that.$domElem.on('click', '.reset-btn', function() { refresh() });
+		that.$domElem.on('click', '.close-btn', function() { that.inActivate() });
+		that.$domElem.on('click', '.color', function() { changeColor($(this).data('color')) });	
 	}
 
 	function changeColor(color) {
@@ -343,9 +333,7 @@ var DisplayWindow = View.extend(function() {
 			that.scene.model.rotation.y = this.modelRy;
 			that.scene.model.rotation.z = this.modelRz;
 
-			var offset = 0;
-
-			that.scene.camera.position.x = this.cameraPx + offset;
+			that.scene.camera.position.x = this.cameraPx;
 			that.scene.camera.position.y = this.cameraPy;
 			that.scene.camera.position.z = this.cameraPz;
 			that.scene.camera.lookAt(that.target);
@@ -355,6 +343,57 @@ var DisplayWindow = View.extend(function() {
 		}).start();
 
 		that.addTween(tween)
+	}
+
+	// model，trackball 重置
+	function refresh() { //console.log(that.sceneObjSizes.model.position);
+		that.setState('animate');
+		var initModelPosition = that.sceneObjSizes.model.position;
+		var initModelRotation = that.sceneObjSizes.model.rotation;
+
+		var initCameraPosition = that.sceneObjSizes.camera.position;
+		var initCameraLookAtPosition = that.sceneObjSizes.camera.position;
+
+		var cameraLookAt = new THREE.Vector3(0, 0, -1);
+        cameraLookAt.applyEuler(that.scene.camera.rotation, that.scene.camera.eulerOrder);
+
+		var aniInit = {
+				modelRx: that.scene.model.rotation.x, 
+				modelRy: that.scene.model.rotation.y, 
+				modelRz: that.scene.model.rotation.z, 
+				cameraPx: that.scene.camera.position.x,
+				cameraPy: that.scene.camera.position.y,
+				cameraPz: that.scene.camera.position.z,
+				cameraLx: cameraLookAt.x,
+				cameraLy: cameraLookAt.y,
+				cameraLz: cameraLookAt.z,
+			};
+
+		var aniFinal = {
+				modelRx: initModelRotation.x, 
+				modelRy: initModelRotation.y, 
+				modelRz: initModelRotation.z, 
+				cameraPx: initCameraPosition.x,
+				cameraPy: initCameraPosition.y,
+				cameraPz: initCameraPosition.z,
+				cameraLx: initCameraLookAtPosition.x,
+				cameraLy: initCameraLookAtPosition.y,
+				cameraLz: initCameraLookAtPosition.z,
+			};
+
+		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
+			that.scene.model.rotation.x = this.modelRx;
+			that.scene.model.rotation.y = this.modelRy;
+			that.scene.model.rotation.z = this.modelRz;
+
+			that.scene.camera.position.x = this.cameraPx;
+			that.scene.camera.position.y = this.cameraPy;
+			that.scene.camera.position.z = this.cameraPz;
+			that.scene.camera.lookAt(new THREE.Vector3(this.cameraLx, this.cameraLy, this.cameraLz));
+		}).onComplete(function() { 
+			that.removeTween(tween);
+			that.setState('handle');
+		}).start();
 	}
 
 	function render() {
