@@ -108,12 +108,16 @@ var TimeBody = Class.extend(function TimeBody() {
 	}
 
 	/** 
-	 * 包装tween
-	 * @param timegap 与上一帧的时间间隔
+	 * tween
 	 */
 	this.addTween = function(tween) {
 		this.tweens.push(tween);
 	}
+
+	this.addTween3 = function(THREEObject, to, dur) {
+
+	}
+
 
 	this.removeTween = function(tween) {
 		if (!tween) {
@@ -124,6 +128,7 @@ var TimeBody = Class.extend(function TimeBody() {
 
 		var index = this.tweens.indexOf(tween);
 
+		tween.stop();
 		if (index !== -1) {
 			this.tweens.splice(index, 1);
 		}

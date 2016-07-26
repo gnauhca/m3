@@ -35,7 +35,7 @@ var DisplayWindow = View.extend(function() {
 	this.locked = false;
 
 
-
+	// dom
 	this.$domWrap = $('#displayView');
 	this.$domElem;
 
@@ -57,9 +57,9 @@ var DisplayWindow = View.extend(function() {
 
 		this.scene.camera.position.copy(config.cameraPos);
 		this.scene.camera.position.x += 20
-		this.scene.platform.position.copy(this.target);
-        this.scene.platform.position.y -= 10;
-        this.scene.platform.rotation.y -= Math.PI * 0.16666666;
+		// this.scene.platform.position.copy(this.target);
+        // this.scene.platform.position.y -= 10;
+        // this.scene.platform.rotation.y -= Math.PI * 0.16666666;
 
         this.scene.model.position.copy(this.target);
 		this.scene.camera.lookAt(this.target);
@@ -72,7 +72,8 @@ var DisplayWindow = View.extend(function() {
 		this.sceneObjSizes.camera.position.z += 40;
 		this.sceneObjSizes.camera.lookAt = this.target.clone();
 
-		Object.keys(this.scene).forEach(function(o) { M3.scene.add(that.scene[o]);});
+		// 添加到场景
+		Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
 		
 		// dom
 		this.$domElem.appendTo(this.$domWrap);
@@ -228,7 +229,8 @@ var DisplayWindow = View.extend(function() {
 	function setupScene() {
 
 		// 3D 相关资源创建
- 		that.scene.spotLight = new THREE.SpotLight(0xffffff);
+ 		that.scene.spotLight = new THREE.SpotLight(0xeeeeee);
+ 		that.scene.spotLight.intensity = 0;
 		that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 
 
@@ -243,10 +245,10 @@ var DisplayWindow = View.extend(function() {
 		that.scene.model = model;
 
         //test
-        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
-        var material = new THREE.MeshLambertMaterial({color: 0x333333});
-        var platform = new THREE.Mesh(geometry, material);
-        that.scene.platform = platform;
+        // var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
+        // var material = new THREE.MeshLambertMaterial({color: 0x333333});
+        // var platform = new THREE.Mesh(geometry, material);
+        // that.scene.platform = platform;
 
 		// trackball
         that.trackball = new TrackballControls(that.scene.camera);

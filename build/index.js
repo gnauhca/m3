@@ -77,7 +77,7 @@
 		// list.activate();	
 	
 		var displayManager = new DisplayManager();
-		displayManager.activate({productDatas:CONFIG.products.slice(0,3),'cameraPos': new THREE.Vector3(0,0,0)});
+		displayManager.activate({productDatas:CONFIG.products.slice(0,4),'cameraPos': new THREE.Vector3(0,0,0)});
 		
 	
 		// var Room = require('./display-room');
@@ -10851,12 +10851,16 @@
 		}
 	
 		/** 
-		 * 包装tween
-		 * @param timegap 与上一帧的时间间隔
+		 * tween
 		 */
 		this.addTween = function(tween) {
 			this.tweens.push(tween);
 		}
+	
+		this.addTween3 = function(THREEObject, to, dur) {
+	
+		}
+	
 	
 		this.removeTween = function(tween) {
 			if (!tween) {
@@ -10867,6 +10871,7 @@
 	
 			var index = this.tweens.indexOf(tween);
 	
+			tween.stop();
 			if (index !== -1) {
 				this.tweens.splice(index, 1);
 			}
@@ -11387,25 +11392,26 @@
 
 	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
 	var DisplayWindow = __webpack_require__(14);
+	//var DisplayManagerUi = require('../display-manager-ui.js');
 	
 	var DisplayManager = View.extend(function() {
 		var that = this;
 		var initialized = false;
 		var lockTick;
+		var sphereTick;
 	
 		this.name = 'display-manager';
 		this.displayWindows = [];
 		this.activeWindows = [];
+	
+		// 3d
+		this.scene = {};
 	
 		var $domWrap = $('#displayView');
 		var $domManager = $('.display-manager');
 	
 		this.constructor = function() {
 			this.super();
-		}
-	
-		this.setup = function() {
-	
 		}
 	
 		this.activate = function(data) { 
@@ -11437,11 +11443,32 @@
 				that.activeWindows.push(displayWindow);
 			});
 	
+			// 3d
+			// 添加到场景
+			// M3.scene.fog = new THREE.Fog(0xffffff, 0.015, 100);
+			Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
+	
+			// 圆旋转动画
+			sphereTick = this.addTick(function() {
+				this.scene.tetrahedronGroup.rotation.x += 0.0005;
+				this.scene.tetrahedronGroup.rotation.y += 0.0005;
+				this.scene.tetrahedronGroup.rotation.z += 0.0005;
+				this.scene.tetrahedronGroup.children.forEach(function(mesh) {
+					mesh.rotation.x += mesh.rr;
+					mesh.rotation.y += mesh.rr;
+					mesh.rotation.z += mesh.rr;
+				});
+				//this.scene.sphere.rotation.x += 0.0005;
+				//this.scene.sphere.rotation.y += 0.0005;
+				//this.scene.sphere.rotation.z += 0.0005;
+			}.bind(this));
+	
 			// UI
 			$domWrap.show();
 		}
 	
 		this.inActivate = function() {
+			this.removeTick(sphereTick);
 			$domWrap.hide();
 		}
 	
@@ -11460,7 +11487,108 @@
 	
 	
 		function init() {
+			setupScene();
 			setupUI();
+		}
+	
+		function setupScene() {
+			// 创建圆
+			var geometry = new THREE.SphereGeometry( 100, 20, 10 );
+	
+			//console.log(geometry);
+			var random;
+			var tetrahedron;
+			var tetrahedronGroup = new THREE.Group();;
+	
+			var createTetrahedron = (function() {
+				THREE.TetrahedronGeometry = function ( radius, detail ) {
+	
+				    var vertices = [ 1,  1,  1,   - 1, - 1,  1,   - 1,  1, - 1,    1, - 1, - 1];
+				    var indices = [ 2,  1,  0,    0,  3,  2,    1,  3,  0,    2,  3,  1];
+	
+				    THREE.PolyhedronGeometry.call( this, vertices, indices, radius, detail );
+				};
+	
+				THREE.TetrahedronGeometry.prototype = Object.create( THREE.Geometry.prototype );
+				var material = 	new THREE.MeshLambertMaterial({color: 0x666666, /*wireframe: true*/});
+				return function(radius, detail) {
+					return (new THREE.Mesh(
+						new THREE.TetrahedronGeometry(radius, detail),
+						material
+					));
+				}		
+			})();
+	
+			geometry.vertices.forEach(function(vertice) {
+				tetrahedron = createTetrahedron(4* Math.random()|0, 0);
+				tetrahedron.position.copy(vertice);
+				tetrahedron.position.x += Math.random() * 10;
+				tetrahedron.position.y += Math.random() * 10;
+				tetrahedron.position.z += Math.random() * 10;
+				tetrahedron.rotation = new THREE.Euler(
+	                Math.PI * 2 * Math.random(),
+	                Math.PI * 2 * Math.random(),
+	                0,
+	                'XYZ'
+	            );
+	            tetrahedron.rr = 0.5 - Math.random();
+	            tetrahedron.rr *= 0.05;
+				tetrahedronGroup.add(tetrahedron);
+	
+			});
+			that.scene.tetrahedronGroup = tetrahedronGroup;
+			//console.log(tetrahedronGroup);
+	
+	
+	
+			var material = new THREE.MeshPhongMaterial( {color: 0xeeeeee,side: THREE.BackSide, /*wireframe: true*/} );
+			var basicMaterial = new THREE.MeshBasicMaterial({color: 0x333333, /*wireframe: true*/});
+			var sphere = new THREE.SceneUtils.createMultiMaterialObject(geometry, [basicMaterial, material]);
+			sphere.name = this.name + ' sphere';
+			//that.scene.sphere = sphere;
+			//console.log(sphere);
+	
+			// 光
+			//that.scene.spotLight = new THREE.SpotLight(0xffffff);
+	
+	
+			// // point light
+			// var pointLight = new THREE.PointLight(0xffffff);
+			// pointLight = new THREE.PointLight(0xffffff);
+			// pointLight.position.set(0,0,0);
+			// pointLight.intensity = 0.6;
+			// that.scene.spotLight = pointLight;
+			// light 
+	        var ambiColor = "#111111";
+	        ambientLight = new THREE.AmbientLight(ambiColor);
+	        that.scene.ambientLight = ambientLight;
+	
+			// 
+	        var directionalLightColor = "#ffffff";
+	        var directionalLight = new THREE.DirectionalLight(directionalLightColor);
+	        directionalLight.name = this.name + ' directionalLight';
+	        directionalLight.position.set(-100, 50, 50);
+	        directionalLight.castShadow = true;
+	        directionalLight.shadowCameraNear = 0;
+	        directionalLight.shadowCameraFar = 300;
+	        directionalLight.shadowCameraLeft = -200;
+	        directionalLight.shadowCameraRight = 200;
+	        directionalLight.shadowCameraTop = 200;
+	        directionalLight.shadowCameraBottom = -200;
+	
+	        directionalLight.distance = 0;
+	        directionalLight.intensity = 0.5;
+	        directionalLight.shadowMapHeight = 1024;
+	        directionalLight.shadowMapWidth = 1024;
+	        //directionalLight.target = that.scene.sphere;
+	
+	
+	        that.scene.directionalLight = directionalLight;
+	
+	        var directionalLight2 = new THREE.DirectionalLight(directionalLightColor);
+	        directionalLight2.position.set(30, 50, 50);
+	        that.scene.directionalLight2 = directionalLight2;
+	
 		}
 	
 		function setupUI() {
@@ -11573,7 +11701,7 @@
 		this.locked = false;
 	
 	
-	
+		// dom
 		this.$domWrap = $('#displayView');
 		this.$domElem;
 	
@@ -11595,9 +11723,9 @@
 	
 			this.scene.camera.position.copy(config.cameraPos);
 			this.scene.camera.position.x += 20
-			this.scene.platform.position.copy(this.target);
-	        this.scene.platform.position.y -= 10;
-	        this.scene.platform.rotation.y -= Math.PI * 0.16666666;
+			// this.scene.platform.position.copy(this.target);
+	        // this.scene.platform.position.y -= 10;
+	        // this.scene.platform.rotation.y -= Math.PI * 0.16666666;
 	
 	        this.scene.model.position.copy(this.target);
 			this.scene.camera.lookAt(this.target);
@@ -11610,7 +11738,8 @@
 			this.sceneObjSizes.camera.position.z += 40;
 			this.sceneObjSizes.camera.lookAt = this.target.clone();
 	
-			Object.keys(this.scene).forEach(function(o) { M3.scene.add(that.scene[o]);});
+			// 添加到场景
+			Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
 			
 			// dom
 			this.$domElem.appendTo(this.$domWrap);
@@ -11766,7 +11895,8 @@
 		function setupScene() {
 	
 			// 3D 相关资源创建
-	 		that.scene.spotLight = new THREE.SpotLight(0xffffff);
+	 		that.scene.spotLight = new THREE.SpotLight(0xeeeeee);
+	 		that.scene.spotLight.intensity = 0;
 			that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
 	
 	
@@ -11781,10 +11911,10 @@
 			that.scene.model = model;
 	
 	        //test
-	        var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
-	        var material = new THREE.MeshLambertMaterial({color: 0x333333});
-	        var platform = new THREE.Mesh(geometry, material);
-	        that.scene.platform = platform;
+	        // var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
+	        // var material = new THREE.MeshLambertMaterial({color: 0x333333});
+	        // var platform = new THREE.Mesh(geometry, material);
+	        // that.scene.platform = platform;
 	
 			// trackball
 	        that.trackball = new TrackballControls(that.scene.camera);

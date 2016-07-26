@@ -31,7 +31,7 @@ window.M3 = {};
 	// list.activate();	
 
 	var displayManager = new DisplayManager();
-	displayManager.activate({productDatas:CONFIG.products.slice(0,3),'cameraPos': new THREE.Vector3(0,0,0)});
+	displayManager.activate({productDatas:CONFIG.products.slice(0,4),'cameraPos': new THREE.Vector3(0,0,0)});
 	
 
 	// var Room = require('./display-room');
