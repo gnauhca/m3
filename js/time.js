@@ -128,7 +128,7 @@ var TimeBody = Class.extend(function TimeBody() {
 
 		var index = this.tweens.indexOf(tween);
 
-		tween.stop();
+		//tween.stop();
 		if (index !== -1) {
 			this.tweens.splice(index, 1);
 		}

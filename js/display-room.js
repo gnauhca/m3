@@ -4,7 +4,6 @@ var Loader = require('./loader');
 
 var DisplayRoom = View.extend(function() {
 	var that = this;
-	var active = false;
 	var initialized = false;
 	var config; // 配置
 	var assets;
@@ -15,6 +14,7 @@ var DisplayRoom = View.extend(function() {
 	var scene = {};
 
 	this.state; // 状态
+	this.active = false;
 
 
 
@@ -24,7 +24,7 @@ var DisplayRoom = View.extend(function() {
 	}
 
 	this.activate = function() {
-		active = true;
+		this.active = true;
 		if (!initialized) {
 			init(); return;
 		}
@@ -36,7 +36,7 @@ var DisplayRoom = View.extend(function() {
 	}
 
 	this.resize = function() {
-		if (!initialized && active) return;
+		if (!initialized && this.active) return;
 		scene.camera.aspect = window.innerWidth / window.innerHeight;
         scene.camera.updateProjectionMatrix();
 
@@ -147,7 +147,11 @@ var DisplayRoom = View.extend(function() {
 		
 
 		scene.tableTopCamera = new THREE.CubeCamera( 0.1, 1000, 500 );
-		scene.tableTopCamera.renderTarget.mapping = THREE.CubeRefractionMapping;
+		//scene.tableTopCamera.renderTarget.mapping = THREE.CubeRefractionMapping;
+		tableMaterial.transparent = true;
+		tableMaterial.opacity = 0.5;
+		tableMaterial.reflectivity = 0.2;
+
 		tableMaterial.envMap = scene.tableTopCamera.renderTarget;
 		tableMaterial.refractionRatio = 1.1;
 		tableMaterial.reflectivity = 0.3;
@@ -204,7 +208,7 @@ var DisplayRoom = View.extend(function() {
 
 
 		// camera
-        scene.camera = new THREE.PerspectiveCamera(80, window.innerWidth / window.innerHeight, 0.1, 500);
+        scene.camera = new THREE.PerspectiveCamera(50, window.innerWidth / window.innerHeight, 0.1, 500);
         scene.camera.position.set(-0, -20, 50);
         scene.camera.lookAt(new THREE.Vector3(0, -40, 0));
         M3.scene.add(scene.camera);

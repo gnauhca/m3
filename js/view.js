@@ -22,6 +22,7 @@ var View = TimeBody.extend(function() {
             'product-preview': require('./product-preview.js'),
             'display-manager': require('./display-manager.js'),
             'display-window': require('./display-window.js'),
+            'display-room': require('./display-room.js'),
             'list': require('./list.js')
         };
     }
@@ -29,6 +30,7 @@ var View = TimeBody.extend(function() {
     this.activateView = function(name, data) {
         if (!views[name]) {
             views[name] = new viewConstructors[name]();
+            views[name].name = name;
         }
         views[name].activate(data);
         
@@ -71,17 +73,22 @@ View.addConstructor = function(name, _constructor) {
 window.onresize = (function() {
 
     var winWidth;
+    var fontSize;
     var htmlElem = document.querySelector('html');
 
 
-    return function() {
+    function r() {
         winWidth = window.innerWidth;
-        htmlElem.style.fontSize = winWidth/100 + 'px';
+        fontSize = winWidth/100;
+        fontSize = fontSize > 10 ? 10 : (fontSize < 5 ? 5 : fontSize);
+        htmlElem.style.fontSize = fontSize + 'px';
 
         for (var name in views) {
             views[name].active && views[name].resize();
         }        
     }
+    r();
+    return r;
 })();
 
 module.exports = View;

@@ -11,6 +11,7 @@ var List = View.extend(function() {
 	var productCfg = []; // 产品配置信息 from config.products
 	var col = 4; // 一列展示的产品数量
 
+	this.name = 'list';
 
 	this.constructor = function() {
 		this.super();

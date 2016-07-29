@@ -11,6 +11,7 @@ var DisplayManager = View.extend(function() {
 	this.name = 'display-manager';
 	this.displayWindows = [];
 	this.activeWindows = [];
+	this.active = false;
 
 	// 3d
 	this.scene = {};
@@ -24,7 +25,6 @@ var DisplayManager = View.extend(function() {
 
 	this.activate = function(data) { 
 
-		active = true;
 		if (!initialized) {
 			init();
 		}
@@ -48,7 +48,7 @@ var DisplayManager = View.extend(function() {
 			}
 
 			displayWindow.activate(displayWindowData);
-			that.activeWindows.push(displayWindow);
+			that.activeWindows.push(displayWindow); 
 		});
 
 		// 3d
@@ -72,12 +72,21 @@ var DisplayManager = View.extend(function() {
 		}.bind(this));
 
 		// UI
-		$domWrap.show();
+		$domWrap.removeClass('none');
+
+		this.active = true;
 	}
 
 	this.inActivate = function() {
+		Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
 		this.removeTick(sphereTick);
-		$domWrap.hide();
+
+		$domWrap.addClass('none');
+		this.activeWindows.forEach(function(activeWindow) {
+			setTimeout(function() {activeWindow.inActivate();}, 0);
+		});
+		this.activeWindows.length = 0;
+		this.active = false;
 	}
 
 	this.removeWindow = function(displayWindow) {
@@ -88,11 +97,12 @@ var DisplayManager = View.extend(function() {
 				return true;
 			} 
 		});
-
 		resetWindow();
 	}
 
-
+	this.resize = function() {
+		resetWindow();
+	}
 
 	function init() {
 		setupScene();
@@ -101,34 +111,39 @@ var DisplayManager = View.extend(function() {
 
 	function setupScene() {
 		// 创建圆
-		var geometry = new THREE.SphereGeometry( 100, 20, 10 );
+		// var geometry = new THREE.SphereGeometry( 100, 10, 5 );
+		var geometry = new THREE.BoxGeometry(200, 200, 200, 6, 6, 6)
 
 		//console.log(geometry);
 		var random;
-		var tetrahedron;
 		var tetrahedronGroup = new THREE.Group();;
 
 		var createTetrahedron = (function() {
-			THREE.TetrahedronGeometry = function ( radius, detail ) {
 
-			    var vertices = [ 1,  1,  1,   - 1, - 1,  1,   - 1,  1, - 1,    1, - 1, - 1];
-			    var indices = [ 2,  1,  0,    0,  3,  2,    1,  3,  0,    2,  3,  1];
+			var colors = [0x2dcaa6, 0x316182,0x79ccd2, 0x254658, 0x98bfc4];
+			var color;
+			var tetrahedron;
+			var material;
 
-			    THREE.PolyhedronGeometry.call( this, vertices, indices, radius, detail );
-			};
-
-			THREE.TetrahedronGeometry.prototype = Object.create( THREE.Geometry.prototype );
-			var material = 	new THREE.MeshLambertMaterial({color: 0x666666, /*wireframe: true*/});
 			return function(radius, detail) {
-				return (new THREE.Mesh(
+				color = colors[~~(Math.random()*colors.length)];
+				// color = 0x2abcde;
+				material = new THREE.MeshLambertMaterial({
+					'color': color,
+					transparent: true,
+					opacity: 0.8
+				});
+				tetrahedron = new THREE.Mesh(
 					new THREE.TetrahedronGeometry(radius, detail),
 					material
-				));
+				);
+				return tetrahedron;
 			}		
 		})();
 
+		var tetrahedron;
 		geometry.vertices.forEach(function(vertice) {
-			tetrahedron = createTetrahedron(4* Math.random()|0, 0);
+			tetrahedron = createTetrahedron(3 * Math.random()|0, 0);
 			tetrahedron.position.copy(vertice);
 			tetrahedron.position.x += Math.random() * 10;
 			tetrahedron.position.y += Math.random() * 10;
@@ -160,13 +175,13 @@ var DisplayManager = View.extend(function() {
 		//that.scene.spotLight = new THREE.SpotLight(0xffffff);
 
 
-		// // point light
-		// var pointLight = new THREE.PointLight(0xffffff);
-		// pointLight = new THREE.PointLight(0xffffff);
-		// pointLight.position.set(0,0,0);
-		// pointLight.intensity = 0.6;
-		// that.scene.spotLight = pointLight;
-		// light 
+		// point light
+		var pointLight = new THREE.PointLight(0xffffff);
+		pointLight = new THREE.PointLight(0xffffff);
+		pointLight.position.set(0,0,0);
+		pointLight.intensity = 0.6;
+		that.scene.pointLight = pointLight;
+
         var ambiColor = "#111111";
         ambientLight = new THREE.AmbientLight(ambiColor);
         that.scene.ambientLight = ambientLight;
@@ -209,21 +224,23 @@ var DisplayManager = View.extend(function() {
 		});
 
 		$domManager.on('click', '.lock-btn', function() {
-			$lockBtn.hide();
-			$unlockBtn.show();
+			$lockBtn.addClass('none')
+			$unlockBtn.removeClass('none');
 			$domManager.removeClass('show');
 			lock();
 		});
 
 		$domManager.on('click', '.unlock-btn', function() {
-			$unlockBtn.hide();
-			$lockBtn.show();
+			$unlockBtn.addClass('none')
+			$lockBtn.removeClass('none');
 			$domManager.removeClass('show');
 			unlock();
 		});
 
-		$domManager.on('click', '.backBtn', function() {
+		$domManager.on('click', '.back-btn', function() {
 			that.inActivate();
+			that.activateView('product-preview');
+			$domManager.removeClass('show');
 		});
 	}
 

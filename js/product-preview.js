@@ -25,13 +25,16 @@ var ProductsPreview = View.extend(function() {
 	this.init = function() {
 		productDatas = $.extend(true, [], CONFIG.products);
 		$domWrap = $('#listView');
-		create();
+		//create();
 		initEvent();
 	}
 
 	this.activate = function() {
 		this.active = true;
-		$domWrap.show();
+		productSelected.length = 0;
+		$domWrap.show().find('.list-wrap').html('');
+		create();
+		$domWrap.removeClass('inactive active choosed')
 		setTimeout(function() {
 			$domWrap.addClass('active');
 		}, 50);
@@ -48,8 +51,8 @@ var ProductsPreview = View.extend(function() {
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
 
-		var gridWidth = 400;
-		var gridHeight = 400;
+		var gridWidth = 300;
+		var gridHeight = 300;
 
 		gridNumHor = Math.round(winWidth/gridWidth);
 		gridNumVer = Math.round(winHeight/gridHeight);
@@ -85,7 +88,6 @@ var ProductsPreview = View.extend(function() {
 	}
 
 	this.getSelected = function() {
-
 	}
 
 	function create() {
@@ -153,16 +155,22 @@ var ProductsPreview = View.extend(function() {
 		$domWrap.removeClass('show-control').addClass('choosed');
 		var $li = $domWrap.find('.list-wrap li');
 		var selectedPos = calculateSubWindowSize(productSelected.length);
-		var selectedPosCSS = $.extend(true, {}, selectedPos);
+		var selectedPosCSSes = $.extend(true, [], selectedPos);
 		var index = 0;
 
-		for (var key in selectedPosCSS) {
-			selectedPosCSS[key] = selectedPosCSS[key] * 100 + '%';
-		}
+		selectedPosCSSes.forEach(function(selectedPosCSS) {
+			for (var key in selectedPosCSS) {
+				selectedPosCSS[key] = selectedPosCSS[key] * 100 + '%';
+			}			
+		});
+
+		console.log(selectedPosCSSes);
+
 		productDatas.forEach(function(product, i) {
 			if (index > productSelected.length - 1) return false;
 			if (productSelected.indexOf(product) != -1) {
-				$li.eq(i).css(selectedPosCSS);
+				console.log(selectedPosCSSes[index]);
+				$li.eq(i).css(selectedPosCSSes[index]);
 			    index++;			
 			}
 		});

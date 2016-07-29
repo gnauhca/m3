@@ -12,13 +12,13 @@ var CONFIG = {
 };
 
 // test 
-var products = ['mx5', 'pro5', 'pro6', 'm2', 'm2note', 'm3', 'm3note', 'm3s', 'router', 'm8', 'm10', 'mx4', 'mx4pro'];
+var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 var _products = [];
 
 products.forEach(function(product, i) {
 	_products[i] = {
 		'name': product,
-		'previewImg': './assets/pro6/phone-silver.jpg',
+		'previewImg': './assets/preview/'+product+'_logo@2x.png',
 		'model': {
 			type: 'dae',
 			geometry: './assets/pro6/pro6.dae',
@@ -31,7 +31,6 @@ products.forEach(function(product, i) {
 		'modelPos': {x: (i) * 30, y: 0, z: 0},
 		'title': 'PRO 6',
 		'desc' : 'PRO 6 was produced in 2016'
-
 	}
 });
 CONFIG.products = _products;

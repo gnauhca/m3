@@ -19,7 +19,7 @@ var Loader = Class.extend(function() {
 
 		for (var i = 0; i < loadUrls.length; i++) {
 			loadUrl = loadUrls[i];
-			resType = getLoaderType(loadUrl.match(/\.(\w+)$/)[1]);
+			resType = getLoaderType(loadUrl.match(/\.(\w+)$/)[1]); 
 			totalSize += sizeInfo[resType];
 			loadMethod[resType](loadUrl, (function(type, url) {
 				

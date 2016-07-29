@@ -47,7 +47,7 @@ var Welcome = View.extend(function() {
 
 
 	function init() {
-		that.reset();
+		that.resize();
 		playEntryAnimation(function() {
 			that.activateView('product-preview');
 		});	
@@ -125,6 +125,7 @@ var Welcome = View.extend(function() {
         });
 
 		particleDatas.forEach(function(particleData) {
+
 			var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
 			geom.vertices.push(particle);
 
@@ -140,9 +141,9 @@ var Welcome = View.extend(function() {
 	function playEntryAnimation(callback) {
 		var timePass = 0;
 		var aniDatas = $.extend(true, [], particleDatas);
-		//aniDatas = [/*$.extend(true, [], particleDatas)[0], */aniDatas[aniDatas.length-1]];
 		var aniDoneNum = 0;
 
+		// console.log(aniDatas);
 		var aniTick = that.addTick(function(detal) {
 			timePass += detal;
 			aniDoneNum = 0;

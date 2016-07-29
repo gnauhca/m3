@@ -33,6 +33,7 @@ var DisplayWindow = View.extend(function() {
 	this.color;
 
 	this.locked = false;
+	this.active = false;
 
 
 	// dom
@@ -66,7 +67,7 @@ var DisplayWindow = View.extend(function() {
 
 		// initial size info
 		this.sceneObjSizes.model.position = this.target.clone();
-		this.sceneObjSizes.model.rotation = new THREE.Euler(Math.PI/2.5, 0, 0, 'XYZ' );
+		this.sceneObjSizes.model.rotation = new THREE.Euler(Math.PI/3, -0.2, 0.8, 'XYZ' );
 
 		this.sceneObjSizes.camera.position = this.target.clone();
 		this.sceneObjSizes.camera.position.z += 40;
@@ -83,23 +84,26 @@ var DisplayWindow = View.extend(function() {
 		changeColor(Object.keys(config.productData.model.textures)[0]);
 		playEntryAnimation();
 
-		render();
+		that.addTick(render)
+		this.active = true;
 	}
 
 	// 窗口关闭
 	this.inActivate = function() {
 
 		// 移除模型
+		console.log(Object.keys(this.scene));
 		Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
+		render();
 		this.$domElem.remove();
-
 		this.getView('display-manager').removeWindow(this);
 		this.removeTween();
 		this.removeTick();
+		this.active = false;
 	}
 
 	// 窗口重置
-	this.resize = function() { 
+	this.resize = function() {  
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
 
@@ -142,7 +146,7 @@ var DisplayWindow = View.extend(function() {
 		}).start();
 	}
 
-	this.setState = function(state) {
+	this.setState = function(state) { 
 		this.state = state;
 		if (state === 'handle') { 
 			this.trackball.init(this.scene.camera, this.scene.model);
@@ -160,7 +164,7 @@ var DisplayWindow = View.extend(function() {
 		size.modelRotation = this.scene.model.rotation.clone();
 		size.cameraRotation = this.scene.camera.rotation.clone();
 		size.cameraUp = this.scene.camera.up.clone();
-		size.eye = (new THREE.Vector3).subVectors(this.scene.model.position, this.scene.camera.position);
+		size.eye = (new THREE.Vector3).subVectors(this.scene.camera.position, this.scene.model.position);
 
 		return size;
 	}
@@ -169,7 +173,8 @@ var DisplayWindow = View.extend(function() {
 		this.scene.model.rotation.copy(size.modelRotation);
 		// this.scene.camera.rotation.copy(size.cameraRotation);
 		// this.scene.camera.up = size.cameraUp;
-		// this.scene.camera.position.addVectors(this.scene.model.position, size.eye);
+		this.scene.camera.position.addVectors(this.scene.model.position, size.eye);
+		this.scene.camera.lookAt(this.scene.model);
 	}
 
 	this.lock = function(isMain) {
@@ -231,12 +236,12 @@ var DisplayWindow = View.extend(function() {
 		// 3D 相关资源创建
  		that.scene.spotLight = new THREE.SpotLight(0xeeeeee);
  		that.scene.spotLight.intensity = 0;
-		that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
+		that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
 		var color = Object.keys(assets.textures)[0];
     	var texture = THREE.ImageUtils.loadTexture(assets.textures['black']);
-		var material = new THREE.MeshLambertMaterial();
+		var material = new THREE.MeshLambertMaterial({transparent: true, opacity: 1});
 
 		var model = new THREE.Mesh(assets.geometry, material);
 		model.scale.set(0.1, 0.1, 0.1);
@@ -313,11 +318,10 @@ var DisplayWindow = View.extend(function() {
 		var aniInit = {
 				modelRx: initModelRotation.x - Math.PI * 0.5, 
 				modelRy: initModelRotation.y, 
-				modelRz: initModelRotation.z + Math.PI * 2, 
+				modelRz: initModelRotation.z + Math.PI * 1.2, 
 				cameraPx: initCameraPosition.x,
 				cameraPy: initCameraPosition.y,
 				cameraPz: initCameraPosition.z + 300,
-				cameraOffset: 10
 			};
 
 		var aniFinal = {
@@ -342,9 +346,10 @@ var DisplayWindow = View.extend(function() {
 		}).onComplete(function() { 
 			that.removeTween(tween);
 			that.setState('handle');
-		}).start();
+		});
 
 		that.addTween(tween)
+		tween.start();
 	}
 
 	// model，trackball 重置
@@ -400,17 +405,14 @@ var DisplayWindow = View.extend(function() {
 	}
 
 	function render() {
-		that.addTick(function() {
-			//console.log(windowSizePX);
-			M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
-			M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
-			M3.renderer.setScissorTest(true);
-			M3.renderer.setClearColor(0x000000);
-			that.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
-			that.scene.camera.updateProjectionMatrix();
-			M3.renderer.render( M3.scene, that.scene.camera );	
-			that.trackball.update();		
-		});
+		//console.log(windowSizePX);
+		M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
+		M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
+		M3.renderer.setScissorTest(true);
+		that.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
+		that.scene.camera.updateProjectionMatrix();
+		M3.renderer.render( M3.scene, that.scene.camera );	
+		that.trackball.update();		
 	}
 });
 

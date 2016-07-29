@@ -333,27 +333,83 @@ var easing= {
     }
 }());
 
-function calculateSubWindowSize(windowNum) {
-	var sizes = [];
-	switch(windowNum) {
-		case 1: 
-			sizes = [{ left: 0, top: 0, width: 1, height: 1}];
-			break;
-		case 2: 
-			sizes = [{ left: 0, top: 0, width: 0.5, height: 1},
-					 { left: 0.5, top: 0, width: 0.5, height: 1}];
-			break;
-		case 3: 
-			sizes = [{ left: 0, top: 0, width: 0.5, height: 1},
-					 { left: 0.5, top: 0,width: 0.5, height: 0.5},
-					 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}];
-			break;
-		case 4: 
-			sizes = [{ left: 0, top: 0, width: 0.5, height: 0.5},
-					 { left: 0.5, top: 0,width: 0.5, height: 0.5},
-					 { left: 0, top: 0.5,width: 0.5, height: 0.5},
-					 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}];
-			break;
+
+
+var calculateSubWindowSize = (function() {
+	var r13 = 1/3;
+	var r23 = 2/3;
+
+	var windowSizes = {
+		'strip': [
+			[{ left: 0, top: 0, width: 1, height: 1}],
+
+			[{ left: 0, top: 0, width: 1, height: 0.5},
+			 { left: 0, top: 0.5, width: 1, height: 0.5}],
+
+			[{ left: 0, top: 0, width: 1, height: r13},
+			 { left: 0, top: r13, width: 1, height: r13},
+			 { left: 0, top: r23, width: 1, height: r13}],
+			
+			[{ left: 0, top: 0, width: 1, height: 0.25},
+			 { left: 0, top: 0.25, width: 1, height: 0.25},
+			 { left: 0, top: 0.5, width: 1, height: 0.25},
+			 { left: 0, top: 0.75, width: 1, height: 0.25}],
+		], 
+		'square': [
+			[{ left: 0, top: 0, width: 1, height: 1}],
+
+			[{ left: 0, top: 0, width: 0.5, height: 1},
+			 { left: 0.5, top: 0, width: 0.5, height: 1}],
+
+			[{ left: 0, top: 0, width: 0.5, height: 1},
+			 { left: 0.5, top: 0,width: 0.5, height: 0.5},
+			 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}],
+			
+			[{ left: 0, top: 0, width: 0.5, height: 0.5},
+			 { left: 0.5, top: 0,width: 0.5, height: 0.5},
+			 { left: 0, top: 0.5,width: 0.5, height: 0.5},
+			 { left: 0.5, top: 0.5,width: 0.5, height: 0.5}]
+		],
+		'flat': [
+			[{ left: 0, top: 0, width: 1, height: 1}],
+
+			[{ left: 0, top: 0, width: 0.5, height: 1},
+			 { left: 0.5, top: 0, width: 0.5, height: 1}],
+
+			[{ left: 0, top: 0, width: r13, height: 1},
+			 { left: r13, top: 0, width: r13, height: 1},
+			 { left: r23, top: 0, width: r13, height: 1}],
+			
+			[{ left: 0, top: 0, width: 0.25, height: 1},
+			 { left: 0.25, top: 0, width: 0.25, height: 1},
+			 { left: 0.5, top: 0, width: 0.25, height: 1},
+			 { left: 0.75, top: 0, width: 0.25, height: 1}],
+		]
+	};
+
+	return function (windowNum) {
+		var sizes = [];
+		var winWidth = window.innerWidth;
+		var winHeight = window.innerHeight;
+
+		var ratio = winWidth/winHeight;
+		var windowType = 'square';
+
+		if ( (windowNum===2&&ratio<1) ||
+			 (windowNum===3&&ratio<0.75) ||
+			 (windowNum===4&&ratio<0.4)
+			) {
+			windowType = 'strip';
+		} else if ( (windowNum===2&&ratio>1) ||
+		 (windowNum===3&&ratio>1.25) ||
+		 (windowNum===4&&ratio>1.6)
+		) {
+			windowType = 'flat';
+		}
+		
+		return windowSizes[windowType][windowNum-1];
 	}
-	return sizes;
-}
+})();
+
+
+
