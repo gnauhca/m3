@@ -44,11 +44,11 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG) {__webpack_require__(1);
+	/* WEBPACK VAR INJECTION */(function(CONFIG) {__webpack_require__(2);
 	
 	window.M3 = {};
 	(function() {
-		var View = __webpack_require__(5);
+		var View = __webpack_require__(6);
 	
 	
 		var ViewUpdate = __webpack_require__(17);
@@ -100,19 +100,63 @@
 	})();
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 1 */
+/***/ function(module, exports) {
+
+	var CONFIG = {
+		MEIZU_LOGO: './assets/logo.png',
+		products: [
+			{
+				'name': 'pro6',
+				'imgUrl': './assets/pro6/phone-silver.jpg',
+				'modelUrl': './assets/pro6/pro6.dae',
+				'title': 'PRO 6',
+				'desc' : 'PRO 6 was produced in 2016'
+			}
+		]
+	};
+	
+	// test 
+	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
+	var _products = [];
+	
+	products.forEach(function(product, i) {
+		_products[i] = {
+			'name': product,
+			'previewImg': './assets/preview/'+product+'_logo@2x.png',
+			'model': {
+				type: 'dae',
+				geometry: './assets/pro6/pro6.dae',
+				textures: {
+					'white': './assets/pro6/pro6-white.jpg',
+					'black': './assets/pro6/pro6-black.jpg',
+					'red': './assets/pro6/pro6-red.jpg'
+				},
+			},
+			'modelPos': {x: (i) * 30, y: 0, z: 0},
+			'title': 'PRO 6',
+			'desc' : 'PRO 6 was produced in 2016'
+		}
+	});
+	CONFIG.products = _products;
+	
+	
+	module.exports = CONFIG;
+
+/***/ },
+/* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
 	// style-loader: Adds some css to the DOM by adding a <style> tag
 	
 	// load the styles
-	var content = __webpack_require__(2);
+	var content = __webpack_require__(3);
 	if(typeof content === 'string') content = [[module.id, content, '']];
 	// add the styles to the DOM
-	var update = __webpack_require__(4)(content, {});
+	var update = __webpack_require__(5)(content, {});
 	if(content.locals) module.exports = content.locals;
 	// Hot Module Replacement
 	if(false) {
@@ -129,10 +173,10 @@
 	}
 
 /***/ },
-/* 2 */
+/* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(3)();
+	exports = module.exports = __webpack_require__(4)();
 	// imports
 	
 	
@@ -143,7 +187,7 @@
 
 
 /***/ },
-/* 3 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/*
@@ -199,7 +243,7 @@
 
 
 /***/ },
-/* 4 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/*
@@ -451,10 +495,10 @@
 
 
 /***/ },
-/* 5 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var TimeBody = __webpack_require__(6);
+	var TimeBody = __webpack_require__(7);
 	var views = [];
 	
 	var viewConstructors;
@@ -474,7 +518,7 @@
 	        this.super();
 	
 	        viewConstructors = {
-	            'welcome': __webpack_require__(7),
+	            'welcome': __webpack_require__(8),
 	            'product-preview': __webpack_require__(10),
 	            'display-manager': __webpack_require__(11),
 	            'display-window': __webpack_require__(12),
@@ -588,7 +632,7 @@
 
 
 /***/ },
-/* 6 */
+/* 7 */
 /***/ function(module, exports) {
 
 	/* 时间 */
@@ -707,6 +751,74 @@
 			this.tweens.push(tween);
 		}
 	
+		/*
+		 * tweenObj
+		 */
+		this.addTHREEObjTween = function(threeObj, target, dur, tweenObj) {		
+			var that = this;
+			var init = {};
+			var des = {};
+	
+	        var keys = ['position', 'rotation', 'scale'];
+	        var attrs = ['x', 'y', 'z'];
+			var des = [];
+	
+			keys.forEach(function(key) {
+				if (target[key]) {
+					attrs.forEach(function(attr) {
+						init[key + '___' + attr] = threeObj[key][attr];
+						des[key + '___' + attr] = target[key][attr];
+					});			
+				}
+			});
+			if (target.lookAt) {
+				var lookAt = new THREE.Vector3(0, 0, -1);
+	        		
+	        	lookAt.applyEuler(threeObj.rotation, threeObj.eulerOrder);
+	        	lookAt.add(threeObj.position);
+				attrs.forEach(function(attr) {
+					init['lookAt___' + attr] = lookAt[attr];
+					des['lookAt___' + attr] = target['lookAt'][attr];
+				});		
+			}
+	
+			var tween;
+			var tKeys = ['easing', 'onUpdate', 'onComplete'];
+	
+			tweenObj = tweenObj || {};
+			tween = new TWEEN.Tween(init)
+			tween.to(des, dur)
+				.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
+				.onUpdate(function() {
+					var current = this;
+					var lookAt = {};
+					var k;
+					var a;
+					for (var key in current) {
+						if (key.indexOf('___') > 0) {
+							k = key.split('___')[0];
+							a = key.split('___')[1];
+							if (k === 'lookAt') {
+								lookAt.a = current[key];
+							} else {
+								threeObj[k][a] = current[key];
+							}
+						}
+					}
+					if (lookAt.x) {
+						threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
+					}
+					tweenObj.onUpdate && tweenObj.onUpdate();
+				})
+				.onComplete(function() {
+					that.removeTween(tween);
+					tweenObj.onComplete && tweenObj.onComplete();
+				});
+	
+			this.tweens.push(tween);
+			return tween;
+		}
+	
 		this.addTween3 = function(THREEObject, to, dur) {
 	
 		}
@@ -755,10 +867,10 @@
 
 
 /***/ },
-/* 7 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(6);
 	var Welcome = View.extend(function() {
 		this.name = 'welcome';
 		this.isInit = false;
@@ -952,51 +1064,7 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(9)))
-
-/***/ },
-/* 8 */
-/***/ function(module, exports) {
-
-	var CONFIG = {
-		MEIZU_LOGO: './assets/logo.png',
-		products: [
-			{
-				'name': 'pro6',
-				'imgUrl': './assets/pro6/phone-silver.jpg',
-				'modelUrl': './assets/pro6/pro6.dae',
-				'title': 'PRO 6',
-				'desc' : 'PRO 6 was produced in 2016'
-			}
-		]
-	};
-	
-	// test 
-	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
-	var _products = [];
-	
-	products.forEach(function(product, i) {
-		_products[i] = {
-			'name': product,
-			'previewImg': './assets/preview/'+product+'_logo@2x.png',
-			'model': {
-				type: 'dae',
-				geometry: './assets/pro6/pro6.dae',
-				textures: {
-					'white': './assets/pro6/pro6-white.jpg',
-					'black': './assets/pro6/pro6-black.jpg',
-					'red': './assets/pro6/pro6-red.jpg'
-				},
-			},
-			'modelPos': {x: (i) * 30, y: 0, z: 0},
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-		}
-	});
-	CONFIG.products = _products;
-	
-	
-	module.exports = CONFIG;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(9)))
 
 /***/ },
 /* 9 */
@@ -11045,7 +11113,7 @@
 /* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(6);
 	
 	var ProductsPreview = View.extend(function() {
 		this.name = 'product-preview';
@@ -11330,13 +11398,13 @@
 			}
 		});	
 	}*/
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(1)))
 
 /***/ },
 /* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(6);
 	var DisplayWindow = __webpack_require__(12);
 	//var DisplayManagerUi = require('../display-manager-ui.js');
 	
@@ -11627,7 +11695,7 @@
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(6);
 	var Loader = __webpack_require__(13);
 	var TrackballControls = __webpack_require__(14);
 	
@@ -11684,23 +11752,20 @@
 			// 3d
 			this.target = new THREE.Vector3(config.productData.modelPos.x, config.productData.modelPos.y, config.productData.modelPos.z);
 	
-	
-			this.scene.camera.position.copy(config.cameraPos);
-			this.scene.camera.position.x += 20
-			// this.scene.platform.position.copy(this.target);
-	        // this.scene.platform.position.y -= 10;
-	        // this.scene.platform.rotation.y -= Math.PI * 0.16666666;
+			// this.scene.camera.position.copy(config.cameraPos);
 	
 	        this.scene.model.position.copy(this.target);
+	        this.scene.model.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+	        this.scene.camera.position.copy(this.scene.model.position);
+			this.scene.camera.position.z += 40;
 			this.scene.camera.lookAt(this.target);
 	
 			// initial size info
-			this.sceneObjSizes.model.position = this.target.clone();
-			this.sceneObjSizes.model.rotation = new THREE.Euler(Math.PI/3, -0.2, 0.8, 'XYZ' );
+			this.sceneObjSizes.model.position = this.scene.model.position.clone();
+			this.sceneObjSizes.model.rotation = this.scene.model.rotation.clone();
 	
-			this.sceneObjSizes.camera.position = this.target.clone();
-			this.sceneObjSizes.camera.position.z += 40;
-			this.sceneObjSizes.camera.lookAt = this.target.clone();
+			this.sceneObjSizes.camera.position = this.scene.camera.position.clone();
+			this.sceneObjSizes.camera.lookAt = this.scene.model.position.clone();
 	
 			// 添加到场景
 			Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
@@ -11939,52 +12004,30 @@
 		function playEntryAnimation() {
 			that.setState('animate');
 	
-			var initModelPosition = that.sceneObjSizes.model.position;
 			var initModelRotation = that.sceneObjSizes.model.rotation;
-	
 			var initCameraPosition = that.sceneObjSizes.camera.position;
 	
-			var aniInit = {
-					modelRx: initModelRotation.x - Math.PI * 0.5, 
-					modelRy: initModelRotation.y, 
-					modelRz: initModelRotation.z + Math.PI * 1.2, 
-					cameraPx: initCameraPosition.x,
-					cameraPy: initCameraPosition.y,
-					cameraPz: initCameraPosition.z + 300,
-				};
+			that.scene.model.rotation.copy(initModelRotation);
+			that.scene.model.rotation.x -= Math.PI * 0.5;
+			that.scene.model.rotation.z += Math.PI * 1.2;
+			that.addTHREEObjTween(that.scene.model, {
+				rotation: initModelRotation
+			}, 2000).start();
 	
-			var aniFinal = {
-					modelRx: initModelRotation.x, 
-					modelRy: initModelRotation.y, 
-					modelRz: initModelRotation.z, 
-					cameraPx: initCameraPosition.x,
-					cameraPy: initCameraPosition.y,
-					cameraPz: initCameraPosition.z,
-					cameraOffset: 10000
-				};
-	
-			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
-				that.scene.model.rotation.x = this.modelRx;
-				that.scene.model.rotation.y = this.modelRy;
-				that.scene.model.rotation.z = this.modelRz;
-	
-				that.scene.camera.position.x = this.cameraPx;
-				that.scene.camera.position.y = this.cameraPy;
-				that.scene.camera.position.z = this.cameraPz;
-				that.scene.camera.lookAt(that.target);
-			}).onComplete(function() { 
-				that.removeTween(tween);
-				that.setState('handle');
-			});
-	
-			that.addTween(tween)
-			tween.start();
+			that.scene.camera.position.copy(initCameraPosition);
+			that.scene.camera.position.z += 300,
+			that.addTHREEObjTween(that.scene.camera, {
+				position: initCameraPosition
+			}, 2000, {
+				onComplete: function() {
+					that.setState('handle');
+				}
+			}).start();
 		}
 	
 		// model，trackball 重置
 		function refresh() { //console.log(that.sceneObjSizes.model.position);
 			that.setState('animate');
-			var initModelPosition = that.sceneObjSizes.model.position;
 			var initModelRotation = that.sceneObjSizes.model.rotation;
 	
 			var initCameraPosition = that.sceneObjSizes.camera.position;
@@ -11994,43 +12037,18 @@
 	        cameraLookAt.applyEuler(that.scene.camera.rotation, that.scene.camera.eulerOrder);
 	        cameraLookAt.add(that.scene.camera.position);
 	
-			var aniInit = {
-					modelRx: that.scene.model.rotation.x, 
-					modelRy: that.scene.model.rotation.y, 
-					modelRz: that.scene.model.rotation.z, 
-					cameraPx: that.scene.camera.position.x,
-					cameraPy: that.scene.camera.position.y,
-					cameraPz: that.scene.camera.position.z,
-					cameraLx: cameraLookAt.x,
-					cameraLy: cameraLookAt.y,
-					cameraLz: cameraLookAt.z,
-				};
+			that.addTHREEObjTween(that.scene.model, {
+	        	rotation: initModelRotation
+	        }, 1000).start();
 	
-			var aniFinal = {
-					modelRx: initModelRotation.x, 
-					modelRy: initModelRotation.y, 
-					modelRz: initModelRotation.z, 
-					cameraPx: initCameraPosition.x,
-					cameraPy: initCameraPosition.y,
-					cameraPz: initCameraPosition.z,
-					cameraLx: initCameraLookAtPosition.x,
-					cameraLy: initCameraLookAtPosition.y,
-					cameraLz: initCameraLookAtPosition.z,
-				};
-	
-			var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
-				that.scene.model.rotation.x = this.modelRx;
-				that.scene.model.rotation.y = this.modelRy;
-				that.scene.model.rotation.z = this.modelRz;
-	
-				that.scene.camera.position.x = this.cameraPx;
-				that.scene.camera.position.y = this.cameraPy;
-				that.scene.camera.position.z = this.cameraPz;
-				that.scene.camera.lookAt(new THREE.Vector3(this.cameraLx, this.cameraLy, this.cameraLz));
-			}).onComplete(function() { 
-				that.removeTween(tween);
-				that.setState('handle');
-			}).start();
+			that.addTHREEObjTween(that.scene.camera, {
+	        	position: initCameraPosition,
+	        	lookAt: initCameraLookAtPosition
+	        }, 1000, {
+	        	onComplete: function() {
+	        		that.setState('handle');
+	        	}
+	        }).start();   
 		}
 	
 		function render() {
@@ -12716,37 +12734,13 @@
 	});
 	
 	
-	// 物体旋转
-	rotateCount = {
-		fromRotation : function(xsa, ag) {
-			var a = ag * (Math.PI/180);
-			
-			var sin = Math.sin(a/2);
-			var cos = Math.cos(a/2);
-			
-			return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'w': a/2};
-		},
-		multiply : function(r1, r2) {
-			var r1D = Math.cos(r1.w);
-			var r2D = Math.cos(r2.w);
-	
-			var x = r1D*r2.x + r1.x*r2D + r1.y*r2.z - r1.z*r2.y;
-			var y = r1D*r2.y + r1.y*r2D + r1.z*r2.x - r1.x*r2.z;
-			var z = r1D*r2.z + r1.z*r2D + r1.x*r2.y - r1.y*r2.x;
-			var d = r1D*r2D - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
-			
-			return {'x': x.toFixed(10), 'y': y.toFixed(10), 'z': z.toFixed(10), 'w': (Math.acos(d) * 2).toFixed(10)};
-		},
-	
-	};
-	
 	module.exports = TrackballControls;
 
 /***/ },
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(6);
 	var Loader = __webpack_require__(13);
 	
 	
@@ -13002,13 +12996,13 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(1)))
 
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(5);
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(6);
 	var Loader = __webpack_require__(13);
 	var loader = new Loader();
 	
@@ -13079,7 +13073,7 @@
 	
 	
 	module.exports = List;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(9)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(9)))
 
 /***/ },
 /* 17 */

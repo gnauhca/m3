@@ -114,6 +114,74 @@ var TimeBody = Class.extend(function TimeBody() {
 		this.tweens.push(tween);
 	}
 
+	/*
+	 * tweenObj
+	 */
+	this.addTHREEObjTween = function(threeObj, target, dur, tweenObj) {		
+		var that = this;
+		var init = {};
+		var des = {};
+
+        var keys = ['position', 'rotation', 'scale'];
+        var attrs = ['x', 'y', 'z'];
+		var des = [];
+
+		keys.forEach(function(key) {
+			if (target[key]) {
+				attrs.forEach(function(attr) {
+					init[key + '___' + attr] = threeObj[key][attr];
+					des[key + '___' + attr] = target[key][attr];
+				});			
+			}
+		});
+		if (target.lookAt) {
+			var lookAt = new THREE.Vector3(0, 0, -1);
+        		
+        	lookAt.applyEuler(threeObj.rotation, threeObj.eulerOrder);
+        	lookAt.add(threeObj.position);
+			attrs.forEach(function(attr) {
+				init['lookAt___' + attr] = lookAt[attr];
+				des['lookAt___' + attr] = target['lookAt'][attr];
+			});		
+		}
+
+		var tween;
+		var tKeys = ['easing', 'onUpdate', 'onComplete'];
+
+		tweenObj = tweenObj || {};
+		tween = new TWEEN.Tween(init)
+		tween.to(des, dur)
+			.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
+			.onUpdate(function() {
+				var current = this;
+				var lookAt = {};
+				var k;
+				var a;
+				for (var key in current) {
+					if (key.indexOf('___') > 0) {
+						k = key.split('___')[0];
+						a = key.split('___')[1];
+						if (k === 'lookAt') {
+							lookAt.a = current[key];
+						} else {
+							threeObj[k][a] = current[key];
+						}
+					}
+				}
+				if (lookAt.x) {
+					threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
+				}
+				tweenObj.onUpdate && tweenObj.onUpdate();
+			})
+			.onComplete(function() {
+				that.removeTween(tween);
+				tweenObj.onComplete && tweenObj.onComplete();
+			});
+
+		this.tweens.push(tween);
+		return tween;
+	}
+
 	this.addTween3 = function(THREEObject, to, dur) {
 
 	}

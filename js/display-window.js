@@ -55,23 +55,20 @@ var DisplayWindow = View.extend(function() {
 		// 3d
 		this.target = new THREE.Vector3(config.productData.modelPos.x, config.productData.modelPos.y, config.productData.modelPos.z);
 
-
-		this.scene.camera.position.copy(config.cameraPos);
-		this.scene.camera.position.x += 20
-		// this.scene.platform.position.copy(this.target);
-        // this.scene.platform.position.y -= 10;
-        // this.scene.platform.rotation.y -= Math.PI * 0.16666666;
+		// this.scene.camera.position.copy(config.cameraPos);
 
         this.scene.model.position.copy(this.target);
+        this.scene.model.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+        this.scene.camera.position.copy(this.scene.model.position);
+		this.scene.camera.position.z += 40;
 		this.scene.camera.lookAt(this.target);
 
 		// initial size info
-		this.sceneObjSizes.model.position = this.target.clone();
-		this.sceneObjSizes.model.rotation = new THREE.Euler(Math.PI/3, -0.2, 0.8, 'XYZ' );
+		this.sceneObjSizes.model.position = this.scene.model.position.clone();
+		this.sceneObjSizes.model.rotation = this.scene.model.rotation.clone();
 
-		this.sceneObjSizes.camera.position = this.target.clone();
-		this.sceneObjSizes.camera.position.z += 40;
-		this.sceneObjSizes.camera.lookAt = this.target.clone();
+		this.sceneObjSizes.camera.position = this.scene.camera.position.clone();
+		this.sceneObjSizes.camera.lookAt = this.scene.model.position.clone();
 
 		// 添加到场景
 		Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
@@ -310,52 +307,30 @@ var DisplayWindow = View.extend(function() {
 	function playEntryAnimation() {
 		that.setState('animate');
 
-		var initModelPosition = that.sceneObjSizes.model.position;
 		var initModelRotation = that.sceneObjSizes.model.rotation;
-
 		var initCameraPosition = that.sceneObjSizes.camera.position;
 
-		var aniInit = {
-				modelRx: initModelRotation.x - Math.PI * 0.5, 
-				modelRy: initModelRotation.y, 
-				modelRz: initModelRotation.z + Math.PI * 1.2, 
-				cameraPx: initCameraPosition.x,
-				cameraPy: initCameraPosition.y,
-				cameraPz: initCameraPosition.z + 300,
-			};
+		that.scene.model.rotation.copy(initModelRotation);
+		that.scene.model.rotation.x -= Math.PI * 0.5;
+		that.scene.model.rotation.z += Math.PI * 1.2;
+		that.addTHREEObjTween(that.scene.model, {
+			rotation: initModelRotation
+		}, 2000).start();
 
-		var aniFinal = {
-				modelRx: initModelRotation.x, 
-				modelRy: initModelRotation.y, 
-				modelRz: initModelRotation.z, 
-				cameraPx: initCameraPosition.x,
-				cameraPy: initCameraPosition.y,
-				cameraPz: initCameraPosition.z,
-				cameraOffset: 10000
-			};
-
-		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 2000).onUpdate(function() {
-			that.scene.model.rotation.x = this.modelRx;
-			that.scene.model.rotation.y = this.modelRy;
-			that.scene.model.rotation.z = this.modelRz;
-
-			that.scene.camera.position.x = this.cameraPx;
-			that.scene.camera.position.y = this.cameraPy;
-			that.scene.camera.position.z = this.cameraPz;
-			that.scene.camera.lookAt(that.target);
-		}).onComplete(function() { 
-			that.removeTween(tween);
-			that.setState('handle');
-		});
-
-		that.addTween(tween)
-		tween.start();
+		that.scene.camera.position.copy(initCameraPosition);
+		that.scene.camera.position.z += 300,
+		that.addTHREEObjTween(that.scene.camera, {
+			position: initCameraPosition
+		}, 2000, {
+			onComplete: function() {
+				that.setState('handle');
+			}
+		}).start();
 	}
 
 	// model，trackball 重置
 	function refresh() { //console.log(that.sceneObjSizes.model.position);
 		that.setState('animate');
-		var initModelPosition = that.sceneObjSizes.model.position;
 		var initModelRotation = that.sceneObjSizes.model.rotation;
 
 		var initCameraPosition = that.sceneObjSizes.camera.position;
@@ -365,43 +340,18 @@ var DisplayWindow = View.extend(function() {
         cameraLookAt.applyEuler(that.scene.camera.rotation, that.scene.camera.eulerOrder);
         cameraLookAt.add(that.scene.camera.position);
 
-		var aniInit = {
-				modelRx: that.scene.model.rotation.x, 
-				modelRy: that.scene.model.rotation.y, 
-				modelRz: that.scene.model.rotation.z, 
-				cameraPx: that.scene.camera.position.x,
-				cameraPy: that.scene.camera.position.y,
-				cameraPz: that.scene.camera.position.z,
-				cameraLx: cameraLookAt.x,
-				cameraLy: cameraLookAt.y,
-				cameraLz: cameraLookAt.z,
-			};
+		that.addTHREEObjTween(that.scene.model, {
+        	rotation: initModelRotation
+        }, 1000).start();
 
-		var aniFinal = {
-				modelRx: initModelRotation.x, 
-				modelRy: initModelRotation.y, 
-				modelRz: initModelRotation.z, 
-				cameraPx: initCameraPosition.x,
-				cameraPy: initCameraPosition.y,
-				cameraPz: initCameraPosition.z,
-				cameraLx: initCameraLookAtPosition.x,
-				cameraLy: initCameraLookAtPosition.y,
-				cameraLz: initCameraLookAtPosition.z,
-			};
-
-		var tween = new TWEEN.Tween(aniInit).easing(TWEEN.Easing.Cubic.InOut).to(aniFinal, 1000).onUpdate(function() {
-			that.scene.model.rotation.x = this.modelRx;
-			that.scene.model.rotation.y = this.modelRy;
-			that.scene.model.rotation.z = this.modelRz;
-
-			that.scene.camera.position.x = this.cameraPx;
-			that.scene.camera.position.y = this.cameraPy;
-			that.scene.camera.position.z = this.cameraPz;
-			that.scene.camera.lookAt(new THREE.Vector3(this.cameraLx, this.cameraLy, this.cameraLz));
-		}).onComplete(function() { 
-			that.removeTween(tween);
-			that.setState('handle');
-		}).start();
+		that.addTHREEObjTween(that.scene.camera, {
+        	position: initCameraPosition,
+        	lookAt: initCameraLookAtPosition
+        }, 1000, {
+        	onComplete: function() {
+        		that.setState('handle');
+        	}
+        }).start();   
 	}
 
 	function render() {

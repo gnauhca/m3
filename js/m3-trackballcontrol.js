@@ -520,28 +520,4 @@ TrackballControls = Class.extend(function () {
 });
 
 
-// 物体旋转
-rotateCount = {
-	fromRotation : function(xsa, ag) {
-		var a = ag * (Math.PI/180);
-		
-		var sin = Math.sin(a/2);
-		var cos = Math.cos(a/2);
-		
-		return {'x': xsa[0]*sin, 'y': xsa[1]*sin, 'z': xsa[2]*sin, 'w': a/2};
-	},
-	multiply : function(r1, r2) {
-		var r1D = Math.cos(r1.w);
-		var r2D = Math.cos(r2.w);
-
-		var x = r1D*r2.x + r1.x*r2D + r1.y*r2.z - r1.z*r2.y;
-		var y = r1D*r2.y + r1.y*r2D + r1.z*r2.x - r1.x*r2.z;
-		var z = r1D*r2.z + r1.z*r2D + r1.x*r2.y - r1.y*r2.x;
-		var d = r1D*r2D - r1.x*r2.x - r1.y*r2.y - r1.z*r2.z;
-		
-		return {'x': x.toFixed(10), 'y': y.toFixed(10), 'z': z.toFixed(10), 'w': (Math.acos(d) * 2).toFixed(10)};
-	},
-
-};
-
 module.exports = TrackballControls;
