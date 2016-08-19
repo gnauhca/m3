@@ -3,7 +3,7 @@ var Time = require('time');
 var Stage = Time.extend(function() {
 	this.objects = {};
 	this.state; // unload, loading, setup, animate
-
+	this.setup = false;
 	this.scene;
 
 	this.constructor = function() {
@@ -17,8 +17,9 @@ var Stage = Time.extend(function() {
 
 	}
 
+	// 装载 3d 对象
 	this.setup = function() {
-		// 装载 3d 对象
+
 	}
 
 	this.resize = function() {

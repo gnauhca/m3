@@ -22,7 +22,8 @@ var ViewManager = Class.extend(function() {
 
 		        for (var name in _views) {
 		            _views[name].active && _views[name].resize();
-		            _views[stages].forEach(function(stage) {
+
+		            _views.stages.forEach(function(stage) {
 		            	stage.resize && stage.resize();
 		            });
 		        }
@@ -44,9 +45,13 @@ var ViewManager = Class.extend(function() {
 
     this.getView = function(name) {
         if (!_views[name]) {
-            _views[name] = new _viewConstructors[name]();
+            _views[name] = new _viewConstructors[name](this);
         }
         return _views[name];
+    }
+
+    this.removeView = function(view) {
+    	delete views[view.name];
     }
 
 });

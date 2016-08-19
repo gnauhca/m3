@@ -1,5 +1,5 @@
-var View = require('./view.js');
-var Welcome = View.extend(function() {
+var Stage = require('./stage.js');
+var Welcome = Stage.extend(function() {
 	this.name = 'welcome';
 	this.isInit = false;
 
