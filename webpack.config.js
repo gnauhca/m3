@@ -7,14 +7,15 @@ module.exports = {
 		'path': './build'
 	},
 	resolve: {
-		modulesDirectories: ['node_modules']
+		modulesDirectories: ['node_modules', './js/common']
 	},
 
 	devtool: 'source-map',
 
     module: {
         loaders: [
-            { test: /css.*?\.scss$/, loaders: ["style", "css", "sass"] }
+            { test: /css.*?\.scss$/, loaders: ['file?name=common.css', "css", "sass"] }
+
         ]
     },
 
@@ -24,6 +25,7 @@ module.exports = {
 		    jQuery: "jquery",
 		    "window.$": "jquery",
 		    CONFIG: './config.js'
+		    THREE: 'js/libs/three.js'
 		})
 	]
 }

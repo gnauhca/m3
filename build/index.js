@@ -44,14 +44,14 @@
 /* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG) {__webpack_require__(2);
-	
+	/* WEBPACK VAR INJECTION */(function(CONFIG) {
+	console.log(__webpack_require__(2));
 	window.M3 = {};
 	(function() {
-		var View = __webpack_require__(6);
+		var View = __webpack_require__(3);
 	
 	
-		var ViewUpdate = __webpack_require__(17);
+		var ViewUpdate = __webpack_require__(14);
 	
 	
 	
@@ -145,360 +145,45 @@
 	
 	
 	module.exports = CONFIG;
+	
+	
+	/*'pro5': {
+	
+		'models': [
+			{url: xx, size: xx},
+			{url: xx, size: xx},
+			{url: xx, size: xx}
+		],
+	
+		materials: {url: xx, size: xx},
+	
+		map: [
+			{url: xx, size: xx},
+			{url: xx, size: xx}
+		]
+	}*/
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
 
 /***/ },
 /* 2 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(3);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(5)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
+	module.exports = __webpack_require__.p + "common.css";
 
 /***/ },
 /* 3 */
 /***/ function(module, exports, __webpack_require__) {
 
-	exports = module.exports = __webpack_require__(4)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 6 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var TimeBody = __webpack_require__(7);
+	var TimeBody = __webpack_require__(4);
 	var views = [];
 	
 	var viewConstructors;
@@ -518,12 +203,12 @@
 	        this.super();
 	
 	        viewConstructors = {
-	            'welcome': __webpack_require__(8),
-	            'product-preview': __webpack_require__(10),
-	            'display-manager': __webpack_require__(11),
-	            'display-window': __webpack_require__(12),
-	            'display-room': __webpack_require__(15),
-	            'list': __webpack_require__(16)
+	            'welcome': __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./welcome.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())),
+	            'product-preview': __webpack_require__(7),
+	            'display-manager': __webpack_require__(8),
+	            'display-window': __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display-window.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }())),
+	            'display-room': __webpack_require__(12),
+	            'list': __webpack_require__(13)
 	        };
 	    }
 	
@@ -632,7 +317,7 @@
 
 
 /***/ },
-/* 7 */
+/* 4 */
 /***/ function(module, exports) {
 
 	/* 时间 */
@@ -867,207 +552,8 @@
 
 
 /***/ },
-/* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(6);
-	var Welcome = View.extend(function() {
-		this.name = 'welcome';
-		this.isInit = false;
-	
-		var that = this;
-		var logoUrl = CONFIG.MEIZU_LOGO;
-		var particleDatas = [];
-		var camera; // 自身创建 camera
-		var cloud;
-		var baseCrood = new THREE.Vector3(0, 0, 0);
-		var renderTick;
-	
-		this.constructor = function() {
-			this.super();
-	        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
-	
-			M3.scene.add(camera);
-		}
-	
-		this.activate = function() {
-			if (!particleDatas.length) {
-				var img = new Image();
-				img.src = logoUrl;
-				img.onload = function() {
-					particleDatas = getParticlesData(img);
-					createParticle();
-					init();
-				}
-			} else {
-				init();		
-			}
-		}
-	
-		this.inactivate = function() {
-			//this.removeTick(renderTick); // 移除renderTick 
-		}
-	
-		this.resize = function() {
-	
-			camera.aspect = window.innerWidth / window.innerHeight;
-	        camera.updateProjectionMatrix();
-	
-			camera.position.set(0, 0, 250);
-			camera.lookAt(baseCrood);
-		}
-	
-	
-		function init() {
-			that.resize();
-			playEntryAnimation(function() {
-				that.activateView('product-preview');
-			});	
-			render();
-		} 
-	
-		function getParticlesData(img) {
-			var particleDatas = [];
-			var width = img.width;
-			var height = img.height;
-	
-			// 从canvas 读取颜色信息，创建粒子
-			var cvs = document.createElement('canvas');
-			cvs.width = width;
-			cvs.height = height;
-			var ctx = cvs.getContext('2d');
-	
-			ctx.drawImage(img, 0, 0);	
-	
-			var pixs = ctx.getImageData(0, 0, width, height).data;
-	
-			for (var i = 0; i < pixs.length; i += 4) {
-			    var r = pixs[i],
-			        g = pixs[i + 1],
-			        b = pixs[i + 2],
-			        a = pixs[i + 3];
-	
-			    if (b > 50) {
-			        var x = (i % (4 * width)) / 4 - width/2;
-			        var y = -(parseInt(i / (4 * width)) - height/2);
-	
-			        particleDatas.push({
-			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
-			        	//'color': '#abcdef',
-			        	'size': {'x': x, 'y': y}
-			        });
-			    }
-			}
-	
-			// 动画相关设置
-			var circleNum = 4;
-			var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
-			var radiusV = 50; // 每旋转一圈半径增长长度
-	
-			particleDatas.forEach(function(particleData, i) {
-	
-				particleData.radiusV = radiusV;
-				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
-				particleData.percent = 0;
-				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
-				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
-				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
-	
-				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
-				particleData.currentAngle = particleData.initAngle;
-				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
-				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
-	
-			});
-	
-			return particleDatas;
-		}
-	
-		function createParticle() {
-	
-	        var geom = new THREE.Geometry();
-	        var material = new THREE.PointCloudMaterial({
-	            size: 1,
-	            transparent: true,
-	            opacity: 0.6,
-	            vertexColors: true,
-	
-	            sizeAttenuation: true,
-	            color: 0xffffff
-	        });
-	
-			particleDatas.forEach(function(particleData) {
-	
-				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
-				geom.vertices.push(particle);
-	
-				var color = new THREE.Color(particleData.color);
-				geom.colors.push(color);
-			});
-	
-	        cloud = new THREE.PointCloud(geom, material);
-	        cloud.name = "particles";
-	        M3.scene.add(cloud);
-		}
-	
-		function playEntryAnimation(callback) {
-			var timePass = 0;
-			var aniDatas = $.extend(true, [], particleDatas);
-			var aniDoneNum = 0;
-	
-			// console.log(aniDatas);
-			var aniTick = that.addTick(function(detal) {
-				timePass += detal;
-				aniDoneNum = 0;
-	
-				aniDatas.forEach(function(aniData, i) {
-					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
-					aniData.percent = (timePass - aniData.delay) / aniData.dur;
-					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
-	
-					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
-	
-					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
-	
-					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
-					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
-					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
-	
-					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
-	
-				});
-	
-				cloud.geometry.verticesNeedUpdate = true;
-	
-				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
-					callback && callback(); callback = false;
-				}
-	
-				cloud.rotation.x += 0.0001;
-				cloud.rotation.y += 0.0001;
-				cloud.rotation.z += 0.0001;
-				if (aniDoneNum/aniDatas.length > 0.99) {
-					//that.removeTick(aniTick);
-				}
-			});
-		}
-	
-		// render 
-		function render() {
-			renderTick = that.addTick(function() {
-				M3.renderer.render(M3.scene, camera);
-			});
-		}
-	});
-	
-	module.exports = Welcome;
-	
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(9)))
-
-/***/ },
-/* 9 */
+/* 5 */,
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -11110,10 +10596,10 @@
 
 
 /***/ },
-/* 10 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(6);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(3);
 	
 	var ProductsPreview = View.extend(function() {
 		this.name = 'product-preview';
@@ -11398,14 +10884,14 @@
 			}
 		});	
 	}*/
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(1)))
 
 /***/ },
-/* 11 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(6);
-	var DisplayWindow = __webpack_require__(12);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(3);
+	var DisplayWindow = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./display-window.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
 	//var DisplayManagerUi = require('../display-manager-ui.js');
 	
 	var DisplayManager = View.extend(function() {
@@ -11522,7 +11008,7 @@
 	
 			//console.log(geometry);
 			var random;
-			var tetrahedronGroup = new THREE.Group();;
+			var tetrahedronGroup = new THREE.Group();
 	
 			var createTetrahedron = (function() {
 	
@@ -11689,427 +11175,59 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
-/* 12 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(6);
-	var Loader = __webpack_require__(13);
-	var TrackballControls = __webpack_require__(14);
-	
-	var loader = new Loader();
-	
-	var DisplayWindow = View.extend(function() {
-		var that = this;
-		var initialized = false;
-	
-		var windowSizePX;
-	
-		// config (from other manager view)
-		var config;
-	
-		// assets from loader
-		var assets;
-	
-		// 3D 资源
-		this.trackball;
-		this.scene = {};
-		this.sceneOffline = {};
-		this.target;
-	
-		// 模型位置，旋转等信息
-		this.sceneObjSizes = {
-			model : {position: null, rotation: null},
-			camera : {position: null, lookAt: null}
-		}; 
-	
-		// 状态
-		this.state;
-		this.color;
-	
-		this.locked = false;
-		this.active = false;
-	
-	
-		// dom
-		this.$domWrap = $('#displayView');
-		this.$domElem;
-	
-		this.constructor = function() {
-			this.super();
-		}
-	
-		this.activate = function(data) {
-			if (data)
-			config = $.extend(true, {}, data);
-	
-			if (!initialized) {
-				init(); return;
-			}
-	
-			// 3d
-			this.target = new THREE.Vector3(config.productData.modelPos.x, config.productData.modelPos.y, config.productData.modelPos.z);
-	
-			// this.scene.camera.position.copy(config.cameraPos);
-	
-	        this.scene.model.position.copy(this.target);
-	        this.scene.model.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
-	        this.scene.camera.position.copy(this.scene.model.position);
-			this.scene.camera.position.z += 40;
-			this.scene.camera.lookAt(this.target);
-	
-			// initial size info
-			this.sceneObjSizes.model.position = this.scene.model.position.clone();
-			this.sceneObjSizes.model.rotation = this.scene.model.rotation.clone();
-	
-			this.sceneObjSizes.camera.position = this.scene.camera.position.clone();
-			this.sceneObjSizes.camera.lookAt = this.scene.model.position.clone();
-	
-			// 添加到场景
-			Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
-			
-			// dom
-			this.$domElem.appendTo(this.$domWrap);
-	
-			this.resize();
-	
-			changeColor(Object.keys(config.productData.model.textures)[0]);
-			playEntryAnimation();
-	
-			that.addTick(render)
-			this.active = true;
-		}
-	
-		// 窗口关闭
-		this.inActivate = function() {
-	
-			// 移除模型
-			console.log(Object.keys(this.scene));
-			Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
-			render();
-			this.$domElem.remove();
-			this.getView('display-manager').removeWindow(this);
-			this.removeTween();
-			this.removeTick();
-			this.active = false;
-		}
-	
-		// 窗口重置
-		this.resize = function() {  
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
-	
-			windowSizePX = {};
-			windowSizePX['left'] = parseInt(winWidth * config.windowSize['left']);
-			windowSizePX['width'] = parseInt(winWidth * config.windowSize['width']);
-			windowSizePX['top'] = parseInt(winHeight * config.windowSize['top']);
-			windowSizePX['height'] = parseInt(winHeight * config.windowSize['height']);
-	
-			windowSizePX['bottom'] = winHeight - windowSizePX['height'] - windowSizePX['top'];
-	
-	        this.scene.spotLight.position.copy(this.target);
-	        this.scene.spotLight.position.y += 200;
-	        this.scene.spotLight.position.x += 300;
-	        this.scene.spotLight.position.z += 100;
-	        this.scene.spotLight.lookAt(this.target); 
-	
-	        // dom size & position
-	        for (var key in config.windowSize) {
-	        	this.$domElem.css(key, config.windowSize[key] * 100 + '%');
-	        }
-	
-			this.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
-			this.scene.camera.updateProjectionMatrix();
-	
-			this.trackball.handleResize(windowSizePX);
-		}
-	
-		this.resizeWindow = function(windowSize) {
-			var initSize = config.windowSize;
-			var finalSize = windowSize;
-	
-			that.setState('animate');
-			var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
-				config.windowSize = this;
-				that.resize();
-			}).onComplete(function() {
-				that.removeTween(resizeTween);
-				that.setState('handle');
-			}).start();
-		}
-	
-		this.setState = function(state) { 
-			this.state = state;
-			if (state === 'handle') { 
-				this.trackball.init(this.scene.camera, this.scene.model);
-				this.resize(); 
-				!this.locked && this.trackball && (this.trackball.enabled = true);
-			} else {
-				!this.locked && this.trackball && (this.trackball.enabled = false);
-			}
-		}
-	
-		// 获取模型旋转信息，相机相对信息，用于设置其他 displayWindow 使表现一致；
-		this.getSize = function() {
-			var size = {};
-	
-			size.modelRotation = this.scene.model.rotation.clone();
-			size.cameraRotation = this.scene.camera.rotation.clone();
-			size.cameraUp = this.scene.camera.up.clone();
-			size.eye = (new THREE.Vector3).subVectors(this.scene.camera.position, this.scene.model.position);
-	
-			return size;
-		}
-	
-		this.setSize = function(size) {
-			this.scene.model.rotation.copy(size.modelRotation);
-			// this.scene.camera.rotation.copy(size.cameraRotation);
-			// this.scene.camera.up = size.cameraUp;
-			this.scene.camera.position.addVectors(this.scene.model.position, size.eye);
-			this.scene.camera.lookAt(this.scene.model);
-		}
-	
-		this.lock = function(isMain) {
-			this.locked = true;
-			if (isMain) {
-				this.trackball.enabled = true;
-				this.trackball.fullScreen = true;
-			} else {
-				this.trackball.enabled = false;
-			}
-			refresh();
-		}
-	
-		this.unlock = function() {
-			this.locked = false;
-	
-			this.trackball.enabled = true;
-			this.trackball.fullScreen = false;
-			refresh();
-		}
-	
-		/* private method */
-		// 场景搭建，ui创建
-		function init() {
-			if (!assets) {
-				loadAsset(); return;
-			}
-			initialized = true;
-	
-			// scene
-			setupScene();
-	
-			// ui
-			setupUI();
-	
-			that.activate();
-		}
-	
-		// 加载模型资源
-		function loadAsset() {
-			that.setState('loading');
-			var assetConifg = $.extend(true, {}, config.productData.model);
-	
-			// 加载模型资源
-			loader.load(
-				assetConifg, 
-				function(p) { showProgress(p); }, 
-				function(res) {	assets = res; init(); }
-			);
-		}
-	
-		// 下载进度
-		function showProgress(progress) {
-			console.log('displayWindow progress', progress);
-		}
-	
-		function setupScene() {
-	
-			// 3D 相关资源创建
-	 		that.scene.spotLight = new THREE.SpotLight(0xeeeeee);
-	 		that.scene.spotLight.intensity = 0;
-			that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-	
-	
-			var color = Object.keys(assets.textures)[0];
-	    	var texture = THREE.ImageUtils.loadTexture(assets.textures['black']);
-			var material = new THREE.MeshLambertMaterial({transparent: true, opacity: 1});
-	
-			var model = new THREE.Mesh(assets.geometry, material);
-			model.scale.set(0.1, 0.1, 0.1);
-			model.rotation.x = Math.PI/2;
-	
-			that.scene.model = model;
-	
-	        //test
-	        // var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
-	        // var material = new THREE.MeshLambertMaterial({color: 0x333333});
-	        // var platform = new THREE.Mesh(geometry, material);
-	        // that.scene.platform = platform;
-	
-			// trackball
-	        that.trackball = new TrackballControls(that.scene.camera);
-	        that.trackball.enabled = false;
-		}
-	
-		// UI 初始化
-		function setupUI() {
-			// UI (DOM)
-			var domTemplate = 
-			'<div class="display-window">' + 
-				'<div class="window-control">' + 
-					'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
-					'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
-				'</div>' + 
-				'<div class="colors-control"></div>' + 
-			'</div>';
-	
-			var colorTemplate = '<i class="color @color" data-color="@color"></i>';
-	
-			var colorHTML = '';
-			Object.keys(config.productData.model.textures).forEach(function(color) {
-				colorHTML += colorTemplate.replace(/\@color/g, color);
-			});
-			that.$domElem = $(domTemplate);
-			that.$domElem.find('.colors-control').empty().html(colorHTML);
-	
-			// 事件
-			that.$domElem.on('click', '.reset-btn', function() { refresh() });
-			that.$domElem.on('click', '.close-btn', function() { that.inActivate() });
-			that.$domElem.on('click', '.color', function() { changeColor($(this).data('color')) });	
-		}
-	
-		function changeColor(color) {
-			if (color === that.color) return;
-			that.$domElem.find('.color').removeClass('selected');
-			that.$domElem.find('.color.' + color).addClass('selected');
-			that.color = color;
-	
-			var loader = new THREE.TextureLoader(); 
-	
-			that.scene.model.material.map = THREE.ImageUtils.loadTexture(assets.textures[color]);
-			that.scene.model.material.needsUpdate = true;
-		}
-	
-		// 模型切换
-		function changeProduct(productData) {
-			that.productData = productData;
-			loadAsset();
-		}
-	
-	
-		/* 动画 */
-		function playEntryAnimation() {
-			that.setState('animate');
-	
-			var initModelRotation = that.sceneObjSizes.model.rotation;
-			var initCameraPosition = that.sceneObjSizes.camera.position;
-	
-			that.scene.model.rotation.copy(initModelRotation);
-			that.scene.model.rotation.x -= Math.PI * 0.5;
-			that.scene.model.rotation.z += Math.PI * 1.2;
-			that.addTHREEObjTween(that.scene.model, {
-				rotation: initModelRotation
-			}, 2000).start();
-	
-			that.scene.camera.position.copy(initCameraPosition);
-			that.scene.camera.position.z += 300,
-			that.addTHREEObjTween(that.scene.camera, {
-				position: initCameraPosition
-			}, 2000, {
-				onComplete: function() {
-					that.setState('handle');
-				}
-			}).start();
-		}
-	
-		// model，trackball 重置
-		function refresh() { //console.log(that.sceneObjSizes.model.position);
-			that.setState('animate');
-			var initModelRotation = that.sceneObjSizes.model.rotation;
-	
-			var initCameraPosition = that.sceneObjSizes.camera.position;
-			var initCameraLookAtPosition = that.sceneObjSizes.camera.position;
-	
-			var cameraLookAt = new THREE.Vector3(0, 0, -1);
-	        cameraLookAt.applyEuler(that.scene.camera.rotation, that.scene.camera.eulerOrder);
-	        cameraLookAt.add(that.scene.camera.position);
-	
-			that.addTHREEObjTween(that.scene.model, {
-	        	rotation: initModelRotation
-	        }, 1000).start();
-	
-			that.addTHREEObjTween(that.scene.camera, {
-	        	position: initCameraPosition,
-	        	lookAt: initCameraLookAtPosition
-	        }, 1000, {
-	        	onComplete: function() {
-	        		that.setState('handle');
-	        	}
-	        }).start();   
-		}
-	
-		function render() {
-			//console.log(windowSizePX);
-			M3.renderer.setViewport(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
-			M3.renderer.setScissor(windowSizePX['left'], windowSizePX['bottom'], windowSizePX['width'], windowSizePX['height']);
-			M3.renderer.setScissorTest(true);
-			that.scene.camera.aspect = windowSizePX['width'] / windowSizePX['height'];
-			that.scene.camera.updateProjectionMatrix();
-			M3.renderer.render( M3.scene, that.scene.camera );	
-			that.trackball.update();		
-		}
-	});
-	
-	module.exports = DisplayWindow;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
-
-/***/ },
-/* 13 */
+/* 9 */,
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {// 下载缓存
 	loadedCache = {};
 	
+	
 	var Loader = Class.extend(function() {
 		var that = this;
-		var sizeInfo = {
-			'img': 1,
-			'dae': 2	
-		};
 	
-		this.load = function(loadParams, progressCallback, successCallback) {
+		this.load = function(loadParams, onProgress, onLoad) {
 			var totalSize = 0; // 总大小
 			var loadedSize = 0; // 已经下载大小
-			var loadUrls = [];
-			var loadUrl;
-			var resType;
+			var loadTasks = [];
+			var loadTask;
 	
-			loadUrls = getUrls(loadParams);
+			loadTasks = getLoadTasks(loadParams);
 	
-			for (var i = 0; i < loadUrls.length; i++) {
-				loadUrl = loadUrls[i];
-				resType = getLoaderType(loadUrl.match(/\.(\w+)$/)[1]); 
-				totalSize += sizeInfo[resType];
-				loadMethod[resType](loadUrl, (function(type, url) {
-					
-					return function(res) {
-						loadedSize += sizeInfo[type];
+			function getLoadedSize() {
+				var loadedSize = 0;
+				loadTasks.forEach(function(_loadTask) { 
+					loadedSize += _loadTask.loaded
+				});
+				return loadedSize;
+			}
+			for (var i = 0; i < loadTasks.length; i++) {
+				loadTask = loadTasks[i];
+				loadTask.loaded = 0;
+				totalSize += loadTask.size;
 	
-						loadedCache[url] = res;
+				if (loadedCache[loadTask.url]) {
+					loadTask.loaded = loadTask.size;
+					continue;
+				}
 	
-						// 进度回调
-						progressCallback && progressCallback(loadedSize/totalSize);
+				(function(loadTask) {
+					loadMethod[loadTask.type](loadTask.url, function(res) {
+						loadedCache[loadTask.url] = res;
+						loadTask.loaded = loadTask.size;
 	
 						// 成功回调
-						if (loadedSize/totalSize === 1) {
-							successCallback(getResults(loadParams));
+						if (getLoadedSize() / totalSize === 1) {
+							onLoad(getResults(loadParams));
 						}
-					}
-				})(resType, loadUrl));
+					}, function(progress) {
+						loadTask.loaded = loadTask.size * progress;
+						onProgress(getLoadedSize() / totalSize);
+					});
+				})(loadTask);
 			}
 		}
 	
@@ -12117,7 +11235,7 @@
 		function getLoaderType(ext) {
 			var typeExtMap = {
 				'img': /(jpg|jpeg|gif|png)/,
-				'dae': /dae/
+				'json': /json/
 			};
 	
 			for (var type in typeExtMap) {
@@ -12128,48 +11246,60 @@
 		}
 	
 		// 收集下载参数里的 url
-		function getUrls(_params) { 
-			var urlRegx = /.+\.\w{1,6}$/;
+		function getLoadTasks(_params) { 
+			var urlRegx = /.+\.(\w{1,6})(\?.*)$/;
+			var sizeDefault = {
+				'img': 100,
+				'json': 100	
+			};
 	
-			function _getUrls(params) {
+			function _getLoadTasks(params) {
 				var urls = [];
+				var type;
 	
-				if (typeof params === 'string') {
-					urlRegx.test(params) && urls.push(params);
-				} else if (Object.prototype.toString.call(params) === '[object Array]') {
+				if (Object.prototype.toString.call(params) === '[object Array]') {
 					params.forEach(function(param) {
 						urls = urls.concat(_getUrls(param));
 					});
-				} else if (typeof params === 'object'){
+				} else if (typeof params === 'object' && !params.url){
 					for (var key in params) {
 						urls = urls.concat(_getUrls(params[key]));
 					}
+				} else if (typeof params === 'object' && params.url) {
+					// 符合资源格式 {url: xx, size: xx}
+					type = params.url.match(urlRegx)[1];
+					urls.push({
+						'url': params.url,
+						'size': (params.size || sizeDefault[type] || 1),
+						'type': type
+					});
 				}
 				return urls;
 			}
-	
-			return _getUrls(_params);
+			getLoadTasks = _getLoadTasks;
+			return _getLoadTasks(_params);
 		}
 	
 		// 遍历下载参数里的 url， 替换成下载结果缓存
 		function getResults(_params) {
 			var params = $.extend(true, {}, _params);
-			var urlRegx = /.+\.\w{1,6}$/;
 	
 			function _getResults(params) {
-				if (typeof params === 'string') {
-					return (loadedCache[params] || params);
-				} else if (Object.prototype.toString.call(params) === '[object Array]') {
+				if (Object.prototype.toString.call(params) === '[object Array]') {
 					return (params.map(function(param) {
 						return loadedCache[param];
 					}));
-				} else {
+				} else if (typeof params === 'object' && !params.url) {
 					for (var key in params) {
 						params[key] =  _getResults(params[key]);
 					}
 					return params;
+				} else if (typeof params === 'object' && params.url) {
+					return loadedCache[params.url];
 				}
 			}
+	
+			getResults = _getResults();
 			return _getResults(params);
 		}
 	});
@@ -12180,568 +11310,39 @@
 	 * loadMethod 根据不同type 应用相应策略下载资源缓存在 loaded cache 中
 	 * img直接缓存 url 
 	 */
+	var imgLoader = new THREE.ImageLoader();
+	var xhrLoader = new THREE.XHRLoader();
+	
 	var loadMethod = {
 	
 		// 下载图片
-		'img': function(url, success) {
-			var img = new Image();
-			img.onload = function() {
-				success(url);
-			}
-			img.src = url;
+		'img': function(url, onLoad, onProgress) {
+			imgLoader.load(url, onLoad, function(xhr) {
+				return (xhr.load / xhr.total);
+			});
 		},
 	
 		// 下载 dae 模型
-		'dae': function(url, callback) {
-			var loader = new THREE.ColladaLoader();
-	        loader.load(url, function (result) {
-	            mesh = result.scene.children[0].children[0].clone();
-	            callback(mesh.geometry);
-	        });
+		'json': function(url, onLoad, onProgress) {
+			xhrLoader.load(url, onLoad, function(xhr) {
+				return (xhr.load / xhr.total);
+			});
 		}
 	}
-	
 	
 	module.exports = Loader;
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
-/* 14 */
-/***/ function(module, exports) {
-
-	/**
-	 * @author Eberhard Graether / http://egraether.com/
-	 * @author Mark Lundin 	/ http://mark-lundin.com
-	 */
-	
-	TrackballControls = Class.extend(function () {
-	
-		var _this = this;
-		var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
-	
-		this.domElement = document;
-	
-		// API
-	
-		this.enabled = true;
-	
-		this.screen = { left: 0, top: 0, width: 0, height: 0 };
-		this.fullScreen = false;
-	
-		this.rotateSpeed = 1.0;
-		this.zoomSpeed = 1.2;
-		this.panSpeed = 0.3;
-	
-		this.noRotate = false;
-		this.noZoom = false;
-		this.noPan = false;
-		this.noRoll = false;
-	
-		this.staticMoving = false;
-		this.dynamicDampingFactor = 0.2;
-	
-		this.minDistance = 0;
-		this.maxDistance = Infinity;
-	
-	
-	
-		// internals
-		this.targetMesh;
-		this.target = new THREE.Vector3();
-		this.target0 = this.target.clone();
-		this.position0; //this.camera.position.clone();
-		this.up0; //= this.camera.up.clone();
-	
-		var EPS = 0.000001;
-	
-		var lastPosition = new THREE.Vector3();
-	
-		var _state = STATE.NONE,
-		_prevState = STATE.NONE,
-	
-		_eye = new THREE.Vector3(),
-	
-		_rotation,
-	
-		_zoomStart = new THREE.Vector2(),
-		_zoomEnd = new THREE.Vector2(),
-	
-		_touchZoomDistanceStart = 0,
-		_touchZoomDistanceEnd = 0,
-	
-		_panStart = new THREE.Vector2(),
-		_panEnd = new THREE.Vector2();
-	
-	
-	
-		// events
-	
-		var changeEvent = { type: 'change' };
-		var startEvent = { type: 'start'};
-		var endEvent = { type: 'end'};
-	
-	
-		// methods
-		
-		this.constructor = function(camera, targetMesh) {
-			initEvent();
-		}
-	
-		this.init = function(camera, targetMesh) {
-	
-			this.camera = camera;
-			this.cameraUp = camera.up.clone();
-			this.targetMesh = targetMesh;
-	
-			_rotation = new THREE.Quaternion();
-			_rotation.setFromEuler(targetMesh.rotation.clone());
-			// for reset 
-			this.target = this.targetMesh.position.clone();
-			this.target0 = this.target.clone();
-			this.position0 = this.camera.position.clone();
-			this.up0 = this.camera.up.clone();
-		}
-	
-		this.changeTargetMesh = function(targetMesh) {
-			this.targetMesh = targetMesh;
-			this.target = this.targetMesh.position.clone();
-		}
-	
-		this.handleResize = function (winSize) {
-			var maxDisBase = 80;
-			var minDisBase = 10;
-	
-	
-			this.screen.left = winSize.left;
-			this.screen.top = winSize.top;
-			this.screen.width = winSize.width;
-			this.screen.height = winSize.height;
-	
-			this.maxDistance = maxDisBase;
-			this.minDistance = minDisBase;
-		};
-	
-		this.handleEvent = function ( event ) {
-	
-			if ( typeof this[ event.type ] == 'function' ) {
-	
-				this[ event.type ]( event );
-	
-			}
-	
-		};
-	
-		var getMouseOnScreen = ( function () {
-	
-			var vector = new THREE.Vector2();
-	
-			return function ( pageX, pageY ) {
-	
-				vector.set(
-					( pageX - _this.screen.left ) / _this.screen.width,
-					( pageY - _this.screen.top ) / _this.screen.height
-				);
-	
-				return vector;
-	
-			};
-	
-		}() );
-	
-		var getMouseProjectionOnBall = function(offsetX, offsetY) {
-	
-			var radio = 0.5;
-	        var deltaRotationQuaternion = new THREE.Quaternion()
-	            .setFromEuler(new THREE.Euler(
-	                offsetY * (Math.PI / 180) * radio,
-	                offsetX * (Math.PI / 180) * radio,
-	                0,
-	                'XYZ'
-	            ));
-	        
-	        _this.targetMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, _this.targetMesh.quaternion);
-		};
-	
-	
-		this.rotateTarget = function() { 
-			
-			//this.targetMesh.rotation.setFromQuaternion(_rotation, 'XYZ'); 
-		}
-	
-		this.zoomCamera = function () {
-	
-			if ( _state === STATE.TOUCH_ZOOM_PAN ) {
-	
-				var factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
-				_touchZoomDistanceStart = _touchZoomDistanceEnd;
-				_eye.multiplyScalar( factor );
-	
-			} else {
-	
-				var factor = 1.0 + ( _zoomEnd.y - _zoomStart.y ) * _this.zoomSpeed;
-	
-				if ( factor !== 1.0 && factor > 0.0 ) {
-	
-					_eye.multiplyScalar( factor );
-	
-					if ( _this.staticMoving ) {
-	
-						_zoomStart.copy( _zoomEnd );
-	
-					} else {
-	
-						_zoomStart.y += ( _zoomEnd.y - _zoomStart.y ) * this.dynamicDampingFactor;
-	
-					}
-	
-				}
-	
-			}
-	
-		};
-	
-		this.panCamera = (function(){
-	
-			var mouseChange = new THREE.Vector2(),
-				cameraUp = new THREE.Vector3(),
-				pan = new THREE.Vector3();
-	
-			return function () {
-	
-				mouseChange.copy( _panEnd ).sub( _panStart );
-	
-				if ( mouseChange.lengthSq() ) {
-	
-					mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
-	
-					pan.copy( _eye ).cross( _this.camera.up ).setLength( mouseChange.x );
-					pan.add( cameraUp.copy( _this.camera.up ).setLength( mouseChange.y ) );
-	
-					_this.camera.position.add( pan );
-					_this.target.add( pan );
-	
-					if ( _this.staticMoving ) {
-	
-						_panStart.copy( _panEnd );
-	
-					} else {
-	
-						_panStart.add( mouseChange.subVectors( _panEnd, _panStart ).multiplyScalar( _this.dynamicDampingFactor ) );
-	
-					}
-	
-				}
-			}
-	
-		}());
-	
-		this.checkDistances = function () {
-	
-			if ( !_this.noZoom || !_this.noPan ) {
-	
-				if ( _eye.lengthSq() > _this.maxDistance * _this.maxDistance ) {
-	
-					_this.camera.position.addVectors( _this.target, _eye.setLength( _this.maxDistance ) );
-	
-				}
-	
-				if ( _eye.lengthSq() < _this.minDistance * _this.minDistance ) {
-	
-					_this.camera.position.addVectors( _this.target, _eye.setLength( _this.minDistance ) );
-	
-				}
-	
-			}
-	
-		};
-	
-		this.update = function () {
-			if (!this.enabled) return;  
-	
-			_eye.subVectors( _this.camera.position, _this.target );
-	
-			if ( !_this.noRotate ) {
-	
-				_this.rotateTarget();
-	
-			}
-	
-			if ( !_this.noZoom ) {
-	
-				_this.zoomCamera();
-	
-			}
-	
-			if ( !_this.noPan ) {
-	
-				_this.panCamera();
-	
-			}
-	
-			_this.camera.position.addVectors( _this.target, _eye );
-	
-			_this.checkDistances();
-	
-			_this.camera.lookAt( _this.target );
-	
-			if ( lastPosition.distanceToSquared( _this.camera.position ) > EPS ) {
-	
-				//_this.dispatchEvent( changeEvent );
-	
-				lastPosition.copy( _this.camera.position );
-	
-			}
-	
-		};
-	
-		this.resize = function () {
-	
-			_state = STATE.NONE;
-			_prevState = STATE.NONE;
-	
-			_this.target.copy( _this.target0 );
-			_this.camera.position.copy( _this.position0 );
-			_this.camera.up.copy( _this.up0 );
-	
-			_eye.subVectors( _this.camera.position, _this.target );
-	
-			_this.camera.lookAt( _this.target );
-	
-			_this.dispatchEvent( changeEvent );
-	
-			lastPosition.copy( _this.camera.position );
-	
-		};
-	
-	
-		// event handle
-	
-		var mousePreX = 0;
-		var mousePreY = 0;
-	
-		function isInScreen(x, y) {
-			if ((x > _this.screen.left && x < _this.screen.left + _this.screen.width &&
-				y > _this.screen.top && y < _this.screen.top + _this.screen.height) || _this.fullScreen) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-	
-		function mousedown( event ) { 
-	
-			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
-	
-			event.preventDefault();
-			event.stopPropagation();
-	
-			if ( _state === STATE.NONE ) {
-				_state = event.button;
-			}
-	
-			if ( _state === STATE.ROTATE && !_this.noRotate ) {
-				mousePreX = event.pageX;
-				mousePreY = event.pageY;
-	
-			} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
-	
-				_zoomStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
-				_zoomEnd.copy(_zoomStart);
-	
-			} else if ( _state === STATE.PAN && !_this.noPan ) {
-	
-				_panStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
-				_panEnd.copy(_panStart)
-	
-			}
-	
-			document.addEventListener( 'mousemove', mousemove, false );
-			document.addEventListener( 'mouseup', mouseup, false );
-	
-			//_this.dispatchEvent( startEvent );
-	
-		}
-	
-	
-		// event handle
-		function mousemove( event ) {
-	
-			if ( _this.enabled === false ) return;
-	
-			event.preventDefault();
-			event.stopPropagation();
-	
-			if ( _state === STATE.ROTATE && !_this.noRotate ) {
-	
-				getMouseProjectionOnBall( event.pageX - mousePreX, event.pageY - mousePreY) ;
-	
-			} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
-	
-				_zoomEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
-	
-			} else if ( _state === STATE.PAN && !_this.noPan ) {
-	
-				_panEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
-	
-			}
-			mousePreX = event.pageX;
-			mousePreY = event.pageY;
-	
-		}
-	
-		function mouseup( event ) {
-	
-			if ( _this.enabled === false ) return;
-	
-			event.preventDefault();
-			event.stopPropagation();
-	
-			_state = STATE.NONE;
-	
-			document.removeEventListener( 'mousemove', mousemove );
-			document.removeEventListener( 'mouseup', mouseup );
-			//_this.dispatchEvent( endEvent );
-	
-		}
-	
-		function mousewheel( event ) {
-	
-			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
-	
-			event.preventDefault();
-			event.stopPropagation();
-	
-			var delta = 0;
-	
-			if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
-	
-				delta = event.wheelDelta / 40;
-	
-			} else if ( event.detail ) { // Firefox
-	
-				delta = - event.detail / 3;
-	
-			}
-	
-			_zoomStart.y += delta * 0.01;
-			//_this.dispatchEvent( startEvent );
-			//_this.dispatchEvent( endEvent );
-	
-		}
-	
-		function touchstart( event ) {
-	
-			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
-	
-			switch ( event.touches.length ) {
-	
-				case 1:
-					mousePreX = event.touches[ 0 ].pageX;
-					mousePreY = event.touches[ 0 ].pageY;
-					break;
-	
-				case 2:
-					_state = STATE.TOUCH_ZOOM_PAN;
-					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-					_touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt( dx * dx + dy * dy );
-	
-					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
-					_panStart.copy( getMouseOnScreen( x, y ) );
-					_panEnd.copy( _panStart );
-					break;
-	
-				default:
-					_state = STATE.NONE;
-	
-			}
-			//_this.dispatchEvent( startEvent );
-		}
-	
-		function touchmove( event ) {
-	
-			if ( _this.enabled === false ) return;
-	
-			event.preventDefault();
-			event.stopPropagation();
-	
-			switch ( event.touches.length ) {
-	
-				case 1:
-					getMouseProjectionOnBall( event.touches[ 0 ].pageX - mousePreX, event.touches[ 0 ].pageY - mousePreY);
-					break;
-	
-				case 2:
-					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
-					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
-					_touchZoomDistanceEnd = Math.sqrt( dx * dx + dy * dy );
-	
-					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
-					_panEnd.copy( getMouseOnScreen( x, y ) );
-					break;
-	
-				default:
-					_state = STATE.NONE;
-	
-			}
-			mousePreX = event.touches[ 0 ].pageX;
-			mousePreY = event.touches[ 0 ].pageY;
-		}
-	
-		function touchend( event ) {
-	
-			if ( _this.enabled === false ) return;
-	
-			switch ( event.touches.length ) {
-	
-				case 1:
-					_rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
-					_rotateStart.copy( _rotateEnd );
-					break;
-	
-				case 2:
-					_touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
-	
-					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
-					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
-					_panEnd.copy( getMouseOnScreen( x, y ) );
-					_panStart.copy( _panEnd );
-					break;
-	
-			}
-	
-			_state = STATE.NONE;
-			//_this.dispatchEvent( endEvent );
-		}
-	
-		function initEvent() {
-			_this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
-	
-			_this.domElement.addEventListener( 'mousedown', mousedown, false );
-	
-			_this.domElement.addEventListener( 'mousewheel', mousewheel, false );
-			_this.domElement.addEventListener( 'DOMMouseScroll', mousewheel, false ); // firefox
-	
-			_this.domElement.addEventListener( 'touchstart', touchstart, false );
-			_this.domElement.addEventListener( 'touchend', touchend, false );
-			_this.domElement.addEventListener( 'touchmove', touchmove, false );		
-		}
-	});
-	
-	
-	module.exports = TrackballControls;
-
-/***/ },
-/* 15 */
+/* 11 */,
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(6);
-	var Loader = __webpack_require__(13);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG) {var View = __webpack_require__(3);
+	var Loader = __webpack_require__(10);
 	
 	
 	var DisplayRoom = View.extend(function() {
@@ -12996,14 +11597,14 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(9), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(1)))
 
 /***/ },
-/* 16 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(6);
-	var Loader = __webpack_require__(13);
+	/* WEBPACK VAR INJECTION */(function(CONFIG, $) {var View = __webpack_require__(3);
+	var Loader = __webpack_require__(10);
 	var loader = new Loader();
 	
 	var List = View.extend(function() {
@@ -13073,10 +11674,10 @@
 	
 	
 	module.exports = List;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(9)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6)))
 
 /***/ },
-/* 17 */
+/* 14 */
 /***/ function(module, exports) {
 
 

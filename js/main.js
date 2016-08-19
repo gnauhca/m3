@@ -1,55 +1,47 @@
-require('../css/common.scss');
+(function() {
+
+
+
 
 window.M3 = {};
-(function() {
-	var View = require('./view.js');
+
+M3.viewManager = require('./view/view-manager.js');
+
+// todo: webgl 检查
+//
+
+// 基本场景
+M3.renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true});
+
+M3.scene = new THREE.Scene();
+document.body.appendChild(M3.renderer.domElement);
+M3.renderer.setClearColor(0x2abced, 0);
+
+var winWidth = window.innerWidth;
+var winHeight = window.innerHeight;
+
+M3.renderer.setSize(winWidth, winHeight);
 
 
-	var ViewUpdate = require('./update-tip.js');
+M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+
+// main render tick
+var Time = require('time');
+var m3Time = new Time();
+
+M3.tick = m3Time.addTick(function() {
+	M3.renderer.render(M3.scene, M3.camera);
+});
+
+
+M3.viewManager.activateView('index');
 
 
 
-	// todo: webgl 检查
-	if (false) {
-		// ViewUpdate
-		return;
-	} else {
-		document.getElementById('updateTips').style.display = 'none';
-	}
 
-	// 基本场景
-	M3.renderer = new THREE.WebGLRenderer({ antialias: true , alpha: true});
 
-	M3.scene = new THREE.Scene();
-    document.body.appendChild(M3.renderer.domElement);
-    M3.renderer.setClearColor(0x2abced, 0);
 
-	var winWidth = window.innerWidth;
-	var winHeight = window.innerHeight;
 
-	M3.renderer.setSize(winWidth, winHeight);
-
-	var MainView = View.extend(function() {
-		this.active;
-		this.constructor = function() {
-			this.super();
-		}
-		this.activate = function() {
-			this.active = true;
-			this.activateView('display-manager', {productDatas:CONFIG.products.slice(0,4),'cameraPos': new THREE.Vector3(0,0,0)});
-
-			//this.activateView('display-room');
-			// this.activateView('list');
-		}
-		this.resize = function() {
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
-
-			M3.renderer.setSize(winWidth, winHeight);
-		}
-	});
-	var mainView = new MainView;
-	mainView.activate();
 
 })();
 
