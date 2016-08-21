@@ -10,21 +10,20 @@ var IndexView = View.extend(function() {
 		this.super();
 		var WelcomeStage = require('../stages/welcome.js');
 		_welcomeStage = new WelcomeStage();
-		this.stages.welcomeStage = _welcomeStage;
+		this.stages.push(_welcomeStage);
 	}
 
 	this.activate = function() {
-		if (this.stages.every(function() { return this.setup; })) {
-			// loaded
-			
-		} else {
-			this.stages.forEach(function(stage) {
-				if (!stage.setup && !stage.loading) {
-					stage.load(function() {});
-				}
-			});
-
+		// stage setup
+		if (!_welcomeStage.setup) {
+			welcomeStage.setup(this.activate.bind(this));
+			return;
 		}
+
+		// welcome animation
+		_welcomeStage.playEntryAnimation().then(function() {
+			// welcome animation over
+		}).catch(function(e) { console.log(e.stack);});
 	}
 
 	this.inactivate = function() {

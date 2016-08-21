@@ -18,8 +18,8 @@ var Stage = Time.extend(function() {
 	}
 
 	// 装载 3d 对象
-	this.setup = function() {
-
+	this.setup = function(onProgress, onSuccess) {
+		
 	}
 
 	this.resize = function() {

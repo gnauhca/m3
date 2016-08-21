@@ -6,30 +6,34 @@ var Welcome = Stage.extend(function() {
 	var that = this;
 	var logoUrl = CONFIG.MEIZU_LOGO;
 	var particleDatas = [];
-	var camera; // 自身创建 camera
 	var cloud;
+	var camera;
 	var baseCrood = new THREE.Vector3(0, 0, 0);
-	var renderTick;
 
 	this.constructor = function() {
 		this.super();
-        camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 500);
-
-		M3.scene.add(camera);
+		camera = M3.camera;
 	}
 
-	this.activate = function() {
-		if (!particleDatas.length) {
+	this.load = function() {
+		return new Promise(function(resolve, reject) {
 			var img = new Image();
 			img.src = logoUrl;
 			img.onload = function() {
 				particleDatas = getParticlesData(img);
 				createParticle();
-				init();
-			}
-		} else {
-			init();		
-		}
+				resolve();
+			}			
+		});
+	}
+
+	this.setup = function(onSuccess) {
+		this.load().then(function() {
+			this.setup = true;
+			onSuccess();
+		}).catch(function(e) {
+			console.log(e.stack);
+		});
 	}
 
 	this.inactivate = function() {
@@ -45,14 +49,50 @@ var Welcome = Stage.extend(function() {
 		camera.lookAt(baseCrood);
 	}
 
+	this.playEntryAnimation = function() {
+		return new Promise(function(resolve, reject) {
+			var timePass = 0;
+			var aniDatas = $.extend(true, [], particleDatas);
+			var aniDoneNum = 0;
 
-	function init() {
-		that.resize();
-		playEntryAnimation(function() {
-			that.activateView('product-preview');
-		});	
-		render();
-	} 
+			// console.log(aniDatas);
+			var aniTick = that.addTick(function(detal) {
+				timePass += detal;
+				aniDoneNum = 0;
+
+				aniDatas.forEach(function(aniData, i) {
+					if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
+					aniData.percent = (timePass - aniData.delay) / aniData.dur;
+					aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
+
+					aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
+
+					aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+
+					aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
+					aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
+					aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
+
+					cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
+
+				});
+
+				cloud.geometry.verticesNeedUpdate = true;
+
+				if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
+					resolve();
+				}
+
+				cloud.rotation.x += 0.0001;
+				cloud.rotation.y += 0.0001;
+				cloud.rotation.z += 0.0001;
+				if (aniDoneNum/aniDatas.length > 0.99) {
+					//that.removeTick(aniTick);
+				}
+			});			
+		});
+
+	}
 
 	function getParticlesData(img) {
 		var particleDatas = [];
@@ -136,55 +176,6 @@ var Welcome = Stage.extend(function() {
         cloud = new THREE.PointCloud(geom, material);
         cloud.name = "particles";
         M3.scene.add(cloud);
-	}
-
-	function playEntryAnimation(callback) {
-		var timePass = 0;
-		var aniDatas = $.extend(true, [], particleDatas);
-		var aniDoneNum = 0;
-
-		// console.log(aniDatas);
-		var aniTick = that.addTick(function(detal) {
-			timePass += detal;
-			aniDoneNum = 0;
-
-			aniDatas.forEach(function(aniData, i) {
-				if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
-				aniData.percent = (timePass - aniData.delay) / aniData.dur;
-				aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
-
-				aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
-
-				aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
-
-				aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
-				aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
-				aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
-
-				cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
-
-			});
-
-			cloud.geometry.verticesNeedUpdate = true;
-
-			if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
-				callback && callback(); callback = false;
-			}
-
-			cloud.rotation.x += 0.0001;
-			cloud.rotation.y += 0.0001;
-			cloud.rotation.z += 0.0001;
-			if (aniDoneNum/aniDatas.length > 0.99) {
-				//that.removeTick(aniTick);
-			}
-		});
-	}
-
-	// render 
-	function render() {
-		renderTick = that.addTick(function() {
-			M3.renderer.render(M3.scene, camera);
-		});
 	}
 });
 

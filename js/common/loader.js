@@ -4,7 +4,7 @@ loadedCache = {};
 var Loader = Class.extend(function() {
 	var that = this;
 
-	this.load = function(loadParams, onProgress, onLoad) {
+	this.load = function(loadParams, onLoad, onProgress) {
 		var totalSize = 0; // 总大小
 		var loadedSize = 0; // 已经下载大小
 		var loadTasks = [];
@@ -38,7 +38,7 @@ var Loader = Class.extend(function() {
 					if (getLoadedSize() / totalSize === 1) {
 						onLoad(getResults(loadParams));
 					}
-				}, function(progress) {
+				}, function( ) {
 					loadTask.loaded = loadTask.size * progress;
 					onProgress(getLoadedSize() / totalSize);
 				});
