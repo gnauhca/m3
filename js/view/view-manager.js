@@ -1,7 +1,7 @@
 var ViewManager = Class.extend(function() {
     var _viewConstructors = {
         'index': require('./index.js'),
-        'select': require('./product-preview.js'),
+        'select': require('./select.js'),
         'display': require('./display.js'),
     };
 

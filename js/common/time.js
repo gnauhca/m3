@@ -43,17 +43,17 @@ TIME.handleFrame = (function() {
 	var now = (new Date()).getTime();
 	var last = now;
 	var detal;
-	return (function() {
+	return (function() { 
 
 		detal = now - last;
 		detal = detal > 500 ? 30 : (detal < 16? 16 : detal);
 
 		//console.log(TIME.bodys);
 		TIME.bodys.forEach(function(body) {
-			if (!body.stop) {
+			if (!body.isStop) {
 				body.ticks.forEach(function(tick) {
-					tick.fn && tick.fn(detal);
-				});				
+					tick.fn && tick.fn(detal); 
+				});
 			}
 		});
 
@@ -72,7 +72,7 @@ var TimeBody = Class.extend(function TimeBody() {
 
 	this.ticks = [];
 	this.tweens = [];
-	this.stop = false;
+	this.isStop = false;
 
 	this.constructor = function() {
 		TIME.addBody(this);
@@ -92,7 +92,7 @@ var TimeBody = Class.extend(function TimeBody() {
 	this.addTick = function(fn) {
 		var tick = {'fn': fn};
 
-		tick.stop = false;
+		tick.isStop = false;
 		this.ticks.push(tick);
 		return tick;
 	}
@@ -208,14 +208,14 @@ var TimeBody = Class.extend(function TimeBody() {
 
 	// stop 暂停时间
 	this.stop = function() {
-		this.stop = true;
+		this.isStop = true;
 		this.tweens.forEach(function(tween) {
 			tween.stop();
 		});
 	}
 
 	this.start = function() {
-		this.stop = false;
+		this.isStop = false;
 		this.tweens.forEach(function(tween) {
 			tween.start();
 		});

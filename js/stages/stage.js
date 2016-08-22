@@ -3,7 +3,7 @@ var Time = require('time');
 var Stage = Time.extend(function() {
 	this.objects = {};
 	this.state; // unload, loading, setup, animate
-	this.setup = false;
+	this.isInit = false;
 	this.scene;
 
 	this.constructor = function() {
@@ -18,7 +18,7 @@ var Stage = Time.extend(function() {
 	}
 
 	// 装载 3d 对象
-	this.setup = function(onProgress, onSuccess) {
+	this.init = function(onProgress, onSuccess) {
 		
 	}
 
@@ -41,3 +41,5 @@ var Stage = Time.extend(function() {
 		}
 	}
 });
+
+module.exports = Stage;

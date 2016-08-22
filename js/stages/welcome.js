@@ -3,16 +3,17 @@ var Welcome = Stage.extend(function() {
 	this.name = 'welcome';
 	this.isInit = false;
 
+
 	var that = this;
-	var logoUrl = CONFIG.MEIZU_LOGO;
+	var logoUrl = require('assets/logo.png');
 	var particleDatas = [];
 	var cloud;
-	var camera;
+	var _camera;
 	var baseCrood = new THREE.Vector3(0, 0, 0);
 
 	this.constructor = function() {
 		this.super();
-		camera = M3.camera;
+		_camera = M3.camera;
 	}
 
 	this.load = function() {
@@ -27,11 +28,14 @@ var Welcome = Stage.extend(function() {
 		});
 	}
 
-	this.setup = function(onSuccess) {
+	this.init = function(onSuccess) { 
 		this.load().then(function() {
-			this.setup = true;
+			this.isInit = true;
+
+			_camera.position.copy(baseCrood).z += 250;
+
 			onSuccess();
-		}).catch(function(e) {
+		}.bind(this)).catch(function(e) {
 			console.log(e.stack);
 		});
 	}
@@ -42,14 +46,13 @@ var Welcome = Stage.extend(function() {
 
 	this.resize = function() {
 
-		camera.aspect = window.innerWidth / window.innerHeight;
-        camera.updateProjectionMatrix();
+		_camera.aspect = window.innerWidth / window.innerHeight;
+        _camera.updateProjectionMatrix();
 
-		camera.position.set(0, 0, 250);
-		camera.lookAt(baseCrood);
+		_camera.lookAt(baseCrood);
 	}
 
-	this.playEntryAnimation = function() {
+	this.entry = function() { 
 		return new Promise(function(resolve, reject) {
 			var timePass = 0;
 			var aniDatas = $.extend(true, [], particleDatas);
@@ -57,6 +60,7 @@ var Welcome = Stage.extend(function() {
 
 			// console.log(aniDatas);
 			var aniTick = that.addTick(function(detal) {
+
 				timePass += detal;
 				aniDoneNum = 0;
 

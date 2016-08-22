@@ -7,6 +7,7 @@ module.exports = {
 		'path': './build'
 	},
 	resolve: {
+		root: process.cwd(),
 		modulesDirectories: ['node_modules', './js/common']
 	},
 
@@ -14,8 +15,8 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /css.*?\.scss$/, loaders: ['file?name=common.css', "css", "sass"] }
-
+            { test: /css.*?\.scss$/, loaders: ['style', "css", "sass"] },
+            { test: /assets.*?\.(png|jpeg|jpg|json)$/, loaders: ['file?name=[path][name].[ext]']}
         ]
     },
 
@@ -24,8 +25,8 @@ module.exports = {
 		    $: "jquery",
 		    jQuery: "jquery",
 		    "window.$": "jquery",
-		    CONFIG: './config.js'
-		    THREE: 'js/libs/three.js'
+		    CONFIG: 'config',
+		    THREE: 'three'
 		})
 	]
 }

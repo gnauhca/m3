@@ -1,5 +1,5 @@
 (function() {
-
+require('../css/common.scss');
 
 
 

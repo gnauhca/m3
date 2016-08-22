@@ -13,15 +13,15 @@ var IndexView = View.extend(function() {
 		this.stages.push(_welcomeStage);
 	}
 
-	this.activate = function() {
-		// stage setup
-		if (!_welcomeStage.setup) {
-			welcomeStage.setup(this.activate.bind(this));
+	this.activate = function() { 
+		// stage init
+		if (!_welcomeStage.isInit) {
+			_welcomeStage.init(this.activate.bind(this));
 			return;
 		}
 
 		// welcome animation
-		_welcomeStage.playEntryAnimation().then(function() {
+		_welcomeStage.entry().then(function() {
 			// welcome animation over
 		}).catch(function(e) { console.log(e.stack);});
 	}
