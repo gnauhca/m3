@@ -1,29 +1,29 @@
 var View = require('./view.js');
-var Loader = require('./loader.js');
+var Mobile = require('./mobile.js');
 var TrackballControls = require('./m3-trackballcontrol');
 
 var loader = new Loader();
 
 var DisplayWindow = View.extend(function() {
 	var that = this;
-	var _initialized = false;
 
-	var _winSizePX;
-
-	// _config (from other manager view)
-	var _config;
-
-	// _assets from loader
-	var _assets;
+	var windowSize; // for px calculate
+	var _winSizePX; // for render 
 
 	// 3D 资源
+	var _camera;
+	var _mobile;
+
+	this.name; // pro5?
+	this.size;
+	this.isInit = false;
+
 	this.trackball;
-	this.scene = {};
-	this.sceneOffline = {};
+	this.objects = {};
 	this.target;
 
 	// 模型位置，旋转等信息
-	this.sceneObjSizes = {
+	this.objectSizes = {
 		model : {position: null, rotation: null},
 		camera : {position: null, lookAt: null}
 	}; 
@@ -40,38 +40,57 @@ var DisplayWindow = View.extend(function() {
 	this.$domWrap = $('#displayView');
 	this.$domElem;
 
-	this.constructor = function() {
+	this.constructor = function(mobileName) {
+		this.name = mobileName;
 		this.super();
+		_mobile = new Mobile(this.name);
+		this.size = _mobile.size;
 	}
 
-	this.activate = function(data) {
-		if (data)
-		_config = $.extend(true, {}, data);
+	this.load = function(onProgress) {
+		return _mobile.load(onProgress);
+	}
 
-		if (!_initialized) {
-			init(); return;
-		}
+	this.init = function(onProgress) {
+		return this.load(onProgress).then(function() {
+			return new Promise(function(resolve, reject) {
+				// init
+				this.objects.mesh = _mobile.mesh;
+				setupScene();
+				this.isInit = true;
+				resolve();
+			});
+		}).catch(function(e) { console.log(e.stack); });;
+	}
 
+	this.entry = function(meshPos, windowSize) {
+		windowSize = windowSize;
 		// 3d
-		this.target = new THREE.Vector3(_config.productData.modelPos.x, _config.productData.modelPos.y, _config.productData.modelPos.z);
+		this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
 
-		// this.scene.camera.position.copy(_config.cameraPos);
+        this.objects.mesh.position.copy(this.target);
+        this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+        _camera.position.copy(M3.camera.position);
+		_camera.position.z += 40;
+		_camera.lookAt(THREEUtil.getLookAt(M3.camera));
 
-        this.scene.model.position.copy(this.target);
-        this.scene.model.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
-        this.scene.camera.position.copy(this.scene.model.position);
-		this.scene.camera.position.z += 40;
-		this.scene.camera.lookAt(this.target);
+		// light
+        this.objects.spotLight.position.copy(this.target);
+        this.objects.spotLight.position.y += 200;
+        this.objects.spotLight.position.x += 300;
+        this.objects.spotLight.position.z += 100;
+        this.objects.spotLight.lookAt(this.target); 
 
 		// initial size info
-		this.sceneObjSizes.model.position = this.scene.model.position.clone();
-		this.sceneObjSizes.model.rotation = this.scene.model.rotation.clone();
+		this.objectSizes.mesh.position = this.objects.mesh.position.clone();
+		this.objectSizes.mesh.rotation = this.objects.mesh.rotation.clone();
 
-		this.sceneObjSizes.camera.position = this.scene.camera.position.clone();
-		this.sceneObjSizes.camera.lookAt = this.scene.model.position.clone();
+		this.objectSizes.camera.position = this.objects.mesh.position.clone();
+		this.objectSizes.camera.position.z += 50;
+		this.objectSizes.camera.lookAt = this.objects.mesh.position.clone();
 
 		// 添加到场景
-		Object.keys(this.scene).forEach(function(o) { M3.scene.add(this.scene[o]);}.bind(this));
+		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
 		
 		// dom
 		this.$domElem.appendTo(this.$domWrap);
@@ -79,18 +98,17 @@ var DisplayWindow = View.extend(function() {
 		this.resize();
 
 		changeColor(Object.keys(_config.productData.model.textures)[0]);
-		playEntryAnimation();
+		that.addTick(render);
 
-		that.addTick(render)
-		this.active = true;
+		return playEntryAnimation();
 	}
 
 	// 窗口关闭
-	this.inActivate = function() {
+	this.leave = function() {
 
 		// 移除模型
-		console.log(Object.keys(this.scene));
-		Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
+		console.log(Object.keys(this.objects));
+		Object.keys(this.objects).forEach(function(o) { M3.scene.remove(that.objects[o]);});
 		render();
 		this.$domElem.remove();
 		this.getView('display-manager').removeWindow(this);
@@ -105,37 +123,31 @@ var DisplayWindow = View.extend(function() {
 		var winHeight = window.innerHeight;
 
 		_winSizePX = {};
-		_winSizePX['left'] = parseInt(winWidth * _config.windowSize['left']);
-		_winSizePX['width'] = parseInt(winWidth * _config.windowSize['width']);
-		_winSizePX['top'] = parseInt(winHeight * _config.windowSize['top']);
-		_winSizePX['height'] = parseInt(winHeight * _config.windowSize['height']);
+		_winSizePX['left'] = parseInt(winWidth * _windowSize['left']);
+		_winSizePX['width'] = parseInt(winWidth * _windowSize['width']);
+		_winSizePX['top'] = parseInt(winHeight * _windowSize['top']);
+		_winSizePX['height'] = parseInt(winHeight * _windowSize['height']);
 
 		_winSizePX['bottom'] = winHeight - _winSizePX['height'] - _winSizePX['top'];
 
-        this.scene.spotLight.position.copy(this.target);
-        this.scene.spotLight.position.y += 200;
-        this.scene.spotLight.position.x += 300;
-        this.scene.spotLight.position.z += 100;
-        this.scene.spotLight.lookAt(this.target); 
-
         // dom size & position
-        for (var key in _config.windowSize) {
-        	this.$domElem.css(key, _config.windowSize[key] * 100 + '%');
+        for (var key in _windowSize) {
+        	this.$domElem.css(key, _windowSize[key] * 100 + '%');
         }
 
-		this.scene.camera.aspect = _winSizePX['width'] / _winSizePX['height'];
-		this.scene.camera.updateProjectionMatrix();
+		_camera.aspect = _winSizePX['width'] / _winSizePX['height'];
+		_camera.updateProjectionMatrix();
 
 		this.trackball.handleResize(_winSizePX);
 	}
 
 	this.resizeWindow = function(windowSize) {
-		var initSize = _config.windowSize;
+		var initSize = _windowSize;
 		var finalSize = windowSize;
 
 		that.setState('animate');
 		var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
-			_config.windowSize = this;
+			_windowSize = this;
 			that.resize();
 		}).onComplete(function() {
 			that.removeTween(resizeTween);
@@ -146,7 +158,7 @@ var DisplayWindow = View.extend(function() {
 	this.setState = function(state) { 
 		this.state = state;
 		if (state === 'handle') { 
-			this.trackball.init(this.scene.camera, this.scene.model);
+			this.trackball.init(_camera, this.objects.mesh);
 			this.resize(); 
 			!this.locked && this.trackball && (this.trackball.enabled = true);
 		} else {
@@ -158,20 +170,20 @@ var DisplayWindow = View.extend(function() {
 	this.getSize = function() {
 		var size = {};
 
-		size.modelRotation = this.scene.model.rotation.clone();
-		size.cameraRotation = this.scene.camera.rotation.clone();
-		size.cameraUp = this.scene.camera.up.clone();
-		size.eye = (new THREE.Vector3).subVectors(this.scene.camera.position, this.scene.model.position);
+		size.modelRotation = this.objects.mesh.rotation.clone();
+		size.cameraRotation = _camera.rotation.clone();
+		size.cameraUp = _camera.up.clone();
+		size.eye = (new THREE.Vector3).subVectors(_camera.position, this.objects.mesh.position);
 
 		return size;
 	}
 
 	this.setSize = function(size) {
-		this.scene.model.rotation.copy(size.modelRotation);
-		// this.scene.camera.rotation.copy(size.cameraRotation);
-		// this.scene.camera.up = size.cameraUp;
-		this.scene.camera.position.addVectors(this.scene.model.position, size.eye);
-		this.scene.camera.lookAt(this.scene.model);
+		this.objects.mesh.rotation.copy(size.modelRotation);
+		// _camera.rotation.copy(size.cameraRotation);
+		// _camera.up = size.cameraUp;
+		_camera.position.addVectors(this.objects.mesh.position, size.eye);
+		_camera.lookAt(this.objects.mesh);
 	}
 
 	this.lock = function(isMain) {
@@ -193,67 +205,15 @@ var DisplayWindow = View.extend(function() {
 		refresh();
 	}
 
-	/* private method */
-	// 场景搭建，ui创建
-	function init() {
-		if (!_assets) {
-			loadAsset(); return;
-		}
-		_initialized = true;
-
-		// scene
-		setupScene();
-
-		// ui
-		setupUI();
-
-		that.activate();
-	}
-
-	// 加载模型资源
-	function loadAsset() {
-		that.setState('loading');
-		var assetConifg = $.extend(true, {}, _config.productData.model);
-
-		// 加载模型资源
-		loader.load(
-			assetConifg, 
-			function(p) { showProgress(p); }, 
-			function(res) {	_assets = res; init(); }
-		);
-	}
-
-	// 下载进度
-	function showProgress(progress) {
-		console.log('displayWindow progress', progress);
-	}
-
 	function setupScene() {
 
 		// 3D 相关资源创建
- 		that.scene.spotLight = new THREE.SpotLight(0xeeeeee);
- 		that.scene.spotLight.intensity = 0;
-		that.scene.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+ 		that.objects.spotLight = new THREE.SpotLight(0xeeeeee);
+ 		that.objects.spotLight.intensity = 0;
+		_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
-		var color = Object.keys(_assets.textures)[0];
-    	var texture = THREE.ImageUtils.loadTexture(_assets.textures['black']);
-		var material = new THREE.MeshLambertMaterial({transparent: true, opacity: 1});
-
-		var model = new THREE.Mesh(_assets.geometry, material);
-		model.scale.set(0.1, 0.1, 0.1);
-		model.rotation.x = Math.PI/2;
-
-		that.scene.model = model;
-
-        //test
-        // var geometry = new THREE.CylinderGeometry( 5, 6, 1, 6);
-        // var material = new THREE.MeshLambertMaterial({color: 0x333333});
-        // var platform = new THREE.Mesh(geometry, material);
-        // that.scene.platform = platform;
-
-		// trackball
-        that.trackball = new TrackballControls(that.scene.camera);
+        that.trackball = new TrackballControls(_camera);
         that.trackball.enabled = false;
 	}
 
@@ -285,66 +245,53 @@ var DisplayWindow = View.extend(function() {
 	}
 
 	function changeColor(color) {
-		if (color === that.color) return;
-		that.$domElem.find('.color').removeClass('selected');
-		that.$domElem.find('.color.' + color).addClass('selected');
-		that.color = color;
-
-		var loader = new THREE.TextureLoader(); 
-
-		that.scene.model.material.map = THREE.ImageUtils.loadTexture(_assets.textures[color]);
-		that.scene.model.material.needsUpdate = true;
+		_mobile.changeColor(color);
 	}
-
-	// 模型切换
-	function changeProduct(productData) {
-		that.productData = productData;
-		loadAsset();
-	}
-
 
 	/* 动画 */
 	function playEntryAnimation() {
-		that.setState('animate');
+		return new Promise(function(resolve, reject) {
+			that.setState('animate');
 
-		var initModelRotation = that.sceneObjSizes.model.rotation;
-		var initCameraPosition = that.sceneObjSizes.camera.position;
+			var initModelRotation = that.objectSizes.mesh.rotation;
+			var initCameraPosition = that.objectSizes.camera.position;
 
-		that.scene.model.rotation.copy(initModelRotation);
-		that.scene.model.rotation.x -= Math.PI * 0.5;
-		that.scene.model.rotation.z += Math.PI * 1.2;
-		that.addTHREEObjTween(that.scene.model, {
-			rotation: initModelRotation
-		}, 2000).start();
+			that.objects.mesh.rotation.copy(initModelRotation);
+			that.objects.mesh.rotation.x -= Math.PI * 0.5;
+			that.objects.mesh.rotation.z += Math.PI * 1.2;
+			that.addTHREEObjTween(that.objects.mesh, {
+				rotation: initModelRotation
+			}, 2000).start();
 
-		that.scene.camera.position.copy(initCameraPosition);
-		that.scene.camera.position.z += 300,
-		that.addTHREEObjTween(that.scene.camera, {
-			position: initCameraPosition
-		}, 2000, {
-			onComplete: function() {
-				that.setState('handle');
-			}
-		}).start();
+			that.addTHREEObjTween(_camera, {
+				position: initCameraPosition
+			}, 2000, {
+				onComplete: function() {
+					that.setState('handle');
+					resolve();
+				}
+			}).start();
+		});
+
 	}
 
 	// model，trackball 重置
-	function refresh() { //console.log(that.sceneObjSizes.model.position);
+	function refresh() { //console.log(that.objectSizes.mesh.position);
 		that.setState('animate');
-		var initModelRotation = that.sceneObjSizes.model.rotation;
+		var initModelRotation = that.objectSizes.mesh.rotation;
 
-		var initCameraPosition = that.sceneObjSizes.camera.position;
-		var initCameraLookAtPosition = that.sceneObjSizes.camera.position;
+		var initCameraPosition = that.objectSizes.camera.position;
+		var initCameraLookAtPosition = that.objectSizes.camera.position;
 
 		var cameraLookAt = new THREE.Vector3(0, 0, -1);
-        cameraLookAt.applyEuler(that.scene.camera.rotation, that.scene.camera.eulerOrder);
-        cameraLookAt.add(that.scene.camera.position);
+        cameraLookAt.applyEuler(_camera.rotation, _camera.eulerOrder);
+        cameraLookAt.add(_camera.position);
 
-		that.addTHREEObjTween(that.scene.model, {
+		that.addTHREEObjTween(that.objects.mesh, {
         	rotation: initModelRotation
         }, 1000).start();
 
-		that.addTHREEObjTween(that.scene.camera, {
+		that.addTHREEObjTween(_camera, {
         	position: initCameraPosition,
         	lookAt: initCameraLookAtPosition
         }, 1000, {
@@ -359,9 +306,9 @@ var DisplayWindow = View.extend(function() {
 		M3.renderer.setViewport(_winSizePX['left'], _winSizePX['bottom'], _winSizePX['width'], _winSizePX['height']);
 		M3.renderer.setScissor(_winSizePX['left'], _winSizePX['bottom'], _winSizePX['width'], _winSizePX['height']);
 		M3.renderer.setScissorTest(true);
-		that.scene.camera.aspect = _winSizePX['width'] / _winSizePX['height'];
-		that.scene.camera.updateProjectionMatrix();
-		M3.renderer.render( M3.scene, that.scene.camera );	
+		_camera.aspect = _winSizePX['width'] / _winSizePX['height'];
+		_camera.updateProjectionMatrix();
+		M3.renderer.render( M3.scene, _camera );	
 		that.trackball.update();		
 	}
 });

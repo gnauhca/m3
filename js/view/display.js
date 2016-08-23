@@ -1,7 +1,7 @@
 var View = require('./view.js');
 
 var DisplayContainerStage = require('../stages/display-container.js');
-var DisplayStage = require('../stage/display-mobile.js');
+var MobileStage = require('../stage/display-mobile.js');
 
 var Display = View.extend(function() {
 	var that = this;
@@ -12,8 +12,8 @@ var Display = View.extend(function() {
 	this.isInit = false;
 	this.active = false;
 
-	this.displayStages = {}; // {pro6: xx, mx6: xx} for cache
-	this.currentDisplayStage = []; 
+	this.mobileStages = {}; // {pro6: xx, mx6: xx} for cache
+	this.currentMobileStage = []; 
 
 	// 3d
 	this.scene = {};
@@ -27,37 +27,43 @@ var Display = View.extend(function() {
 		this.super();
 	}
 
-	this.activate = function(data) { 
 
+	// data : {mobile: [pro5, mx6 ...]}
+	this.activate = function(data) { 
 		if (!this.isInit) {
 			init();
 			_containerStage.init();
 		}
 
-		// stage
-		_containerStage.entry();
+		// display mobile
+		var mobiles = $.extend(true, [], data.mobiles);
 
-		// displaystage
-		var productDatas = $.extend(true, [], data.productDatas);
-		var sizePos = calculateSubWindowSize(productDatas.length);
-
-		productDatas.forEach(function(productData, i) {
-
-			var displayWindowData = {
-				'productData': productData,
-				'cameraPos': data.cameraPos,
-				'windowSize': sizePos[i],
-			};
-			var displayWindow;
-
-			if (that.displayWindows.length) {
-				displayWindow = that.displayWindows.pop();
-			} else {
-				displayWindow = new DisplayWindow();
+		this.currentMobileStage = [];
+		mobiles.forEach(function(name, i) {
+			if (!this.mobileStages[name]) {
+				var mobileStage = new MobileStage('name');
+				this.mobileStages[name] = mobileStage;
+				this.currentMobileStage.push(mobileStage);
 			}
+		});
 
-			displayWindow.activate(displayWindowData);
-			that.activeWindows.push(displayWindow); 
+		if (!isLoad.bind(this)()) return;
+
+		// loaded 
+		_containerStage.entry();// containerStage
+
+		var sizePos = calculateSubWindowSize(mobiles.length);
+		var x = 0;
+		var entryCount = 0;
+
+		this.currentMobileStage.forEach(function(mobileStage, i, all) {
+			var meshPos = new Vector3(x + (i - (all.length/2)) * 100, 0, 0);
+			mobileStage.entry(meshPos, sizePos[i]).then(function() {
+				entryCount++;
+				if (entryCount === all.length) {
+					// todo entry animate done
+				}
+			});
 		});
 
 		// UI
@@ -99,9 +105,55 @@ var Display = View.extend(function() {
 		setupUI();
 	}
 
-	function setupScene() {
+	function isLoad() {
+		var loaded = true;
+		var loadingInfos = {};
 
+		function loading() {
+			var totalSize = 0;
+			var loadedSize = 0;
+			var progress;
+			var loadingInfo;
+
+			for (var name in loadingInfos) {
+				loadingInfo = loadingInfos[name];
+				totalSize += loadingInfo.size;
+				loadedSize += loadingInfo.progress * loadingInfo.size;
+			}
+
+			progress = loadedSize/totalSize;
+			showProgress(progress);
+			if (progress === 1) {
+				// loaded 
+				this.activate();
+			}
+		}
+
+		for (var name in this.mobileStages) {
+			// loading
+			if (!this.mobileStages[name].isInit) {
+				loaded = false;
+				loadingInfos[name] = {
+					size: this.mobileStages[name].size,
+					progress: 0
+				}
+				(function(_name) {
+					this.mobileStages[_name].init(function(progress) {
+						loadingInfos[_name].progress = progress;
+						loading();
+					}.bind(this)).then(function() {
+						loadingInfos[_name].progress = 1;
+						loading();
+					}.bind(this));
+				})(name);
+			}
+		}
+		return loaded;
 	}
+
+	function showProgress(progress) {
+		console.log('display.js loading: ' + progress);
+	} 
 
 	function setupUI() {
 		var $lockBtn = $domManager.find('.lock-btn');

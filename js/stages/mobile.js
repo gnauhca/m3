@@ -9,6 +9,9 @@ var JSONLoader = new THREE.JSONLoader();
 var Mobile = Time.extend(function() {
 
 	this.mesh; // group
+	this.size; // 资源大小
+
+	var _modelConfigs;
 
 	var _materials;
 	var _colors = [];
@@ -17,8 +20,14 @@ var Mobile = Time.extend(function() {
 
 	var _uuidMaterialNameMap = {};
 
-	this.constructor = function() {
+	this.constructor = function(mobileName) {
 		this.super();
+		CONFIG.mobiles.forEach(function(mobile) {
+			if (mobile.name === mobileName) {
+				_modelConfigs = mobile;
+			}
+		});
+		this.size = loader.calculateSize(mobile);
 	}
 
 	this.getColors = function() {
@@ -26,6 +35,7 @@ var Mobile = Time.extend(function() {
 	}
 
 	this.changeColor = function(color) {
+		if (_currentColor === color) return;
 		if (_colors.indexOf(color) < 0) {
 			console.log('No this color');
 			return;
@@ -37,16 +47,19 @@ var Mobile = Time.extend(function() {
 			_materials[color].forEach(function(material) {
 				if (material.name.replace(/\d*$/, '') === materialName.replace(/\d*$/, '')) {
 					child.material = material;
+					child.material.needsUpdate = true;
 				}				
 			});
 		});
 	}
 
-	this.load = function(modelConfigs, onload, onProgress, onError) {
+	this.load = function(onProgress) {
 		var materials;
 		var group = new THREE.Group();
 
-		loader.load(modelConfigs, function(modelRes) {
+		var loadPromise = loader.load(_modelConfigs, onProgress);
+
+		loadPromise.then(function(modelRes) {
 			_materials = modelRes.materials;
 
 			for (var color in _materials) {
@@ -54,7 +67,6 @@ var Mobile = Time.extend(function() {
 				_currentColor = _colors[0];
 				_materials[color] = JSONLoader.parse(_materials[color]).materials;
 			}
-
 
 			modelRes.models.forEach(function(modelJson) {
 				var mParse = JSONLoader.parse(modelJson);
@@ -65,8 +77,8 @@ var Mobile = Time.extend(function() {
 				group.add(model);
 			});
 			this.mesh = group;
-
-		}, onProgress);
+		}).catch(function(e) { console.log(e.stack); });
+		return loadPromise;
 	}
 
 

@@ -38,21 +38,32 @@ CONFIG.products = _products;
 module.exports = CONFIG;
 
 
-/*'pro5': {
+/*
+	
+	previews: [],
+	
+	mobiles: [
+		{
+			'name': 'pro5',
+			'models': [
+				{url: xx, size: xx},
+				{url: xx, size: xx},
+				{url: xx, size: xx}
+			],
 
-	'models': [
-		{url: xx, size: xx},
-		{url: xx, size: xx},
-		{url: xx, size: xx}
-	],
+			materials: {
+				'red': {url: xx, size: xx},
+				'white': {url: xx, size: xx},
+				'sliver': {url: xx, size: xx},
+			},
 
-	materials: {url: xx, size: xx},
-
-	map: [
-		{url: xx, size: xx},
-		{url: xx, size: xx}
+			map: [
+				{url: xx, size: xx},
+				{url: xx, size: xx}
+			]
+		}
 	]
-}*/
+*/
 
 
 

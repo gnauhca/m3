@@ -139,10 +139,7 @@ var TimeBody = Class.extend(function TimeBody() {
 			}
 		});
 		if (target.lookAt) {
-			var lookAt = new THREE.Vector3(0, 0, -1);
-        		
-        	lookAt.applyEuler(threeObj.rotation, threeObj.eulerOrder);
-        	lookAt.add(threeObj.position);
+			var lookAt = THREEUtil.getLookAt(threeObj);
 			attrs.forEach(function(attr) {
 				init['lookAt___' + attr] = lookAt[attr];
 				des['lookAt___' + attr] = target['lookAt'][attr];

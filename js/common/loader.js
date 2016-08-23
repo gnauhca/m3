@@ -4,46 +4,59 @@ loadedCache = {};
 var Loader = Class.extend(function() {
 	var that = this;
 
-	this.load = function(loadParams, onLoad, onProgress) {
-		var totalSize = 0; // 总大小
-		var loadedSize = 0; // 已经下载大小
-		var loadTasks = [];
-		var loadTask;
+	this.calculateSize = function(loadParams) {
+		var totalSize = 0;
+		var loadTasks = getLoadTasks(loadParams);
 
-		loadTasks = getLoadTasks(loadParams);
-
-		function getLoadedSize() {
-			var loadedSize = 0;
-			loadTasks.forEach(function(_loadTask) { 
-				loadedSize += _loadTask.loaded
-			});
-			return loadedSize;
-		}
 		for (var i = 0; i < loadTasks.length; i++) {
-			loadTask = loadTasks[i];
-			loadTask.loaded = 0;
-			totalSize += loadTask.size;
-
-			if (loadedCache[loadTask.url]) {
-				loadTask.loaded = loadTask.size;
-				continue;
-			}
-
-			(function(loadTask) {
-				loadMethod[loadTask.type](loadTask.url, function(res) {
-					loadedCache[loadTask.url] = res;
-					loadTask.loaded = loadTask.size;
-
-					// 成功回调
-					if (getLoadedSize() / totalSize === 1) {
-						onLoad(getResults(loadParams));
-					}
-				}, function( ) {
-					loadTask.loaded = loadTask.size * progress;
-					onProgress(getLoadedSize() / totalSize);
-				});
-			})(loadTask);
+			totalSize += loadTasks[i].size;
 		}
+		return totalSize;
+	}
+
+	this.load = function(loadParams, onProgress) {
+		return new Promise(function(onLoad, reject) {
+			var totalSize = 0; // 总大小
+			var loadedSize = 0; // 已经下载大小
+			var loadTasks = [];
+			var loadTask;
+
+			loadTasks = getLoadTasks(loadParams);
+
+			function getLoadedSize() {
+				var loadedSize = 0;
+				loadTasks.forEach(function(_loadTask) { 
+					loadedSize += _loadTask.loaded
+				});
+				return loadedSize;
+			}
+			for (var i = 0; i < loadTasks.length; i++) {
+				loadTask = loadTasks[i];
+				loadTask.loaded = 0;
+				totalSize += loadTask.size;
+
+				if (loadedCache[loadTask.url]) {
+					loadTask.loaded = loadTask.size;
+					continue;
+				}
+
+				(function(loadTask) {
+					loadMethod[loadTask.type](loadTask.url, function(res) {
+						loadedCache[loadTask.url] = res;
+						loadTask.loaded = loadTask.size;
+
+						// 成功回调
+						if (getLoadedSize() / totalSize === 1) {
+							onLoad(getResults(loadParams));
+						}
+					}, function( ) {
+						loadTask.loaded = loadTask.size * progress;
+						onProgress(getLoadedSize() / totalSize);
+					});
+				})(loadTask);
+			}			
+		});
+
 	}
 
 	// 获取下载类型
