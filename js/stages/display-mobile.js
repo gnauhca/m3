@@ -205,6 +205,32 @@ var DisplayWindow = View.extend(function() {
 		refresh();
 	}
 
+	// model，trackball 重置
+	function reset() { //console.log(that.objectSizes.mesh.position);
+		that.setState('animate');
+		var initModelRotation = that.objectSizes.mesh.rotation;
+
+		var initCameraPosition = that.objectSizes.camera.position;
+		var initCameraLookAtPosition = that.objectSizes.camera.position;
+
+		var cameraLookAt = new THREE.Vector3(0, 0, -1);
+        cameraLookAt.applyEuler(_camera.rotation, _camera.eulerOrder);
+        cameraLookAt.add(_camera.position);
+
+		that.addTHREEObjTween(that.objects.mesh, {
+        	rotation: initModelRotation
+        }, 1000).start();
+
+		that.addTHREEObjTween(_camera, {
+        	position: initCameraPosition,
+        	lookAt: initCameraLookAtPosition
+        }, 1000, {
+        	onComplete: function() {
+        		that.setState('handle');
+        	}
+        }).start();   
+	}
+
 	function setupScene() {
 
 		// 3D 相关资源创建
@@ -273,32 +299,6 @@ var DisplayWindow = View.extend(function() {
 			}).start();
 		});
 
-	}
-
-	// model，trackball 重置
-	function refresh() { //console.log(that.objectSizes.mesh.position);
-		that.setState('animate');
-		var initModelRotation = that.objectSizes.mesh.rotation;
-
-		var initCameraPosition = that.objectSizes.camera.position;
-		var initCameraLookAtPosition = that.objectSizes.camera.position;
-
-		var cameraLookAt = new THREE.Vector3(0, 0, -1);
-        cameraLookAt.applyEuler(_camera.rotation, _camera.eulerOrder);
-        cameraLookAt.add(_camera.position);
-
-		that.addTHREEObjTween(that.objects.mesh, {
-        	rotation: initModelRotation
-        }, 1000).start();
-
-		that.addTHREEObjTween(_camera, {
-        	position: initCameraPosition,
-        	lookAt: initCameraLookAtPosition
-        }, 1000, {
-        	onComplete: function() {
-        		that.setState('handle');
-        	}
-        }).start();   
 	}
 
 	function render() {

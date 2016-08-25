@@ -20,6 +20,15 @@ var Display = View.extend(function() {
 
 	var $domWrap = $('#displayView');
 	var $domManager = $('.display-manager');
+	var windowTemplate = 
+		'<div class="display-window">' + 
+			'<div class="window-control">' + 
+				'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
+				'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
+			'</div>' + 
+			'<div class="colors-control"></div>' + 
+		'</div>';
+	var colorTemplate = '<i class="color @color" data-color="@color"></i>';
 
 	this.constructor = function() {
 		_containerStage = new DisplayContainerStage();
@@ -27,9 +36,9 @@ var Display = View.extend(function() {
 		this.super();
 	}
 
-
 	// data : {mobile: [pro5, mx6 ...]}
 	this.activate = function(data) { 
+		// check self init
 		if (!this.isInit) {
 			init();
 			_containerStage.init();
@@ -49,7 +58,7 @@ var Display = View.extend(function() {
 
 		if (!isLoad.bind(this)()) return;
 
-		// loaded 
+		// all loaded 
 		_containerStage.entry();// containerStage
 
 		var sizePos = calculateSubWindowSize(mobiles.length);
@@ -102,7 +111,51 @@ var Display = View.extend(function() {
 	}
 
 	function init() {
-		setupUI();
+		var $lockBtn = $domManager.find('.lock-btn');
+		var $unlockBtn = $domManager.find('.unlock-btn');
+		var $backBtn = $domManager.find('.back-btn');
+
+		$domManager.on('click', '.setting-btn', function() {
+			$domManager.addClass('show');
+		});
+
+		$domManager.on('click', '.lock-btn', function() {
+			$lockBtn.addClass('none')
+			$unlockBtn.removeClass('none');
+			$domManager.removeClass('show');
+			lock();
+		});
+
+		$domManager.on('click', '.unlock-btn', function() {
+			$unlockBtn.addClass('none')
+			$lockBtn.removeClass('none');
+			$domManager.removeClass('show');
+			unlock();
+		});
+
+		$domManager.on('click', '.back-btn', function() {
+			that.inActivate();
+			that.activateView('product-preview');
+			$domManager.removeClass('show');
+		});
+
+		// windows
+		$domWrap.on('click', '.reset-btn', function() {
+			var index = $(this).parent('.display-window').index();
+			resetWindow(index);
+		});
+
+		$domWrap.on('click', '.close-btn', function() {
+			var index = $(this).parent('.display-window').index();
+			closeWindow(index);
+		});
+
+		$domWrap.on('click', '.color', function() {
+			var index = $(this).parent('.display-window').index();
+			var color = $(this).data('color');
+			that.currentMobileStage[index].changeColor(color);
+			$(this).addClass('selected').silbings().removeClass('selected');
+		});
 	}
 
 	function isLoad() {
@@ -155,59 +208,34 @@ var Display = View.extend(function() {
 		console.log('display.js loading: ' + progress);
 	} 
 
-	function setupUI() {
-		var $lockBtn = $domManager.find('.lock-btn');
-		var $unlockBtn = $domManager.find('.unlock-btn');
-		var $backBtn = $domManager.find('.back-btn');
-
-		$domManager.on('click', '.setting-btn', function() {
-			$domManager.addClass('show');
-		});
-
-		$domManager.on('click', '.lock-btn', function() {
-			$lockBtn.addClass('none')
-			$unlockBtn.removeClass('none');
-			$domManager.removeClass('show');
-			lock();
-		});
-
-		$domManager.on('click', '.unlock-btn', function() {
-			$unlockBtn.addClass('none')
-			$lockBtn.removeClass('none');
-			$domManager.removeClass('show');
-			unlock();
-		});
-
-		$domManager.on('click', '.back-btn', function() {
-			that.inActivate();
-			that.activateView('product-preview');
-			$domManager.removeClass('show');
-		});
+	function resetWindow(index) {
+		if (_lockTick) {
+			that.currentMobileStage[index].reset();
+		} else {
+			that.currentMobileStage[0].reset();
+		}
 	}
 
-
 	function lock() {
-		that.activeWindows.forEach(function(activeWindow, i) {
-			var isMain = (i === 0);
-			activeWindow.lock(isMain);
+		that.currentMobileStage.forEach(function(mobileStage, i) {
+			mobileStage.lock(i === 0);
 		});
 
 		_lockTick = that.addTick(function() {
-			var sizeInfo = that.activeWindows[0].getSize();
+			var sizeInfo = that.currentMobileStage[0].getSize();
 			//console.log(sizeInfo);
-			that.activeWindows.forEach(function(activeWindow, i) {
+			that.currentMobileStage.forEach(function(mobileStage, i) {
 				if (i > 0)
-				activeWindow.setSize(sizeInfo);
+				mobileStage.setSize(sizeInfo);
 			});
 		});
 	}
 
 	function unlock() {
-		that.activeWindows.forEach(function(activeWindow, i) {
-			activeWindow.unlock();
+		that.currentMobileStage.forEach(function(mobileStage, i) {
+			mobileStage.unlock();
 		});
-
-		that.removeTick(_lockTick);
+		that.removeTick(_lockTick); lockTick = null;
 	}
 
 	function resetWindow() {
