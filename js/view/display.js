@@ -12,23 +12,17 @@ var Display = View.extend(function() {
 	this.isInit = false;
 	this.active = false;
 
+	// stages
 	this.mobileStages = {}; // {pro6: xx, mx6: xx} for cache
 	this.currentMobileStage = []; 
 
-	// 3d
-	this.scene = {};
 
+	// UI
 	var $domWrap = $('#displayView');
 	var $domManager = $('.display-manager');
-	var windowTemplate = 
-		'<div class="display-window">' + 
-			'<div class="window-control">' + 
-				'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
-				'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
-			'</div>' + 
-			'<div class="colors-control"></div>' + 
-		'</div>';
-	var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+
+	var $windowWrap = $('#displayWindowWrap');
+	this.windowDoms = [];
 
 	this.constructor = function() {
 		_containerStage = new DisplayContainerStage();
@@ -95,17 +89,6 @@ var Display = View.extend(function() {
 		this.active = false;
 	}
 
-	this.removeWindow = function(displayWindow) {
-		this.activeWindows.some(function(activeWindow, i) {
-			if (activeWindow === displayWindow) {
-				that.displayWindows.push(activeWindow);
-				that.activeWindows.splice(i, 1);
-				return true;
-			} 
-		});
-		resetWindow();
-	}
-
 	this.resize = function() {
 		resetWindow();
 	}
@@ -142,7 +125,7 @@ var Display = View.extend(function() {
 		// windows
 		$domWrap.on('click', '.reset-btn', function() {
 			var index = $(this).parent('.display-window').index();
-			resetWindow(index);
+			refreshWindow(index);
 		});
 
 		$domWrap.on('click', '.close-btn', function() {
@@ -208,12 +191,65 @@ var Display = View.extend(function() {
 		console.log('display.js loading: ' + progress);
 	} 
 
+	function createWindowUI() {
+		var windowTemplate = 
+			'<div class="display-window">' + 
+				'<div class="window-control">' + 
+					'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
+					'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
+				'</div>' + 
+				'<div class="colors-control"></div>' + 
+			'</div>';
+		var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+
+		$windowWrap.html('');
+
+		var windowsStr = '';
+
+		this.currentMobileStages.forEach(function(mobileStage, i) {
+
+			if (this.windowDoms[i] && this.windowDoms) {
+
+			}
+
+			var colorHTML = '';
+			Object.keys(_config.productData.model.textures).forEach(function(color) {
+				colorHTML += colorTemplate.replace(/\@color/g, color);
+			});
+			that.$domElem = $(domTemplate);
+			that.$domElem.find('.colors-control').empty().html(colorHTML);
+		});
+	}
+
 	function resetWindow(index) {
 		if (_lockTick) {
 			that.currentMobileStage[index].reset();
 		} else {
 			that.currentMobileStage[0].reset();
 		}
+	}
+
+	function closeWindow(index) {
+		this.currentMobileStages[index].remove();
+		this.currentMobileStages.splice(index, 1);
+
+		// ui remove
+		
+		resetWindow();
+	}
+
+
+
+	function resizeWindows() {
+		var sizePos = calculateSubWindowSize(that.currentMobileStages.length);
+
+		// ui resize
+		
+
+		// stage resize
+		that.currentMobileStages.forEach(function(currentMobileStage, i) {
+			currentMobileStage.resizeWindow(sizePos[i]);
+		});
 	}
 
 	function lock() {
@@ -238,12 +274,6 @@ var Display = View.extend(function() {
 		that.removeTick(_lockTick); lockTick = null;
 	}
 
-	function resetWindow() {
-		var sizePos = calculateSubWindowSize(that.activeWindows.length);
-		that.activeWindows.forEach(function(activeWindow, i) {
-			activeWindow.resizeWindow(sizePos[i]);
-		});
-	}
 
 });
 

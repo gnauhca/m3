@@ -205,6 +205,20 @@ var DisplayWindow = View.extend(function() {
 		refresh();
 	}
 
+	this.getColors = function() {
+		if (_mobile) {
+			return mobile.getColors();
+		}
+	}
+
+	/*
+	 * 从scene 中移除模型
+	 */
+	this.remove = function() {
+		this.super();
+		this.removeTick();
+	}
+
 	// model，trackball 重置
 	function reset() { //console.log(that.objectSizes.mesh.position);
 		that.setState('animate');
