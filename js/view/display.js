@@ -18,11 +18,11 @@ var Display = View.extend(function() {
 
 
 	// UI
-	var $domWrap = $('#displayView');
-	var $domManager = $('.display-manager');
+	var _$domWrap = $('#displayView');
+	var _$domManager = $('.display-manager');
 
-	var $windowWrap = $('#displayWindowWrap');
-	this.windowDoms = [];
+	var _$windowWrap = $('#displayWindowWrap');
+	var _$windowDoms = $();
 
 	this.constructor = function() {
 		_containerStage = new DisplayContainerStage();
@@ -70,7 +70,7 @@ var Display = View.extend(function() {
 		});
 
 		// UI
-		$domWrap.removeClass('none');
+		_$domWrap.removeClass('none');
 
 		this.active = true;
 	}
@@ -79,7 +79,7 @@ var Display = View.extend(function() {
 		Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
 		this.removeTick(sphereTick);
 
-		$domWrap.addClass('none');
+		_$domWrap.addClass('none');
 		this.activeWindows.forEach(function(activeWindow) {
 			setTimeout(function() {activeWindow.inActivate();}, 0);
 		});
@@ -94,46 +94,46 @@ var Display = View.extend(function() {
 	}
 
 	function init() {
-		var $lockBtn = $domManager.find('.lock-btn');
-		var $unlockBtn = $domManager.find('.unlock-btn');
-		var $backBtn = $domManager.find('.back-btn');
+		var $lockBtn = _$domManager.find('.lock-btn');
+		var $unlockBtn = _$domManager.find('.unlock-btn');
+		var $backBtn = _$domManager.find('.back-btn');
 
-		$domManager.on('click', '.setting-btn', function() {
-			$domManager.addClass('show');
+		_$domManager.on('click', '.setting-btn', function() {
+			_$domManager.addClass('show');
 		});
 
-		$domManager.on('click', '.lock-btn', function() {
+		_$domManager.on('click', '.lock-btn', function() {
 			$lockBtn.addClass('none')
 			$unlockBtn.removeClass('none');
-			$domManager.removeClass('show');
+			_$domManager.removeClass('show');
 			lock();
 		});
 
-		$domManager.on('click', '.unlock-btn', function() {
+		_$domManager.on('click', '.unlock-btn', function() {
 			$unlockBtn.addClass('none')
 			$lockBtn.removeClass('none');
-			$domManager.removeClass('show');
+			_$domManager.removeClass('show');
 			unlock();
 		});
 
-		$domManager.on('click', '.back-btn', function() {
+		_$domManager.on('click', '.back-btn', function() {
 			that.inActivate();
 			that.activateView('product-preview');
-			$domManager.removeClass('show');
+			_$domManager.removeClass('show');
 		});
 
 		// windows
-		$domWrap.on('click', '.reset-btn', function() {
+		_$domWrap.on('click', '.reset-btn', function() {
 			var index = $(this).parent('.display-window').index();
 			refreshWindow(index);
 		});
 
-		$domWrap.on('click', '.close-btn', function() {
+		_$domWrap.on('click', '.close-btn', function() {
 			var index = $(this).parent('.display-window').index();
 			closeWindow(index);
 		});
 
-		$domWrap.on('click', '.color', function() {
+		_$domWrap.on('click', '.color', function() {
 			var index = $(this).parent('.display-window').index();
 			var color = $(this).data('color');
 			that.currentMobileStage[index].changeColor(color);
@@ -192,6 +192,7 @@ var Display = View.extend(function() {
 	} 
 
 	function createWindowUI() {
+		var windowCount = 
 		var windowTemplate = 
 			'<div class="display-window">' + 
 				'<div class="window-control">' + 
@@ -201,26 +202,27 @@ var Display = View.extend(function() {
 				'<div class="colors-control"></div>' + 
 			'</div>';
 		var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+		var colorHTML = '';
 
-		$windowWrap.html('');
 
-		var windowsStr = '';
+		_$windowWrap.html('');
 
 		this.currentMobileStages.forEach(function(mobileStage, i) {
-
-			if (this.windowDoms[i] && this.windowDoms) {
-
+			if (!_$windowDoms[i]) {
+				_$windowDoms = _$windowDoms.add($(windowTemplate));
 			}
 
-			var colorHTML = '';
+			_$windowWrap.append(_$windowDoms.eq(i));
+
+			colorHTML = '';
 			Object.keys(_config.productData.model.textures).forEach(function(color) {
 				colorHTML += colorTemplate.replace(/\@color/g, color);
 			});
-			that.$domElem = $(domTemplate);
-			that.$domElem.find('.colors-control').empty().html(colorHTML);
+			_$windowDoms.eq(i).find('.colors-control').empty().html(colorHTML);
 		});
 	}
 
+	// 模型恢复初始状态
 	function resetWindow(index) {
 		if (_lockTick) {
 			that.currentMobileStage[index].reset();
@@ -234,8 +236,8 @@ var Display = View.extend(function() {
 		this.currentMobileStages.splice(index, 1);
 
 		// ui remove
-		
-		resetWindow();
+		_$windowDoms.eq(index).remove();
+		resizeWindows();
 	}
 
 
@@ -244,7 +246,7 @@ var Display = View.extend(function() {
 		var sizePos = calculateSubWindowSize(that.currentMobileStages.length);
 
 		// ui resize
-		
+		_$windowDoms.each(function(i) { $(this).css(sizePos[i]); });
 
 		// stage resize
 		that.currentMobileStages.forEach(function(currentMobileStage, i) {
@@ -261,8 +263,7 @@ var Display = View.extend(function() {
 			var sizeInfo = that.currentMobileStage[0].getSize();
 			//console.log(sizeInfo);
 			that.currentMobileStage.forEach(function(mobileStage, i) {
-				if (i > 0)
-				mobileStage.setSize(sizeInfo);
+				if (i > 0) mobileStage.setSize(sizeInfo);
 			});
 		});
 	}
