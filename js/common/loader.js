@@ -21,7 +21,7 @@ var Loader = Class.extend(function() {
 			var loadTasks = [];
 			var loadTask;
 
-			loadTasks = getLoadTasks(loadParams);
+			loadTasks = getLoadTasks(loadParams); 
 
 			function getLoadedSize() {
 				var loadedSize = 0;
@@ -49,7 +49,7 @@ var Loader = Class.extend(function() {
 						if (getLoadedSize() / totalSize === 1) {
 							onLoad(getResults(loadParams));
 						}
-					}, function( ) {
+					}, function() {
 						loadTask.loaded = loadTask.size * progress;
 						onProgress(getLoadedSize() / totalSize);
 					});
@@ -75,7 +75,7 @@ var Loader = Class.extend(function() {
 
 	// 收集下载参数里的 url
 	function getLoadTasks(_params) { 
-		var urlRegx = /.+\.(\w{1,6})(\?.*)$/;
+		var urlRegx = /.+\.(\w{1,6})$/;
 		var sizeDefault = {
 			'img': 100,
 			'json': 100	
@@ -87,19 +87,20 @@ var Loader = Class.extend(function() {
 
 			if (Object.prototype.toString.call(params) === '[object Array]') {
 				params.forEach(function(param) {
-					urls = urls.concat(_getUrls(param));
+					urls = urls.concat(_getLoadTasks(param));
 				});
 			} else if (typeof params === 'object' && !params.url){
 				for (var key in params) {
-					urls = urls.concat(_getUrls(params[key]));
+					urls = urls.concat(_getLoadTasks(params[key]));
 				}
 			} else if (typeof params === 'object' && params.url) {
 				// 符合资源格式 {url: xx, size: xx}
 				type = params.url.match(urlRegx)[1];
+
 				urls.push({
 					'url': params.url,
 					'size': (params.size || sizeDefault[type] || 1),
-					'type': type
+					'type': getLoaderType(type)
 				});
 			}
 			return urls;
@@ -113,9 +114,10 @@ var Loader = Class.extend(function() {
 		var params = $.extend(true, {}, _params);
 
 		function _getResults(params) {
+			console.log(params);
 			if (Object.prototype.toString.call(params) === '[object Array]') {
 				return (params.map(function(param) {
-					return loadedCache[param];
+					return _getResults(param);
 				}));
 			} else if (typeof params === 'object' && !params.url) {
 				for (var key in params) {
@@ -124,10 +126,11 @@ var Loader = Class.extend(function() {
 				return params;
 			} else if (typeof params === 'object' && params.url) {
 				return loadedCache[params.url];
+			} else {
+				return params;
 			}
 		}
 
-		getResults = _getResults();
 		return _getResults(params);
 	}
 });
@@ -145,7 +148,9 @@ var loadMethod = {
 
 	// 下载图片
 	'img': function(url, onLoad, onProgress) {
-		imgLoader.load(url, onLoad, function(xhr) {
+		imgLoader.load(url, function() {
+			onLoad(url);
+		}, function(xhr) {
 			return (xhr.load / xhr.total);
 		});
 	},

@@ -1,75 +1,39 @@
-var CONFIG = {
-	products: [
-		{
-			'name': 'pro6',
-			'imgUrl': './assets/pro6/phone-silver.jpg',
-			'modelUrl': './assets/pro6/pro6.dae',
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-		}
-	]
-};
+var CONFIG = {};
 
 // test 
 var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 var _products = [];
 
-products.forEach(function(product, i) {
-	_products[i] = {
-		'name': product,
-		'previewImg': './assets/preview/'+product+'_logo@2x.png',
-		'model': {
-			type: 'dae',
-			geometry: './assets/pro6/pro6.dae',
-			textures: {
-				'white': './assets/pro6/pro6-white.jpg',
-				'black': './assets/pro6/pro6-black.jpg',
-				'red': './assets/pro6/pro6-red.jpg'
-			},
-		},
-		'modelPos': {x: (i) * 30, y: 0, z: 0},
-		'title': 'PRO 6',
-		'desc' : 'PRO 6 was produced in 2016'
-	}
-});
-CONFIG.products = _products;
 
+
+var mobile = {
+	'name': 'pro5',
+	'models': [
+		{url: './assets/pro5/metal.json', size: 200},
+		{url: './assets/pro5/metal_reflect.json', size: 200},
+		{url: './assets/pro5/glass.json', size: 129},
+		{url: './assets/pro5/plastics.json', size: 54},
+		{url: './assets/pro5/map.json', size: 3},
+		{url: './assets/pro5/plane.json', size: 8}
+	],
+
+	materials: {
+		'black': {url: './assets/pro5/black.json', size: 6},
+		'red': {url: './assets/pro5/black.json', size: 6},
+	},
+
+	map: [
+		{url: './assets/pro5/pro5uv.png', size: 75000},
+	]
+};
+
+CONFIG.mobiles = [];
+
+products.forEach(function(productName) {
+	var m = $.extend({}, mobile);
+
+	m.name = productName;
+	CONFIG.mobiles.push(m);
+});
 
 module.exports = CONFIG;
-
-
-/*
-	
-	previews: [],
-	
-	mobiles: [
-		{
-			'name': 'pro5',
-			'models': [
-				{url: xx, size: xx},
-				{url: xx, size: xx},
-				{url: xx, size: xx}
-			],
-
-			materials: {
-				'red': {url: xx, size: xx},
-				'white': {url: xx, size: xx},
-				'sliver': {url: xx, size: xx},
-			},
-
-			map: [
-				{url: xx, size: xx},
-				{url: xx, size: xx}
-			]
-		}
-	]
-*/
-
-
-
-
-
-
-
-
-

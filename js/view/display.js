@@ -1,7 +1,7 @@
 var View = require('./view.js');
 
 var DisplayContainerStage = require('../stages/display-container.js');
-var MobileStage = require('../stage/display-mobile.js');
+var MobileStage = require('../stages/display-mobile.js');
 
 var Display = View.extend(function() {
 	var that = this;
@@ -15,7 +15,7 @@ var Display = View.extend(function() {
 	// stages
 	this.mobileStages = {}; // {pro6: xx, mx6: xx} for cache
 	this.currentMobileStage = []; 
-
+	this.stages = [];
 
 	// UI
 	var _$domWrap = $('#displayView');
@@ -35,32 +35,32 @@ var Display = View.extend(function() {
 		// check self init
 		if (!this.isInit) {
 			init();
-			_containerStage.init();
+			//_containerStage.init();
 		}
 
-		// display mobile
-		var mobiles = $.extend(true, [], data.mobiles);
+		if (data) {
+			var mobiles = $.extend(true, [], data.mobiles);
+			this.currentMobileStage = [];
+			mobiles.forEach(function(name, i) {
+				if (!this.mobileStages[name]) {
+					var mobileStage = new MobileStage(name);
+					this.mobileStages[name] = mobileStage;
+					this.currentMobileStage.push(mobileStage);
+				}
+			}.bind(this));
+			if (!isLoad.bind(this)()) return;			
+		}
 
-		this.currentMobileStage = [];
-		mobiles.forEach(function(name, i) {
-			if (!this.mobileStages[name]) {
-				var mobileStage = new MobileStage('name');
-				this.mobileStages[name] = mobileStage;
-				this.currentMobileStage.push(mobileStage);
-			}
-		});
-
-		if (!isLoad.bind(this)()) return;
 
 		// all loaded 
-		_containerStage.entry();// containerStage
+		//_containerStage.entry();// containerStage
 
-		var sizePos = calculateSubWindowSize(mobiles.length);
+		var sizePos = calculateSubWindowSize(this.currentMobileStage.length);
 		var x = 0;
 		var entryCount = 0;
 
 		this.currentMobileStage.forEach(function(mobileStage, i, all) {
-			var meshPos = new Vector3(x + (i - (all.length/2)) * 100, 0, 0);
+			var meshPos = new THREE.Vector3(x + (i - (all.length/2)) * 100, 0, 0);
 			mobileStage.entry(meshPos, sizePos[i]).then(function() {
 				entryCount++;
 				if (entryCount === all.length) {
@@ -90,7 +90,7 @@ var Display = View.extend(function() {
 	}
 
 	this.resize = function() {
-		resetWindow();
+		//resetWindow();
 	}
 
 	function init() {
@@ -161,7 +161,7 @@ var Display = View.extend(function() {
 			showProgress(progress);
 			if (progress === 1) {
 				// loaded 
-				this.activate();
+				that.activate();
 			}
 		}
 
@@ -172,16 +172,16 @@ var Display = View.extend(function() {
 				loadingInfos[name] = {
 					size: this.mobileStages[name].size,
 					progress: 0
-				}
-				(function(_name) {
+				};
+				(function(_name) { 
 					this.mobileStages[_name].init(function(progress) {
 						loadingInfos[_name].progress = progress;
 						loading();
 					}.bind(this)).then(function() {
 						loadingInfos[_name].progress = 1;
 						loading();
-					}.bind(this));
-				})(name);
+					}.bind(this)).catch(function(e) { console.error(e.stack); });
+				}.bind(this))(name);
 			}
 		}
 		return loaded;
@@ -192,7 +192,6 @@ var Display = View.extend(function() {
 	} 
 
 	function createWindowUI() {
-		var windowCount = 
 		var windowTemplate = 
 			'<div class="display-window">' + 
 				'<div class="window-control">' + 
@@ -279,6 +278,4 @@ var Display = View.extend(function() {
 });
 
 module.exports = Display;
-
-
 

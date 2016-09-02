@@ -388,8 +388,11 @@ var THREEUtil = {
 
 	getLookAt: function (mesh) {
 		var lookAt = new THREE.Vector3(0, 0, -1);
-			
-		lookAt.applyEuler(mesh.rotation, mesh.eulerOrder);
+		var euler = new THREE.Euler( 0, 0, 0, 'XYZ' )
+
+		euler.copy(mesh.rotation);
+
+		lookAt.applyEuler(euler);
 		lookAt.add(mesh.position);
 		return lookAt;
 	}

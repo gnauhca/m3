@@ -40,19 +40,18 @@
 /******/ 	return __webpack_require__(0);
 /******/ })
 /************************************************************************/
-/******/ ({
-
-/***/ 0:
+/******/ ([
+/* 0 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {(function() {
-	__webpack_require__(152);
+	__webpack_require__(2);
 	
 	
 	
 	window.M3 = {};
 	
-	M3.viewManager = __webpack_require__(2);
+	M3.viewManager = __webpack_require__(6);
 	
 	// todo: webgl 检查
 	//
@@ -73,7 +72,7 @@
 	M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
 	// main render tick
-	var Time = __webpack_require__(5);
+	var Time = __webpack_require__(9);
 	var m3Time = new Time();
 	
 	M3.tick = m3Time.addTick(function() {
@@ -81,7 +80,8 @@
 	});
 	
 	
-	M3.viewManager.activateView('index');
+	// M3.viewManager.activateView('index');
+	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
 	
 	
 	
@@ -96,8 +96,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-
-/***/ 1:
+/* 1 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_FACTORY__, __WEBPACK_AMD_DEFINE_RESULT__;// File:src/Three.js
@@ -41975,15 +41974,362 @@
 
 
 /***/ },
+/* 2 */
+/***/ function(module, exports, __webpack_require__) {
 
-/***/ 2:
+	// style-loader: Adds some css to the DOM by adding a <style> tag
+	
+	// load the styles
+	var content = __webpack_require__(3);
+	if(typeof content === 'string') content = [[module.id, content, '']];
+	// add the styles to the DOM
+	var update = __webpack_require__(5)(content, {});
+	if(content.locals) module.exports = content.locals;
+	// Hot Module Replacement
+	if(false) {
+		// When the styles change, update the <style> tags
+		if(!content.locals) {
+			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
+				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
+				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+				update(newContent);
+			});
+		}
+		// When the module is disposed, remove the <style> tags
+		module.hot.dispose(function() { update(); });
+	}
+
+/***/ },
+/* 3 */
+/***/ function(module, exports, __webpack_require__) {
+
+	exports = module.exports = __webpack_require__(4)();
+	// imports
+	
+	
+	// module
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
+	
+	// exports
+
+
+/***/ },
+/* 4 */
+/***/ function(module, exports) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	// css base code, injected by the css-loader
+	module.exports = function() {
+		var list = [];
+	
+		// return the list of modules as css string
+		list.toString = function toString() {
+			var result = [];
+			for(var i = 0; i < this.length; i++) {
+				var item = this[i];
+				if(item[2]) {
+					result.push("@media " + item[2] + "{" + item[1] + "}");
+				} else {
+					result.push(item[1]);
+				}
+			}
+			return result.join("");
+		};
+	
+		// import a list of modules into the list
+		list.i = function(modules, mediaQuery) {
+			if(typeof modules === "string")
+				modules = [[null, modules, ""]];
+			var alreadyImportedModules = {};
+			for(var i = 0; i < this.length; i++) {
+				var id = this[i][0];
+				if(typeof id === "number")
+					alreadyImportedModules[id] = true;
+			}
+			for(i = 0; i < modules.length; i++) {
+				var item = modules[i];
+				// skip already imported module
+				// this implementation is not 100% perfect for weird media query combinations
+				//  when a module is imported multiple times with different media queries.
+				//  I hope this will never occur (Hey this way we have smaller bundles)
+				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
+					if(mediaQuery && !item[2]) {
+						item[2] = mediaQuery;
+					} else if(mediaQuery) {
+						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
+					}
+					list.push(item);
+				}
+			}
+		};
+		return list;
+	};
+
+
+/***/ },
+/* 5 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/*
+		MIT License http://www.opensource.org/licenses/mit-license.php
+		Author Tobias Koppers @sokra
+	*/
+	var stylesInDom = {},
+		memoize = function(fn) {
+			var memo;
+			return function () {
+				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
+				return memo;
+			};
+		},
+		isOldIE = memoize(function() {
+			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
+		}),
+		getHeadElement = memoize(function () {
+			return document.head || document.getElementsByTagName("head")[0];
+		}),
+		singletonElement = null,
+		singletonCounter = 0,
+		styleElementsInsertedAtTop = [];
+	
+	module.exports = function(list, options) {
+		if(false) {
+			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
+		}
+	
+		options = options || {};
+		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+		// tags it will allow on a page
+		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
+	
+		// By default, add <style> tags to the bottom of <head>.
+		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
+	
+		var styles = listToStyles(list);
+		addStylesToDom(styles, options);
+	
+		return function update(newList) {
+			var mayRemove = [];
+			for(var i = 0; i < styles.length; i++) {
+				var item = styles[i];
+				var domStyle = stylesInDom[item.id];
+				domStyle.refs--;
+				mayRemove.push(domStyle);
+			}
+			if(newList) {
+				var newStyles = listToStyles(newList);
+				addStylesToDom(newStyles, options);
+			}
+			for(var i = 0; i < mayRemove.length; i++) {
+				var domStyle = mayRemove[i];
+				if(domStyle.refs === 0) {
+					for(var j = 0; j < domStyle.parts.length; j++)
+						domStyle.parts[j]();
+					delete stylesInDom[domStyle.id];
+				}
+			}
+		};
+	}
+	
+	function addStylesToDom(styles, options) {
+		for(var i = 0; i < styles.length; i++) {
+			var item = styles[i];
+			var domStyle = stylesInDom[item.id];
+			if(domStyle) {
+				domStyle.refs++;
+				for(var j = 0; j < domStyle.parts.length; j++) {
+					domStyle.parts[j](item.parts[j]);
+				}
+				for(; j < item.parts.length; j++) {
+					domStyle.parts.push(addStyle(item.parts[j], options));
+				}
+			} else {
+				var parts = [];
+				for(var j = 0; j < item.parts.length; j++) {
+					parts.push(addStyle(item.parts[j], options));
+				}
+				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
+			}
+		}
+	}
+	
+	function listToStyles(list) {
+		var styles = [];
+		var newStyles = {};
+		for(var i = 0; i < list.length; i++) {
+			var item = list[i];
+			var id = item[0];
+			var css = item[1];
+			var media = item[2];
+			var sourceMap = item[3];
+			var part = {css: css, media: media, sourceMap: sourceMap};
+			if(!newStyles[id])
+				styles.push(newStyles[id] = {id: id, parts: [part]});
+			else
+				newStyles[id].parts.push(part);
+		}
+		return styles;
+	}
+	
+	function insertStyleElement(options, styleElement) {
+		var head = getHeadElement();
+		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
+		if (options.insertAt === "top") {
+			if(!lastStyleElementInsertedAtTop) {
+				head.insertBefore(styleElement, head.firstChild);
+			} else if(lastStyleElementInsertedAtTop.nextSibling) {
+				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
+			} else {
+				head.appendChild(styleElement);
+			}
+			styleElementsInsertedAtTop.push(styleElement);
+		} else if (options.insertAt === "bottom") {
+			head.appendChild(styleElement);
+		} else {
+			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
+		}
+	}
+	
+	function removeStyleElement(styleElement) {
+		styleElement.parentNode.removeChild(styleElement);
+		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
+		if(idx >= 0) {
+			styleElementsInsertedAtTop.splice(idx, 1);
+		}
+	}
+	
+	function createStyleElement(options) {
+		var styleElement = document.createElement("style");
+		styleElement.type = "text/css";
+		insertStyleElement(options, styleElement);
+		return styleElement;
+	}
+	
+	function createLinkElement(options) {
+		var linkElement = document.createElement("link");
+		linkElement.rel = "stylesheet";
+		insertStyleElement(options, linkElement);
+		return linkElement;
+	}
+	
+	function addStyle(obj, options) {
+		var styleElement, update, remove;
+	
+		if (options.singleton) {
+			var styleIndex = singletonCounter++;
+			styleElement = singletonElement || (singletonElement = createStyleElement(options));
+			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
+			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
+		} else if(obj.sourceMap &&
+			typeof URL === "function" &&
+			typeof URL.createObjectURL === "function" &&
+			typeof URL.revokeObjectURL === "function" &&
+			typeof Blob === "function" &&
+			typeof btoa === "function") {
+			styleElement = createLinkElement(options);
+			update = updateLink.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+				if(styleElement.href)
+					URL.revokeObjectURL(styleElement.href);
+			};
+		} else {
+			styleElement = createStyleElement(options);
+			update = applyToTag.bind(null, styleElement);
+			remove = function() {
+				removeStyleElement(styleElement);
+			};
+		}
+	
+		update(obj);
+	
+		return function updateStyle(newObj) {
+			if(newObj) {
+				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
+					return;
+				update(obj = newObj);
+			} else {
+				remove();
+			}
+		};
+	}
+	
+	var replaceText = (function () {
+		var textStore = [];
+	
+		return function (index, replacement) {
+			textStore[index] = replacement;
+			return textStore.filter(Boolean).join('\n');
+		};
+	})();
+	
+	function applyToSingletonTag(styleElement, index, remove, obj) {
+		var css = remove ? "" : obj.css;
+	
+		if (styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = replaceText(index, css);
+		} else {
+			var cssNode = document.createTextNode(css);
+			var childNodes = styleElement.childNodes;
+			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
+			if (childNodes.length) {
+				styleElement.insertBefore(cssNode, childNodes[index]);
+			} else {
+				styleElement.appendChild(cssNode);
+			}
+		}
+	}
+	
+	function applyToTag(styleElement, obj) {
+		var css = obj.css;
+		var media = obj.media;
+	
+		if(media) {
+			styleElement.setAttribute("media", media)
+		}
+	
+		if(styleElement.styleSheet) {
+			styleElement.styleSheet.cssText = css;
+		} else {
+			while(styleElement.firstChild) {
+				styleElement.removeChild(styleElement.firstChild);
+			}
+			styleElement.appendChild(document.createTextNode(css));
+		}
+	}
+	
+	function updateLink(linkElement, obj) {
+		var css = obj.css;
+		var sourceMap = obj.sourceMap;
+	
+		if(sourceMap) {
+			// http://stackoverflow.com/a/26603875
+			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
+		}
+	
+		var blob = new Blob([css], { type: "text/css" });
+	
+		var oldSrc = linkElement.href;
+	
+		linkElement.href = URL.createObjectURL(blob);
+	
+		if(oldSrc)
+			URL.revokeObjectURL(oldSrc);
+	}
+
+
+/***/ },
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ViewManager = Class.extend(function() {
 	    var _viewConstructors = {
-	        'index': __webpack_require__(3),
-	        'select': __webpack_require__(10),
-	        'display': __webpack_require__(12),
+	        'index': __webpack_require__(7),
+	        'select': __webpack_require__(14),
+	        'display': __webpack_require__(16),
 	    };
 	
 		var _views = {};
@@ -42043,11 +42389,10 @@
 
 
 /***/ },
-
-/***/ 3:
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(4);
+	var View = __webpack_require__(8);
 	
 	
 	
@@ -42057,7 +42402,7 @@
 	
 		this.constructor = function() {
 			this.super();
-			var WelcomeStage = __webpack_require__(6);
+			var WelcomeStage = __webpack_require__(10);
 			_welcomeStage = new WelcomeStage();
 			this.stages.push(_welcomeStage);
 		}
@@ -42084,11 +42429,10 @@
 	module.exports = IndexView;
 
 /***/ },
-
-/***/ 4:
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Time = __webpack_require__(5);
+	var Time = __webpack_require__(9);
 	
 	var View = Time.extend(function() {
 	    this.active = false;
@@ -42163,11 +42507,10 @@
 
 
 /***/ },
+/* 9 */
+/***/ function(module, exports) {
 
-/***/ 5:
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(THREE) {
+	
 	/* 时间 */
 	var TIME = {
 	
@@ -42308,10 +42651,7 @@
 				}
 			});
 			if (target.lookAt) {
-				var lookAt = new THREE.Vector3(0, 0, -1);
-	        		
-	        	lookAt.applyEuler(threeObj.rotation, threeObj.eulerOrder);
-	        	lookAt.add(threeObj.position);
+				var lookAt = THREEUtil.getLookAt(threeObj);
 				attrs.forEach(function(attr) {
 					init['lookAt___' + attr] = lookAt[attr];
 					des['lookAt___' + attr] = target['lookAt'][attr];
@@ -42400,22 +42740,20 @@
 	
 	
 	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
 
 /***/ },
-
-/***/ 6:
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(8);
+	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(12);
 	var Welcome = Stage.extend(function() {
 		this.name = 'welcome';
 		this.isInit = false;
 	
 	
 		var that = this;
-		var logoUrl = __webpack_require__(9);
+		var logoUrl = __webpack_require__(13);
 		var particleDatas = [];
 		var cloud;
 		var _camera;
@@ -42597,11 +42935,10 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(11)))
 
 /***/ },
-
-/***/ 7:
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -52644,11 +52981,10 @@
 
 
 /***/ },
-
-/***/ 8:
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Time = __webpack_require__(5);
+	var Time = __webpack_require__(9);
 	
 	var Stage = Time.extend(function() {
 		this.objects = {};
@@ -52695,18 +53031,16 @@
 	module.exports = Stage;
 
 /***/ },
-
-/***/ 9:
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/logo.png";
 
 /***/ },
-
-/***/ 10:
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG, THREE) {var View = __webpack_require__(4);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG, THREE) {var View = __webpack_require__(8);
 	
 	var ProductsPreview = View.extend(function() {
 		this.name = 'product-preview';
@@ -52894,88 +53228,62 @@
 	module.exports = ProductsPreview;
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7), __webpack_require__(11), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(15), __webpack_require__(1)))
 
 /***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
 
-/***/ 11:
-/***/ function(module, exports) {
-
-	var CONFIG = {
-		products: [
-			{
-				'name': 'pro6',
-				'imgUrl': './assets/pro6/phone-silver.jpg',
-				'modelUrl': './assets/pro6/pro6.dae',
-				'title': 'PRO 6',
-				'desc' : 'PRO 6 was produced in 2016'
-			}
-		]
-	};
+	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
 	
 	// test 
 	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 	var _products = [];
 	
-	products.forEach(function(product, i) {
-		_products[i] = {
-			'name': product,
-			'previewImg': './assets/preview/'+product+'_logo@2x.png',
-			'model': {
-				type: 'dae',
-				geometry: './assets/pro6/pro6.dae',
-				textures: {
-					'white': './assets/pro6/pro6-white.jpg',
-					'black': './assets/pro6/pro6-black.jpg',
-					'red': './assets/pro6/pro6-red.jpg'
-				},
-			},
-			'modelPos': {x: (i) * 30, y: 0, z: 0},
-			'title': 'PRO 6',
-			'desc' : 'PRO 6 was produced in 2016'
-		}
-	});
-	CONFIG.products = _products;
 	
+	
+	var mobile = {
+		'name': 'pro5',
+		'models': [
+			{url: './assets/pro5/metal.json', size: 200},
+			{url: './assets/pro5/metal_reflect.json', size: 200},
+			{url: './assets/pro5/glass.json', size: 129},
+			{url: './assets/pro5/plastics.json', size: 54},
+			{url: './assets/pro5/map.json', size: 3},
+			{url: './assets/pro5/plane.json', size: 8}
+		],
+	
+		materials: {
+			'black': {url: './assets/pro5/black.json', size: 6},
+			'red': {url: './assets/pro5/black.json', size: 6},
+		},
+	
+		map: [
+			{url: './assets/pro5/pro5uv.png', size: 75000},
+		]
+	};
+	
+	CONFIG.mobiles = [];
+	
+	products.forEach(function(productName) {
+		var m = $.extend({}, mobile);
+	
+		m.name = productName;
+		CONFIG.mobiles.push(m);
+	});
 	
 	module.exports = CONFIG;
 	
-	
-	/*'pro5': {
-	
-		'models': [
-			{url: xx, size: xx},
-			{url: xx, size: xx},
-			{url: xx, size: xx}
-		],
-	
-		materials: {url: xx, size: xx},
-	
-		map: [
-			{url: xx, size: xx},
-			{url: xx, size: xx}
-		]
-	}*/
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ },
-
-/***/ 12:
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(4);
+	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(8);
 	
-	var DisplayContainerStage = __webpack_require__(156);
-	var DisplayStage = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"../stage/display-mobile.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	var DisplayContainerStage = __webpack_require__(17);
+	var MobileStage = __webpack_require__(18);
 	
 	var Display = View.extend(function() {
 		var that = this;
@@ -52986,14 +53294,17 @@
 		this.isInit = false;
 		this.active = false;
 	
-		this.displayStages = {}; // {pro6: xx, mx6: xx} for cache
-		this.currentDisplayStage = []; 
+		// stages
+		this.mobileStages = {}; // {pro6: xx, mx6: xx} for cache
+		this.currentMobileStage = []; 
+		this.stages = [];
 	
-		// 3d
-		this.scene = {};
+		// UI
+		var _$domWrap = $('#displayView');
+		var _$domManager = $('.display-manager');
 	
-		var $domWrap = $('#displayView');
-		var $domManager = $('.display-manager');
+		var _$windowWrap = $('#displayWindowWrap');
+		var _$windowDoms = $();
 	
 		this.constructor = function() {
 			_containerStage = new DisplayContainerStage();
@@ -53001,41 +53312,47 @@
 			this.super();
 		}
 	
+		// data : {mobile: [pro5, mx6 ...]}
 		this.activate = function(data) { 
-	
+			// check self init
 			if (!this.isInit) {
 				init();
-				_containerStage.init();
+				//_containerStage.init();
 			}
 	
-			// stage
-			_containerStage.entry();
+			if (data) {
+				var mobiles = $.extend(true, [], data.mobiles);
+				this.currentMobileStage = [];
+				mobiles.forEach(function(name, i) {
+					if (!this.mobileStages[name]) {
+						var mobileStage = new MobileStage(name);
+						this.mobileStages[name] = mobileStage;
+						this.currentMobileStage.push(mobileStage);
+					}
+				}.bind(this));
+				if (!isLoad.bind(this)()) return;			
+			}
 	
-			// displaystage
-			var productDatas = $.extend(true, [], data.productDatas);
-			var sizePos = calculateSubWindowSize(productDatas.length);
 	
-			productDatas.forEach(function(productData, i) {
+			// all loaded 
+			//_containerStage.entry();// containerStage
 	
-				var displayWindowData = {
-					'productData': productData,
-					'cameraPos': data.cameraPos,
-					'windowSize': sizePos[i],
-				};
-				var displayWindow;
+			var sizePos = calculateSubWindowSize(this.currentMobileStage.length);
+			var x = 0;
+			var entryCount = 0;
 	
-				if (that.displayWindows.length) {
-					displayWindow = that.displayWindows.pop();
-				} else {
-					displayWindow = new DisplayWindow();
-				}
-	
-				displayWindow.activate(displayWindowData);
-				that.activeWindows.push(displayWindow); 
+			this.currentMobileStage.forEach(function(mobileStage, i, all) {
+				var meshPos = new THREE.Vector3(x + (i - (all.length/2)) * 100, 0, 0);
+				mobileStage.entry(meshPos, sizePos[i]).then(function() {
+					entryCount++;
+					if (entryCount === all.length) {
+						// todo entry animate done
+					}
+				});
 			});
 	
 			// UI
-			$domWrap.removeClass('none');
+			_$domWrap.removeClass('none');
 	
 			this.active = true;
 		}
@@ -53044,7 +53361,7 @@
 			Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
 			this.removeTick(sphereTick);
 	
-			$domWrap.addClass('none');
+			_$domWrap.addClass('none');
 			this.activeWindows.forEach(function(activeWindow) {
 				setTimeout(function() {activeWindow.inActivate();}, 0);
 			});
@@ -53054,458 +53371,204 @@
 			this.active = false;
 		}
 	
-		this.removeWindow = function(displayWindow) {
-			this.activeWindows.some(function(activeWindow, i) {
-				if (activeWindow === displayWindow) {
-					that.displayWindows.push(activeWindow);
-					that.activeWindows.splice(i, 1);
-					return true;
-				} 
-			});
-			resetWindow();
-		}
-	
 		this.resize = function() {
-			resetWindow();
+			//resetWindow();
 		}
 	
 		function init() {
-			setupUI();
-		}
+			var $lockBtn = _$domManager.find('.lock-btn');
+			var $unlockBtn = _$domManager.find('.unlock-btn');
+			var $backBtn = _$domManager.find('.back-btn');
 	
-		function setupScene() {
-	
-		}
-	
-		function setupUI() {
-			var $lockBtn = $domManager.find('.lock-btn');
-			var $unlockBtn = $domManager.find('.unlock-btn');
-			var $backBtn = $domManager.find('.back-btn');
-	
-			$domManager.on('click', '.setting-btn', function() {
-				$domManager.addClass('show');
+			_$domManager.on('click', '.setting-btn', function() {
+				_$domManager.addClass('show');
 			});
 	
-			$domManager.on('click', '.lock-btn', function() {
+			_$domManager.on('click', '.lock-btn', function() {
 				$lockBtn.addClass('none')
 				$unlockBtn.removeClass('none');
-				$domManager.removeClass('show');
+				_$domManager.removeClass('show');
 				lock();
 			});
 	
-			$domManager.on('click', '.unlock-btn', function() {
+			_$domManager.on('click', '.unlock-btn', function() {
 				$unlockBtn.addClass('none')
 				$lockBtn.removeClass('none');
-				$domManager.removeClass('show');
+				_$domManager.removeClass('show');
 				unlock();
 			});
 	
-			$domManager.on('click', '.back-btn', function() {
+			_$domManager.on('click', '.back-btn', function() {
 				that.inActivate();
 				that.activateView('product-preview');
-				$domManager.removeClass('show');
+				_$domManager.removeClass('show');
+			});
+	
+			// windows
+			_$domWrap.on('click', '.reset-btn', function() {
+				var index = $(this).parent('.display-window').index();
+				refreshWindow(index);
+			});
+	
+			_$domWrap.on('click', '.close-btn', function() {
+				var index = $(this).parent('.display-window').index();
+				closeWindow(index);
+			});
+	
+			_$domWrap.on('click', '.color', function() {
+				var index = $(this).parent('.display-window').index();
+				var color = $(this).data('color');
+				that.currentMobileStage[index].changeColor(color);
+				$(this).addClass('selected').silbings().removeClass('selected');
 			});
 		}
 	
+		function isLoad() {
+			var loaded = true;
+			var loadingInfos = {};
+	
+			function loading() {
+				var totalSize = 0;
+				var loadedSize = 0;
+				var progress;
+				var loadingInfo;
+	
+				for (var name in loadingInfos) {
+					loadingInfo = loadingInfos[name];
+					totalSize += loadingInfo.size;
+					loadedSize += loadingInfo.progress * loadingInfo.size;
+				}
+	
+				progress = loadedSize/totalSize;
+				showProgress(progress);
+				if (progress === 1) {
+					// loaded 
+					that.activate();
+				}
+			}
+	
+			for (var name in this.mobileStages) {
+				// loading
+				if (!this.mobileStages[name].isInit) {
+					loaded = false;
+					loadingInfos[name] = {
+						size: this.mobileStages[name].size,
+						progress: 0
+					};
+					(function(_name) { 
+						this.mobileStages[_name].init(function(progress) {
+							loadingInfos[_name].progress = progress;
+							loading();
+						}.bind(this)).then(function() {
+							loadingInfos[_name].progress = 1;
+							loading();
+						}.bind(this)).catch(function(e) { console.error(e.stack); });
+					}.bind(this))(name);
+				}
+			}
+			return loaded;
+		}
+	
+		function showProgress(progress) {
+			console.log('display.js loading: ' + progress);
+		} 
+	
+		function createWindowUI() {
+			var windowTemplate = 
+				'<div class="display-window">' + 
+					'<div class="window-control">' + 
+						'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
+						'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
+					'</div>' + 
+					'<div class="colors-control"></div>' + 
+				'</div>';
+			var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+			var colorHTML = '';
+	
+	
+			_$windowWrap.html('');
+	
+			this.currentMobileStages.forEach(function(mobileStage, i) {
+				if (!_$windowDoms[i]) {
+					_$windowDoms = _$windowDoms.add($(windowTemplate));
+				}
+	
+				_$windowWrap.append(_$windowDoms.eq(i));
+	
+				colorHTML = '';
+				Object.keys(_config.productData.model.textures).forEach(function(color) {
+					colorHTML += colorTemplate.replace(/\@color/g, color);
+				});
+				_$windowDoms.eq(i).find('.colors-control').empty().html(colorHTML);
+			});
+		}
+	
+		// 模型恢复初始状态
+		function resetWindow(index) {
+			if (_lockTick) {
+				that.currentMobileStage[index].reset();
+			} else {
+				that.currentMobileStage[0].reset();
+			}
+		}
+	
+		function closeWindow(index) {
+			this.currentMobileStages[index].remove();
+			this.currentMobileStages.splice(index, 1);
+	
+			// ui remove
+			_$windowDoms.eq(index).remove();
+			resizeWindows();
+		}
+	
+	
+	
+		function resizeWindows() {
+			var sizePos = calculateSubWindowSize(that.currentMobileStages.length);
+	
+			// ui resize
+			_$windowDoms.each(function(i) { $(this).css(sizePos[i]); });
+	
+			// stage resize
+			that.currentMobileStages.forEach(function(currentMobileStage, i) {
+				currentMobileStage.resizeWindow(sizePos[i]);
+			});
+		}
 	
 		function lock() {
-			that.activeWindows.forEach(function(activeWindow, i) {
-				var isMain = (i === 0);
-				activeWindow.lock(isMain);
+			that.currentMobileStage.forEach(function(mobileStage, i) {
+				mobileStage.lock(i === 0);
 			});
 	
 			_lockTick = that.addTick(function() {
-				var sizeInfo = that.activeWindows[0].getSize();
+				var sizeInfo = that.currentMobileStage[0].getSize();
 				//console.log(sizeInfo);
-				that.activeWindows.forEach(function(activeWindow, i) {
-					if (i > 0)
-					activeWindow.setSize(sizeInfo);
+				that.currentMobileStage.forEach(function(mobileStage, i) {
+					if (i > 0) mobileStage.setSize(sizeInfo);
 				});
 			});
 		}
 	
 		function unlock() {
-			that.activeWindows.forEach(function(activeWindow, i) {
-				activeWindow.unlock();
+			that.currentMobileStage.forEach(function(mobileStage, i) {
+				mobileStage.unlock();
 			});
-	
-			that.removeTick(_lockTick);
+			that.removeTick(_lockTick); lockTick = null;
 		}
 	
-		function resetWindow() {
-			var sizePos = calculateSubWindowSize(that.activeWindows.length);
-			that.activeWindows.forEach(function(activeWindow, i) {
-				activeWindow.resizeWindow(sizePos[i]);
-			});
-		}
 	
 	});
 	
 	module.exports = Display;
 	
 	
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(1)))
 
 /***/ },
-
-/***/ 152:
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(153);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(155)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-
-/***/ 153:
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(154)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-
-/***/ 154:
-/***/ function(module, exports) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
-
-/***/ },
-
-/***/ 155:
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-
-/***/ 156:
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(8);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(12);
 	
 	var DisplayContainer = Stage.extend(function() {
 		this.isInit = false;
@@ -53652,7 +53715,1143 @@
 	module.exports = DisplayContainer;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
-/***/ }
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
 
-/******/ });
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(12);
+	var Mobile = __webpack_require__(19);
+	var TrackballControls = __webpack_require__(21);
+	
+	
+	var DisplayMobile = Stage.extend(function() {
+		var that = this;
+	
+		var _windowSize; // for px calculate
+		var _winSizePX; // for render 
+	
+		// 3D 资源
+		var _camera;
+		var _mobile;
+	
+		this.name; // pro5?
+		this.size;
+		this.isInit = false;
+	
+		this.trackball;
+		this.objects = {};
+		this.target;
+	
+		// 模型位置，旋转等信息
+		this.objectSizes = {
+			model : {position: null, rotation: null},
+			camera : {position: null, lookAt: null}
+		}; 
+	
+		// 状态
+		this.state;
+		this.color;
+	
+		this.locked = false;
+		this.active = false;
+	
+		this.constructor = function(mobileName) {
+			this.name = mobileName;
+			this.super();
+			_mobile = new Mobile(this.name);
+			this.size = _mobile.size;
+		}
+	
+		this.load = function(onProgress) {
+			return _mobile.load(onProgress);
+		}
+	
+		this.init = function(onProgress) {
+			return this.load(onProgress).then(function() {
+				return new Promise(function(resolve, reject) {
+					// init
+					that.objects.mesh = _mobile.mesh;
+					setupScene();
+					that.isInit = true;
+					resolve();
+				});
+			}).catch(function(e) { console.log(e.stack); });;
+		}
+	
+		this.entry = function(meshPos, windowSize) {
+			_windowSize = windowSize;
+			// 3d
+			this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
+	
+	        this.objects.mesh.position.copy(this.target);
+	        this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+	        _camera.position.copy(M3.camera.position);
+			_camera.position.z += 40;
+			_camera.lookAt(THREEUtil.getLookAt(M3.camera));
+	
+			// light
+	        this.objects.spotLight.position.copy(this.target);
+	        this.objects.spotLight.position.y += 200;
+	        this.objects.spotLight.position.x += 300;
+	        this.objects.spotLight.position.z += 100;
+	        this.objects.spotLight.lookAt(this.target); 
+	
+			// initial size info
+			this.objectSizes = {mesh: {}, camera: {}};
+			this.objectSizes.mesh.position = this.objects.mesh.position.clone();
+			this.objectSizes.mesh.rotation = this.objects.mesh.rotation.clone();
+	
+			this.objectSizes.camera.position = this.objects.mesh.position.clone();
+			this.objectSizes.camera.position.z += 50;
+			this.objectSizes.camera.lookAt = this.objects.mesh.position.clone();
+	
+			// 添加到场景
+			Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
+			
+			this.resize();
+	
+			changeColor();
+			that.addTick(render);
+	
+			return playEntryAnimation();
+		}
+	
+		// 窗口关闭
+		this.leave = function() {
+	
+			// 移除模型
+			console.log(Object.keys(this.objects));
+			Object.keys(this.objects).forEach(function(o) { M3.scene.remove(that.objects[o]);});
+			render();
+			this.$domElem.remove();
+			this.getView('display-manager').removeWindow(this);
+			this.removeTween();
+			this.removeTick();
+			this.active = false;
+		}
+	
+		// 窗口重置
+		this.resize = function() {  
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
+	
+			_winSizePX = {};
+			_winSizePX['left'] = parseInt(winWidth * _windowSize['left']);
+			_winSizePX['width'] = parseInt(winWidth * _windowSize['width']);
+			_winSizePX['top'] = parseInt(winHeight * _windowSize['top']);
+			_winSizePX['height'] = parseInt(winHeight * _windowSize['height']);
+	
+			_winSizePX['bottom'] = winHeight - _winSizePX['height'] - _winSizePX['top'];
+	
+			_camera.aspect = _winSizePX['width'] / _winSizePX['height'];
+			_camera.updateProjectionMatrix();
+	
+			this.trackball.handleResize(_winSizePX);
+		}
+	
+		this.resizeWindow = function(windowSize) {
+			var initSize = _windowSize;
+			var finalSize = windowSize;
+	
+			that.setState('animate');
+			var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
+				_windowSize = this;
+				that.resize();
+			}).onComplete(function() {
+				that.removeTween(resizeTween);
+				that.setState('handle');
+			}).start();
+		}
+	
+		this.setState = function(state) { 
+			this.state = state;
+			if (state === 'handle') { 
+				this.trackball.init(_camera, this.objects.mesh);
+				this.resize(); 
+				!this.locked && this.trackball && (this.trackball.enabled = true);
+			} else {
+				!this.locked && this.trackball && (this.trackball.enabled = false);
+			}
+		}
+	
+		// 获取模型旋转信息，相机相对信息，用于设置其他 displayWindow 使表现一致；
+		this.getSize = function() {
+			var size = {};
+	
+			size.modelRotation = this.objects.mesh.rotation.clone();
+			size.cameraRotation = _camera.rotation.clone();
+			size.cameraUp = _camera.up.clone();
+			size.eye = (new THREE.Vector3).subVectors(_camera.position, this.objects.mesh.position);
+	
+			return size;
+		}
+	
+		this.setSize = function(size) {
+			this.objects.mesh.rotation.copy(size.modelRotation);
+			// _camera.rotation.copy(size.cameraRotation);
+			// _camera.up = size.cameraUp;
+			_camera.position.addVectors(this.objects.mesh.position, size.eye);
+			_camera.lookAt(this.objects.mesh);
+		}
+	
+		this.lock = function(isMain) {
+			this.locked = true;
+			if (isMain) {
+				this.trackball.enabled = true;
+				this.trackball.fullScreen = true;
+			} else {
+				this.trackball.enabled = false;
+			}
+			refresh();
+		}
+	
+		this.unlock = function() {
+			this.locked = false;
+	
+			this.trackball.enabled = true;
+			this.trackball.fullScreen = false;
+			refresh();
+		}
+	
+		this.getColors = function() {
+			if (_mobile) {
+				return mobile.getColors();
+			}
+		}
+	
+		/*
+		 * 从scene 中移除模型
+		 */
+		this.remove = function() {
+			this.super();
+			this.removeTick();
+		}
+	
+		// model，trackball 重置
+		this.reset = function() { //console.log(that.objectSizes.mesh.position);
+			that.setState('animate');
+			var initModelRotation = that.objectSizes.mesh.rotation;
+	
+			var initCameraPosition = that.objectSizes.camera.position;
+			var initCameraLookAtPosition = that.objectSizes.camera.position;
+	
+			var cameraLookAt = new THREE.Vector3(0, 0, -1);
+	        cameraLookAt.applyEuler(_camera.rotation, _camera.eulerOrder);
+	        cameraLookAt.add(_camera.position);
+	
+			that.addTHREEObjTween(that.objects.mesh, {
+	        	rotation: initModelRotation
+	        }, 1000).start();
+	
+			that.addTHREEObjTween(_camera, {
+	        	position: initCameraPosition,
+	        	lookAt: initCameraLookAtPosition
+	        }, 1000, {
+	        	onComplete: function() {
+	        		that.setState('handle');
+	        	}
+	        }).start();   
+		}
+	
+		function setupScene() {
+	
+			// 3D 相关资源创建
+	 		that.objects.spotLight = new THREE.SpotLight(0xeeeeee);
+	 		that.objects.spotLight.intensity = 1;
+			_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+	
+	
+	        that.trackball = new TrackballControls(_camera);
+	        that.trackball.enabled = false;
+		}
+	
+		function changeColor(color) {
+			_mobile.changeColor(color);
+		}
+	
+		/* 动画 */
+		function playEntryAnimation() {
+			return new Promise(function(resolve, reject) {
+				that.setState('animate');
+	
+				var initModelRotation = that.objectSizes.mesh.rotation;
+				var initCameraPosition = that.objectSizes.camera.position;
+	
+				that.objects.mesh.rotation.copy(initModelRotation);
+				that.objects.mesh.rotation.x -= Math.PI * 0.5;
+				that.objects.mesh.rotation.z += Math.PI * 1.2;
+				that.addTHREEObjTween(that.objects.mesh, {
+					rotation: initModelRotation
+				}, 2000).start();
+	
+				that.addTHREEObjTween(_camera, {
+					position: initCameraPosition
+				}, 2000, {
+					onComplete: function() {
+						that.setState('handle');
+						resolve();
+					}
+				}).start();
+			});
+	
+		}
+	
+		function render() {
+	
+			M3.renderer.setViewport(_winSizePX['left'], _winSizePX['bottom'], _winSizePX['width'], _winSizePX['height']);
+			M3.renderer.setScissor(_winSizePX['left'], _winSizePX['bottom'], _winSizePX['width'], _winSizePX['height']);
+			M3.renderer.setScissorTest(true);
+			_camera.aspect = _winSizePX['width'] / _winSizePX['height'];
+			_camera.updateProjectionMatrix();
+			M3.renderer.render( M3.scene, _camera );	
+			that.trackball.update();		
+		}
+	});
+	
+	module.exports = DisplayMobile;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 19 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {var Time = __webpack_require__(9);
+	var Loader = __webpack_require__(20);
+	var loader = new Loader();
+	var mobileEnvMap;
+	
+	var JSONLoader = new THREE.JSONLoader();
+	
+	
+	var Mobile = Time.extend(function() {
+		var that = this;
+	
+		this.mesh; // group
+		this.size; // 资源大小
+	
+		var _modelConfigs;
+	
+		var _materials;
+		var _colors = [];
+	
+		var _currentColor;
+	
+		var _uuidMaterialNameMap = {};
+	
+		this.constructor = function(mobileName) { 
+			this.super();
+			CONFIG.mobiles.forEach(function(mobile) {
+				if (mobile.name === mobileName) {
+					_modelConfigs = mobile;
+				}
+			});
+			this.size = loader.calculateSize(_modelConfigs);
+		}
+	
+		this.getColors = function() {
+			return _colors;
+		}
+	
+		this.changeColor = function(color) {
+			if (_currentColor === color) return;
+			if (_colors.indexOf(color) < 0) {
+				console.log('No this color');
+				return;
+			}
+	
+			this.mesh.children.forEach(function(child) {
+				var materialName = _uuidMaterialNameMap[uuid];
+	
+				_materials[color].forEach(function(material) {
+					if (material.name.replace(/\d*$/, '') === materialName.replace(/\d*$/, '')) {
+						child.material = material;
+						child.material.needsUpdate = true;
+					}				
+				});
+			});
+		}
+	
+		this.load = function(onProgress) {
+			var materials;
+			var group = new THREE.Group();
+			var loadPromise = loader.load(_modelConfigs, onProgress);
+	
+			loadPromise.then(function(modelRes) { //console.log(modelRes);
+				_materials = modelRes.materials;
+	
+				for (var color in _materials) {
+					_colors.push(color);
+					_currentColor = _colors[0];
+					_materials[color] = JSONLoader.parse(JSON.parse(_materials[color])).materials;
+				}
+	
+				modelRes.models.forEach(function(modelJson) {
+					var mParse = JSONLoader.parse(JSON.parse(modelJson));
+					var geometry = mParse.geometry;
+					var material = mParse.materials[0];
+					var model;
+	
+					material.side = THREE.DoubleSide;
+					material.transparent = (material.opacity === 1?false:true);
+					model = new THREE.Mesh(geometry, material);
+	
+					//model.position.z -= 1;
+					//model.scale.set(1,1,1);
+					if (material.name.indexOf('plane') !== -1 ||
+						material.name.indexOf('plastics') !== -1) {
+						var mat = new THREE.MeshBasicMaterial({'color': 0xffffff});
+						mat.side = THREE.DoubleSide;
+						//model.material.side = THREE.BackSide;
+						//model.material = mat;
+						// model.material.emissive = new THREE.Color(0xff0000);
+						// model.material.wireframe = true;
+						// model.position.z += 1.1;
+						//console.log(model);
+						//model.scale.set(0.8,0.8,0.8);
+						// var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
+						// model.material.map = texture;
+						// model.material.map.needsUpdate = true;
+					}
+	
+					if (material.name.indexOf('glass') !== -1) {
+						// material.opacity = 0.4;
+						// material.reflectivity = 0.3;
+						// material.needsUpdate = true;
+	
+						//model.position.z += 3;
+						// console.log(material);
+						//return;
+					}
+	
+					if (mParse.materials[0].name.indexOf('map') >=0) {
+						// console.log(mParse.materials[0]);
+						var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
+						var material = new THREE.MeshBasicMaterial();
+	
+						material.map = texture;
+						material.side = THREE.DoubleSide;
+						material.map.needsUpdate = true;
+	
+						model = new THREE.Mesh(mParse.geometry, material);
+						//console.log(model);
+					}
+	
+	
+					_uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+	
+					group.add(model);
+				});
+				that.mesh = group;
+			}).catch(function(e) { console.error(e.stack); });
+			return loadPromise;
+		}
+	});
+	
+	module.exports = Mobile;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(15)))
+
+/***/ },
+/* 20 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($, THREE) {// 下载缓存
+	loadedCache = {};
+	
+	var Loader = Class.extend(function() {
+		var that = this;
+	
+		this.calculateSize = function(loadParams) {
+			var totalSize = 0;
+			var loadTasks = getLoadTasks(loadParams);
+	
+			for (var i = 0; i < loadTasks.length; i++) {
+				totalSize += loadTasks[i].size;
+			}
+			return totalSize;
+		}
+	
+		this.load = function(loadParams, onProgress) {
+			return new Promise(function(onLoad, reject) {
+				var totalSize = 0; // 总大小
+				var loadedSize = 0; // 已经下载大小
+				var loadTasks = [];
+				var loadTask;
+	
+				loadTasks = getLoadTasks(loadParams); 
+	
+				function getLoadedSize() {
+					var loadedSize = 0;
+					loadTasks.forEach(function(_loadTask) { 
+						loadedSize += _loadTask.loaded
+					});
+					return loadedSize;
+				}
+				for (var i = 0; i < loadTasks.length; i++) {
+					loadTask = loadTasks[i];
+					loadTask.loaded = 0;
+					totalSize += loadTask.size;
+	
+					if (loadedCache[loadTask.url]) {
+						loadTask.loaded = loadTask.size;
+						continue;
+					}
+	
+					(function(loadTask) {
+						loadMethod[loadTask.type](loadTask.url, function(res) {
+							loadedCache[loadTask.url] = res;
+							loadTask.loaded = loadTask.size;
+	
+							// 成功回调
+							if (getLoadedSize() / totalSize === 1) {
+								onLoad(getResults(loadParams));
+							}
+						}, function() {
+							loadTask.loaded = loadTask.size * progress;
+							onProgress(getLoadedSize() / totalSize);
+						});
+					})(loadTask);
+				}			
+			});
+	
+		}
+	
+		// 获取下载类型
+		function getLoaderType(ext) {
+			var typeExtMap = {
+				'img': /(jpg|jpeg|gif|png)/,
+				'json': /json/
+			};
+	
+			for (var type in typeExtMap) {
+				if (typeExtMap[type].test(ext)) {
+					return type;
+				}
+			}
+		}
+	
+		// 收集下载参数里的 url
+		function getLoadTasks(_params) { 
+			var urlRegx = /.+\.(\w{1,6})$/;
+			var sizeDefault = {
+				'img': 100,
+				'json': 100	
+			};
+	
+			function _getLoadTasks(params) {
+				var urls = [];
+				var type;
+	
+				if (Object.prototype.toString.call(params) === '[object Array]') {
+					params.forEach(function(param) {
+						urls = urls.concat(_getLoadTasks(param));
+					});
+				} else if (typeof params === 'object' && !params.url){
+					for (var key in params) {
+						urls = urls.concat(_getLoadTasks(params[key]));
+					}
+				} else if (typeof params === 'object' && params.url) {
+					// 符合资源格式 {url: xx, size: xx}
+					type = params.url.match(urlRegx)[1];
+	
+					urls.push({
+						'url': params.url,
+						'size': (params.size || sizeDefault[type] || 1),
+						'type': getLoaderType(type)
+					});
+				}
+				return urls;
+			}
+			getLoadTasks = _getLoadTasks;
+			return _getLoadTasks(_params);
+		}
+	
+		// 遍历下载参数里的 url， 替换成下载结果缓存
+		function getResults(_params) {
+			var params = $.extend(true, {}, _params);
+	
+			function _getResults(params) {
+				console.log(params);
+				if (Object.prototype.toString.call(params) === '[object Array]') {
+					return (params.map(function(param) {
+						return _getResults(param);
+					}));
+				} else if (typeof params === 'object' && !params.url) {
+					for (var key in params) {
+						params[key] =  _getResults(params[key]);
+					}
+					return params;
+				} else if (typeof params === 'object' && params.url) {
+					return loadedCache[params.url];
+				} else {
+					return params;
+				}
+			}
+	
+			return _getResults(params);
+		}
+	});
+	
+	
+	/*
+	 * 下载 URL等配置在loadconfig.params 中
+	 * loadMethod 根据不同type 应用相应策略下载资源缓存在 loaded cache 中
+	 * img直接缓存 url 
+	 */
+	var imgLoader = new THREE.ImageLoader();
+	var xhrLoader = new THREE.XHRLoader();
+	
+	var loadMethod = {
+	
+		// 下载图片
+		'img': function(url, onLoad, onProgress) {
+			imgLoader.load(url, function() {
+				onLoad(url);
+			}, function(xhr) {
+				return (xhr.load / xhr.total);
+			});
+		},
+	
+		// 下载 dae 模型
+		'json': function(url, onLoad, onProgress) {
+			xhrLoader.load(url, onLoad, function(xhr) {
+				return (xhr.load / xhr.total);
+			});
+		}
+	}
+	
+	module.exports = Loader;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(1)))
+
+/***/ },
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(THREE) {/**
+	 * @author Eberhard Graether / http://egraether.com/
+	 * @author Mark Lundin 	/ http://mark-lundin.com
+	 */
+	
+	TrackballControls = Class.extend(function () {
+	
+		var _this = this;
+		var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
+	
+		this.domElement = document;
+	
+		// API
+	
+		this.enabled = true;
+	
+		this.screen = { left: 0, top: 0, width: 0, height: 0 };
+		this.fullScreen = false;
+	
+		this.rotateSpeed = 1.0;
+		this.zoomSpeed = 1.2;
+		this.panSpeed = 0.3;
+	
+		this.noRotate = false;
+		this.noZoom = false;
+		this.noPan = false;
+		this.noRoll = false;
+	
+		this.staticMoving = false;
+		this.dynamicDampingFactor = 0.2;
+	
+		this.minDistance = 0;
+		this.maxDistance = Infinity;
+	
+	
+	
+		// internals
+		this.targetMesh;
+		this.target = new THREE.Vector3();
+		this.target0 = this.target.clone();
+		this.position0; //this.camera.position.clone();
+		this.up0; //= this.camera.up.clone();
+	
+		var EPS = 0.000001;
+	
+		var lastPosition = new THREE.Vector3();
+	
+		var _state = STATE.NONE,
+		_prevState = STATE.NONE,
+	
+		_eye = new THREE.Vector3(),
+	
+		_rotation,
+	
+		_zoomStart = new THREE.Vector2(),
+		_zoomEnd = new THREE.Vector2(),
+	
+		_touchZoomDistanceStart = 0,
+		_touchZoomDistanceEnd = 0,
+	
+		_panStart = new THREE.Vector2(),
+		_panEnd = new THREE.Vector2();
+	
+	
+	
+		// events
+	
+		var changeEvent = { type: 'change' };
+		var startEvent = { type: 'start'};
+		var endEvent = { type: 'end'};
+	
+	
+		// methods
+		
+		this.constructor = function(camera, targetMesh) {
+			initEvent();
+		}
+	
+		this.init = function(camera, targetMesh) {
+	
+			this.camera = camera;
+			this.cameraUp = camera.up.clone();
+			this.targetMesh = targetMesh;
+	
+			_rotation = new THREE.Quaternion();
+			_rotation.setFromEuler(targetMesh.rotation.clone());
+			// for reset 
+			this.target = this.targetMesh.position.clone();
+			this.target0 = this.target.clone();
+			this.position0 = this.camera.position.clone();
+			this.up0 = this.camera.up.clone();
+		}
+	
+		this.changeTargetMesh = function(targetMesh) {
+			this.targetMesh = targetMesh;
+			this.target = this.targetMesh.position.clone();
+		}
+	
+		this.handleResize = function (winSize) {
+			var maxDisBase = 80;
+			var minDisBase = 10;
+	
+	
+			this.screen.left = winSize.left;
+			this.screen.top = winSize.top;
+			this.screen.width = winSize.width;
+			this.screen.height = winSize.height;
+	
+			this.maxDistance = maxDisBase;
+			this.minDistance = minDisBase;
+		};
+	
+		this.handleEvent = function ( event ) {
+	
+			if ( typeof this[ event.type ] == 'function' ) {
+	
+				this[ event.type ]( event );
+	
+			}
+	
+		};
+	
+		var getMouseOnScreen = ( function () {
+	
+			var vector = new THREE.Vector2();
+	
+			return function ( pageX, pageY ) {
+	
+				vector.set(
+					( pageX - _this.screen.left ) / _this.screen.width,
+					( pageY - _this.screen.top ) / _this.screen.height
+				);
+	
+				return vector;
+	
+			};
+	
+		}() );
+	
+		var getMouseProjectionOnBall = function(offsetX, offsetY) {
+	
+			var radio = 0.5;
+	        var deltaRotationQuaternion = new THREE.Quaternion()
+	            .setFromEuler(new THREE.Euler(
+	                offsetY * (Math.PI / 180) * radio,
+	                offsetX * (Math.PI / 180) * radio,
+	                0,
+	                'XYZ'
+	            ));
+	        
+	        _this.targetMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, _this.targetMesh.quaternion);
+		};
+	
+	
+		this.rotateTarget = function() { 
+			
+			//this.targetMesh.rotation.setFromQuaternion(_rotation, 'XYZ'); 
+		}
+	
+		this.zoomCamera = function () {
+	
+			if ( _state === STATE.TOUCH_ZOOM_PAN ) {
+	
+				var factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
+				_touchZoomDistanceStart = _touchZoomDistanceEnd;
+				_eye.multiplyScalar( factor );
+	
+			} else {
+	
+				var factor = 1.0 + ( _zoomEnd.y - _zoomStart.y ) * _this.zoomSpeed;
+	
+				if ( factor !== 1.0 && factor > 0.0 ) {
+	
+					_eye.multiplyScalar( factor );
+	
+					if ( _this.staticMoving ) {
+	
+						_zoomStart.copy( _zoomEnd );
+	
+					} else {
+	
+						_zoomStart.y += ( _zoomEnd.y - _zoomStart.y ) * this.dynamicDampingFactor;
+	
+					}
+	
+				}
+	
+			}
+	
+		};
+	
+		this.panCamera = (function(){
+	
+			var mouseChange = new THREE.Vector2(),
+				cameraUp = new THREE.Vector3(),
+				pan = new THREE.Vector3();
+	
+			return function () {
+	
+				mouseChange.copy( _panEnd ).sub( _panStart );
+	
+				if ( mouseChange.lengthSq() ) {
+	
+					mouseChange.multiplyScalar( _eye.length() * _this.panSpeed );
+	
+					pan.copy( _eye ).cross( _this.camera.up ).setLength( mouseChange.x );
+					pan.add( cameraUp.copy( _this.camera.up ).setLength( mouseChange.y ) );
+	
+					_this.camera.position.add( pan );
+					_this.target.add( pan );
+	
+					if ( _this.staticMoving ) {
+	
+						_panStart.copy( _panEnd );
+	
+					} else {
+	
+						_panStart.add( mouseChange.subVectors( _panEnd, _panStart ).multiplyScalar( _this.dynamicDampingFactor ) );
+	
+					}
+	
+				}
+			}
+	
+		}());
+	
+		this.checkDistances = function () {
+	
+			if ( !_this.noZoom || !_this.noPan ) {
+	
+				if ( _eye.lengthSq() > _this.maxDistance * _this.maxDistance ) {
+	
+					_this.camera.position.addVectors( _this.target, _eye.setLength( _this.maxDistance ) );
+	
+				}
+	
+				if ( _eye.lengthSq() < _this.minDistance * _this.minDistance ) {
+	
+					_this.camera.position.addVectors( _this.target, _eye.setLength( _this.minDistance ) );
+	
+				}
+	
+			}
+	
+		};
+	
+		this.update = function () {
+			if (!this.enabled) return;  
+	
+			_eye.subVectors( _this.camera.position, _this.target );
+	
+			if ( !_this.noRotate ) {
+	
+				_this.rotateTarget();
+	
+			}
+	
+			if ( !_this.noZoom ) {
+	
+				_this.zoomCamera();
+	
+			}
+	
+			if ( !_this.noPan ) {
+	
+				_this.panCamera();
+	
+			}
+	
+			_this.camera.position.addVectors( _this.target, _eye );
+	
+			_this.checkDistances();
+	
+			_this.camera.lookAt( _this.target );
+	
+			if ( lastPosition.distanceToSquared( _this.camera.position ) > EPS ) {
+	
+				//_this.dispatchEvent( changeEvent );
+	
+				lastPosition.copy( _this.camera.position );
+	
+			}
+	
+		};
+	
+		this.resize = function () {
+	
+			_state = STATE.NONE;
+			_prevState = STATE.NONE;
+	
+			_this.target.copy( _this.target0 );
+			_this.camera.position.copy( _this.position0 );
+			_this.camera.up.copy( _this.up0 );
+	
+			_eye.subVectors( _this.camera.position, _this.target );
+	
+			_this.camera.lookAt( _this.target );
+	
+			_this.dispatchEvent( changeEvent );
+	
+			lastPosition.copy( _this.camera.position );
+	
+		};
+	
+	
+		// event handle
+	
+		var mousePreX = 0;
+		var mousePreY = 0;
+	
+		function isInScreen(x, y) {
+			if ((x > _this.screen.left && x < _this.screen.left + _this.screen.width &&
+				y > _this.screen.top && y < _this.screen.top + _this.screen.height) || _this.fullScreen) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	
+		function mousedown( event ) { 
+	
+			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			if ( _state === STATE.NONE ) {
+				_state = event.button;
+			}
+	
+			if ( _state === STATE.ROTATE && !_this.noRotate ) {
+				mousePreX = event.pageX;
+				mousePreY = event.pageY;
+	
+			} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
+	
+				_zoomStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+				_zoomEnd.copy(_zoomStart);
+	
+			} else if ( _state === STATE.PAN && !_this.noPan ) {
+	
+				_panStart.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+				_panEnd.copy(_panStart)
+	
+			}
+	
+			document.addEventListener( 'mousemove', mousemove, false );
+			document.addEventListener( 'mouseup', mouseup, false );
+	
+			//_this.dispatchEvent( startEvent );
+	
+		}
+	
+	
+		// event handle
+		function mousemove( event ) {
+	
+			if ( _this.enabled === false ) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			if ( _state === STATE.ROTATE && !_this.noRotate ) {
+	
+				getMouseProjectionOnBall( event.pageX - mousePreX, event.pageY - mousePreY) ;
+	
+			} else if ( _state === STATE.ZOOM && !_this.noZoom ) {
+	
+				_zoomEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+	
+			} else if ( _state === STATE.PAN && !_this.noPan ) {
+	
+				_panEnd.copy( getMouseOnScreen( event.pageX, event.pageY ) );
+	
+			}
+			mousePreX = event.pageX;
+			mousePreY = event.pageY;
+	
+		}
+	
+		function mouseup( event ) {
+	
+			if ( _this.enabled === false ) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			_state = STATE.NONE;
+	
+			document.removeEventListener( 'mousemove', mousemove );
+			document.removeEventListener( 'mouseup', mouseup );
+			//_this.dispatchEvent( endEvent );
+	
+		}
+	
+		function mousewheel( event ) {
+	
+			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			var delta = 0;
+	
+			if ( event.wheelDelta ) { // WebKit / Opera / Explorer 9
+	
+				delta = event.wheelDelta / 40;
+	
+			} else if ( event.detail ) { // Firefox
+	
+				delta = - event.detail / 3;
+	
+			}
+	
+			_zoomStart.y += delta * 0.01;
+			//_this.dispatchEvent( startEvent );
+			//_this.dispatchEvent( endEvent );
+	
+		}
+	
+		function touchstart( event ) {
+	
+			if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			switch ( event.touches.length ) {
+	
+				case 1:
+					mousePreX = event.touches[ 0 ].pageX;
+					mousePreY = event.touches[ 0 ].pageY;
+					break;
+	
+				case 2:
+					_state = STATE.TOUCH_ZOOM_PAN;
+					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+					_touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt( dx * dx + dy * dy );
+	
+					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
+					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+					_panStart.copy( getMouseOnScreen( x, y ) );
+					_panEnd.copy( _panStart );
+					break;
+	
+				default:
+					_state = STATE.NONE;
+	
+			}
+			//_this.dispatchEvent( startEvent );
+		}
+	
+		function touchmove( event ) {
+	
+			if ( _this.enabled === false ) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			switch ( event.touches.length ) {
+	
+				case 1:
+					getMouseProjectionOnBall( event.touches[ 0 ].pageX - mousePreX, event.touches[ 0 ].pageY - mousePreY);
+					break;
+	
+				case 2:
+					var dx = event.touches[ 0 ].pageX - event.touches[ 1 ].pageX;
+					var dy = event.touches[ 0 ].pageY - event.touches[ 1 ].pageY;
+					_touchZoomDistanceEnd = Math.sqrt( dx * dx + dy * dy );
+	
+					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
+					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+					_panEnd.copy( getMouseOnScreen( x, y ) );
+					break;
+	
+				default:
+					_state = STATE.NONE;
+	
+			}
+			mousePreX = event.touches[ 0 ].pageX;
+			mousePreY = event.touches[ 0 ].pageY;
+		}
+	
+		function touchend( event ) {
+	
+			if ( _this.enabled === false ) return;
+	
+			switch ( event.touches.length ) {
+	
+				case 1:
+					_rotateEnd.copy( getMouseProjectionOnBall( event.touches[ 0 ].pageX, event.touches[ 0 ].pageY ) );
+					_rotateStart.copy( _rotateEnd );
+					break;
+	
+				case 2:
+					_touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
+	
+					var x = ( event.touches[ 0 ].pageX + event.touches[ 1 ].pageX ) / 2;
+					var y = ( event.touches[ 0 ].pageY + event.touches[ 1 ].pageY ) / 2;
+					_panEnd.copy( getMouseOnScreen( x, y ) );
+					_panStart.copy( _panEnd );
+					break;
+	
+			}
+	
+			_state = STATE.NONE;
+			//_this.dispatchEvent( endEvent );
+		}
+	
+		function initEvent() {
+			_this.domElement.addEventListener( 'contextmenu', function ( event ) { event.preventDefault(); }, false );
+	
+			_this.domElement.addEventListener( 'mousedown', mousedown, false );
+	
+			_this.domElement.addEventListener( 'mousewheel', mousewheel, false );
+			_this.domElement.addEventListener( 'DOMMouseScroll', mousewheel, false ); // firefox
+	
+			_this.domElement.addEventListener( 'touchstart', touchstart, false );
+			_this.domElement.addEventListener( 'touchend', touchend, false );
+			_this.domElement.addEventListener( 'touchmove', touchmove, false );		
+		}
+	});
+	
+	
+	module.exports = TrackballControls;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ }
+/******/ ]);
 //# sourceMappingURL=index.js.map

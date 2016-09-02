@@ -1,13 +1,12 @@
-var View = require('./view.js');
+var Stage = require('./stage.js');
 var Mobile = require('./mobile.js');
-var TrackballControls = require('./m3-trackballcontrol');
+var TrackballControls = require('m3-trackballcontrol.js');
 
-var loader = new Loader();
 
-var DisplayWindow = View.extend(function() {
+var DisplayMobile = Stage.extend(function() {
 	var that = this;
 
-	var windowSize; // for px calculate
+	var _windowSize; // for px calculate
 	var _winSizePX; // for render 
 
 	// 3D 资源
@@ -35,11 +34,6 @@ var DisplayWindow = View.extend(function() {
 	this.locked = false;
 	this.active = false;
 
-
-	// dom
-	this.$domWrap = $('#displayView');
-	this.$domElem;
-
 	this.constructor = function(mobileName) {
 		this.name = mobileName;
 		this.super();
@@ -55,16 +49,16 @@ var DisplayWindow = View.extend(function() {
 		return this.load(onProgress).then(function() {
 			return new Promise(function(resolve, reject) {
 				// init
-				this.objects.mesh = _mobile.mesh;
+				that.objects.mesh = _mobile.mesh;
 				setupScene();
-				this.isInit = true;
+				that.isInit = true;
 				resolve();
 			});
 		}).catch(function(e) { console.log(e.stack); });;
 	}
 
 	this.entry = function(meshPos, windowSize) {
-		windowSize = windowSize;
+		_windowSize = windowSize;
 		// 3d
 		this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
 
@@ -82,6 +76,7 @@ var DisplayWindow = View.extend(function() {
         this.objects.spotLight.lookAt(this.target); 
 
 		// initial size info
+		this.objectSizes = {mesh: {}, camera: {}};
 		this.objectSizes.mesh.position = this.objects.mesh.position.clone();
 		this.objectSizes.mesh.rotation = this.objects.mesh.rotation.clone();
 
@@ -92,12 +87,9 @@ var DisplayWindow = View.extend(function() {
 		// 添加到场景
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
 		
-		// dom
-		this.$domElem.appendTo(this.$domWrap);
-
 		this.resize();
 
-		changeColor(Object.keys(_config.productData.model.textures)[0]);
+		changeColor();
 		that.addTick(render);
 
 		return playEntryAnimation();
@@ -129,11 +121,6 @@ var DisplayWindow = View.extend(function() {
 		_winSizePX['height'] = parseInt(winHeight * _windowSize['height']);
 
 		_winSizePX['bottom'] = winHeight - _winSizePX['height'] - _winSizePX['top'];
-
-        // dom size & position
-        for (var key in _windowSize) {
-        	this.$domElem.css(key, _windowSize[key] * 100 + '%');
-        }
 
 		_camera.aspect = _winSizePX['width'] / _winSizePX['height'];
 		_camera.updateProjectionMatrix();
@@ -220,7 +207,7 @@ var DisplayWindow = View.extend(function() {
 	}
 
 	// model，trackball 重置
-	function reset() { //console.log(that.objectSizes.mesh.position);
+	this.reset = function() { //console.log(that.objectSizes.mesh.position);
 		that.setState('animate');
 		var initModelRotation = that.objectSizes.mesh.rotation;
 
@@ -249,39 +236,12 @@ var DisplayWindow = View.extend(function() {
 
 		// 3D 相关资源创建
  		that.objects.spotLight = new THREE.SpotLight(0xeeeeee);
- 		that.objects.spotLight.intensity = 0;
+ 		that.objects.spotLight.intensity = 1;
 		_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
         that.trackball = new TrackballControls(_camera);
         that.trackball.enabled = false;
-	}
-
-	// UI 初始化
-	function setupUI() {
-		// UI (DOM)
-		var domTemplate = 
-		'<div class="display-window">' + 
-			'<div class="window-control">' + 
-				'<i class="btn reset-btn icon ion-ios-reload"></i>' + 
-				'<i class="btn close-btn icon ion-ios-close-empty"></i>' + 			
-			'</div>' + 
-			'<div class="colors-control"></div>' + 
-		'</div>';
-
-		var colorTemplate = '<i class="color @color" data-color="@color"></i>';
-
-		var colorHTML = '';
-		Object.keys(_config.productData.model.textures).forEach(function(color) {
-			colorHTML += colorTemplate.replace(/\@color/g, color);
-		});
-		that.$domElem = $(domTemplate);
-		that.$domElem.find('.colors-control').empty().html(colorHTML);
-
-		// 事件
-		that.$domElem.on('click', '.reset-btn', function() { refresh() });
-		that.$domElem.on('click', '.close-btn', function() { that.inActivate() });
-		that.$domElem.on('click', '.color', function() { changeColor($(this).data('color')) });	
 	}
 
 	function changeColor(color) {
@@ -327,4 +287,4 @@ var DisplayWindow = View.extend(function() {
 	}
 });
 
-module.exports = DisplayWindow;
+module.exports = DisplayMobile;
