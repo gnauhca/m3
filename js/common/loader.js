@@ -49,7 +49,7 @@ var Loader = Class.extend(function() {
 						if (getLoadedSize() / totalSize === 1) {
 							onLoad(getResults(loadParams));
 						}
-					}, function() {
+					}, function(progress) {
 						loadTask.loaded = loadTask.size * progress;
 						onProgress(getLoadedSize() / totalSize);
 					});
@@ -114,7 +114,6 @@ var Loader = Class.extend(function() {
 		var params = $.extend(true, {}, _params);
 
 		function _getResults(params) {
-			console.log(params);
 			if (Object.prototype.toString.call(params) === '[object Array]') {
 				return (params.map(function(param) {
 					return _getResults(param);
@@ -151,14 +150,14 @@ var loadMethod = {
 		imgLoader.load(url, function() {
 			onLoad(url);
 		}, function(xhr) {
-			return (xhr.load / xhr.total);
+			return onProgress(xhr.loaded / xhr.total);
 		});
 	},
 
 	// 下载 dae 模型
 	'json': function(url, onLoad, onProgress) {
 		xhrLoader.load(url, onLoad, function(xhr) {
-			return (xhr.load / xhr.total);
+			return onProgress(xhr.loaded / xhr.total);
 		});
 	}
 }

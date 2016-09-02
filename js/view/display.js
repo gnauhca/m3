@@ -51,7 +51,7 @@ var Display = View.extend(function() {
 			if (!isLoad.bind(this)()) return;			
 		}
 
-
+		console.log(123);
 		// all loaded 
 		//_containerStage.entry();// containerStage
 
