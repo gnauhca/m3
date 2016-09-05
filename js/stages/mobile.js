@@ -16,9 +16,7 @@ var Mobile = Time.extend(function() {
 
 	var _materials;
 	var _colors = [];
-
 	var _currentColor;
-
 	var _uuidMaterialNameMap = {};
 
 	this.constructor = function(mobileName) { 
@@ -59,9 +57,9 @@ var Mobile = Time.extend(function() {
 		var group = new THREE.Group();
 		var loadPromise = loader.load(_modelConfigs, onProgress);
 
-		loadPromise.then(function(modelRes) { //console.log(modelRes);
+		return loadPromise.then(function(modelRes) {
+			
 			_materials = modelRes.materials;
-
 			for (var color in _materials) {
 				_colors.push(color);
 				_currentColor = _colors[0];
@@ -78,46 +76,18 @@ var Mobile = Time.extend(function() {
 				material.transparent = (material.opacity === 1?false:true);
 				model = new THREE.Mesh(geometry, material);
 
-				//model.position.z -= 1;
-				//model.scale.set(1,1,1);
-				if (material.name.indexOf('plane') !== -1 ||
-					material.name.indexOf('plastics') !== -1) {
-					var mat = new THREE.MeshBasicMaterial({'color': 0xffffff});
-					mat.side = THREE.DoubleSide;
-					//model.material.side = THREE.BackSide;
-					//model.material = mat;
-					// model.material.emissive = new THREE.Color(0xff0000);
-					// model.material.wireframe = true;
-					// model.position.z += 1.1;
-					//console.log(model);
-					//model.scale.set(0.8,0.8,0.8);
-					// var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
-					// model.material.map = texture;
-					// model.material.map.needsUpdate = true;
-				}
+				// if (mParse.materials[0].name.indexOf('map') >=0) {
+				// 	// console.log(mParse.materials[0]);
+				// 	var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
+				// 	var material = new THREE.MeshBasicMaterial();
 
-				if (material.name.indexOf('glass') !== -1) {
-					// material.opacity = 0.4;
-					// material.reflectivity = 0.3;
-					// material.needsUpdate = true;
+				// 	material.map = texture;
+				// 	material.side = THREE.DoubleSide;
+				// 	material.map.needsUpdate = true;
 
-					//model.position.z += 3;
-					// console.log(material);
-					//return;
-				}
-
-				if (mParse.materials[0].name.indexOf('map') >=0) {
-					// console.log(mParse.materials[0]);
-					var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
-					var material = new THREE.MeshBasicMaterial();
-
-					material.map = texture;
-					material.side = THREE.DoubleSide;
-					material.map.needsUpdate = true;
-
-					model = new THREE.Mesh(mParse.geometry, material);
-					//console.log(model);
-				}
+				// 	model = new THREE.Mesh(mParse.geometry, material);
+				// 	//console.log(model);
+				// }
 
 
 				_uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
@@ -125,8 +95,8 @@ var Mobile = Time.extend(function() {
 				group.add(model);
 			});
 			that.mesh = group;
+			return new Promise(function(r) { r();});
 		}).catch(function(e) { console.error(e.stack); });
-		return loadPromise;
 	}
 });
 

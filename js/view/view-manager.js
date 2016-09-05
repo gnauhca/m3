@@ -1,5 +1,6 @@
 var ViewManager = Class.extend(function() {
     var _viewConstructors = {
+        'progress': require('./progress.js'),
         'index': require('./index.js'),
         'select': require('./select.js'),
         'display': require('./display.js'),

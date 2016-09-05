@@ -23,7 +23,7 @@ var mobile = {
 	},
 
 	map: [
-		{url: './assets/pro5/pro5uv.png', size: 75000},
+		// {url: './assets/pro5/pro5uv.png', size: 75000},
 	]
 };
 

@@ -63,7 +63,8 @@ var DisplayMobile = Stage.extend(function() {
 		this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
 
         this.objects.mesh.position.copy(this.target);
-        this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+        // this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+        _camera.up.copy(M3.camera.up);
         _camera.position.copy(M3.camera.position);
 		_camera.position.z += 40;
 		_camera.lookAt(THREEUtil.getLookAt(M3.camera));
@@ -181,7 +182,7 @@ var DisplayMobile = Stage.extend(function() {
 		} else {
 			this.trackball.enabled = false;
 		}
-		refresh();
+		this.reset();
 	}
 
 	this.unlock = function() {
@@ -189,12 +190,12 @@ var DisplayMobile = Stage.extend(function() {
 
 		this.trackball.enabled = true;
 		this.trackball.fullScreen = false;
-		refresh();
+		reset();
 	}
 
 	this.getColors = function() {
 		if (_mobile) {
-			return mobile.getColors();
+			return _mobile.getColors();
 		}
 	}
 
