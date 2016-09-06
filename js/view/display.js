@@ -52,7 +52,6 @@ var Display = View.extend(function() {
 				}
 			}.bind(this));
 
-
 			if (!isLoad.bind(this)(this.activate.bind(this))) return;	
 		}
 
@@ -71,11 +70,14 @@ var Display = View.extend(function() {
 					// todo entry animate done
 				}
 			});
+			that.stages.push(mobileStage);
 		});
 		createWindowUI();resizeWindows();
 
 		// UI
 		_$domWrap.removeClass('none');
+		this.stages.push(_containerStage);
+
 		this.active = true;
 	}
 
@@ -90,11 +92,12 @@ var Display = View.extend(function() {
 		this.activeWindows.length = 0;
 
 		_containerStage.leave();
+		this.stages = [];
 		this.active = false;
 	}
 
 	this.resize = function() {
-		//resetWindow();
+		resizeWindows();
 	}
 
 	function init() {
@@ -215,9 +218,7 @@ var Display = View.extend(function() {
 		var colorTemplate = '<i class="color @color" data-color="@color"></i>';
 		var colorHTML = '';
 
-
 		_$windowWrap.html('');
-
 		_currentWindowDoms = [];
 		_currentMobileStages.forEach(function(mobileStage, i) {
 			if (!_windowDoms[i]) {
@@ -270,7 +271,7 @@ var Display = View.extend(function() {
 		});
 
 		_currentWindowDoms.forEach(function($windowDom, i) { 
-			$windowDom.animate(sizePos[i], 1500); 
+			$windowDom.animate(sizePos[i], 1000); 
 		});
 	}
 

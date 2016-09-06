@@ -22,11 +22,13 @@ var ViewManager = Class.extend(function() {
 		        htmlElem.style.fontSize = fontSize + 'px';
 
 		        for (var name in _views) {
-		            _views[name].active && _views[name].resize();
+		        	if (_views[name].active) { 
+			            _views[name].resize();
+			            _views[name].stages && _views[name].stages.forEach(function(stage) {
+			            	stage.resize && stage.resize();
+			            });		        		
+		        	}
 
-		            _views.stages.forEach(function(stage) {
-		            	stage.resize && stage.resize();
-		            });
 		        }
 		    }
 		    resize();

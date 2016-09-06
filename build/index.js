@@ -72,16 +72,22 @@
 	M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
 	// main render tick
-	var Time = __webpack_require__(9);
+	var Time = __webpack_require__(10);
 	var m3Time = new Time();
 	
 	M3.tick = m3Time.addTick(function() {
 		M3.renderer.render(M3.scene, M3.camera);
 	});
 	
+	window.addEventListener('resize', function() {
+		winWidth = window.innerWidth;
+		winHeight = window.innerHeight;
+	
+		M3.renderer.setSize(winWidth, winHeight);
+	});
 	
 	// M3.viewManager.activateView('index');
-	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5'/*, 'mx6'*/]});
+	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
 	
 	})();
 	
@@ -42001,7 +42007,7 @@
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n.progress {\n  position: absolute;\n  z-index: 100000;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, 0.3);\n  perspective: 1200px; }\n  .progress .water-box-wrap {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 100px;\n    height: 100px;\n    margin-left: -50px;\n    margin-top: -50px;\n    transform-style: preserve-3d;\n    animation: waterbox 8s infinite alternate; }\n  .progress .box {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-style: preserve-3d; }\n    .progress .box div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(255, 255, 255, 0.4);\n      outline: 1px solid #9cc2c4; }\n      .progress .box div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .box div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .box div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .box div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n  .progress .water {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-origin: center bottom;\n    transition: transform linear 0.2s;\n    transform-style: preserve-3d; }\n    .progress .water div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(16, 121, 155, 0.3);\n      text-align: center; }\n      .progress .water div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .water div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .water div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .water div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n      .progress .water div span {\n        line-height: 100px;\n        font-size: 20px;\n        color: #eee;\n        transform: translate3d(0, 0, -2px); }\n      .progress .water div:nth-child(1) {\n        background-color: rgba(16, 121, 155, 0.3); }\n\n@keyframes waterbox {\n  0% {\n    transform: rotateY(40deg) rotateX(-20deg); }\n  100% {\n    transform: rotateY(-40deg) rotateX(-60deg); } }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n.progress {\n  position: absolute;\n  z-index: 100000;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, 0.99);\n  perspective: 1200px; }\n  .progress .water-box-wrap {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 100px;\n    height: 100px;\n    margin-left: -50px;\n    margin-top: -50px;\n    transform-style: preserve-3d;\n    animation: waterbox 8s infinite alternate; }\n  .progress .box {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-style: preserve-3d; }\n    .progress .box div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(255, 255, 255, 0.4);\n      outline: 1px solid #9cc2c4; }\n      .progress .box div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .box div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .box div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .box div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n  .progress .water {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-origin: center bottom;\n    transition: transform linear 0.2s;\n    transform-style: preserve-3d; }\n    .progress .water div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(16, 121, 155, 0.3);\n      text-align: center; }\n      .progress .water div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .water div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .water div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .water div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n      .progress .water div span {\n        line-height: 100px;\n        font-size: 20px;\n        color: #eee;\n        transform: translate3d(0, 0, -2px); }\n      .progress .water div:nth-child(1) {\n        background-color: rgba(16, 121, 155, 0.3); }\n\n@keyframes waterbox {\n  0% {\n    transform: rotateY(40deg) rotateX(-20deg); }\n  100% {\n    transform: rotateY(-40deg) rotateX(-60deg); } }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
 	
 	// exports
 
@@ -42320,10 +42326,10 @@
 
 	var ViewManager = Class.extend(function() {
 	    var _viewConstructors = {
-	        'progress': __webpack_require__(22),
-	        'index': __webpack_require__(7),
-	        'select': __webpack_require__(14),
-	        'display': __webpack_require__(16),
+	        'progress': __webpack_require__(7),
+	        'index': __webpack_require__(11),
+	        'select': __webpack_require__(15),
+	        'display': __webpack_require__(17),
 	    };
 	
 		var _views = {};
@@ -42342,11 +42348,13 @@
 			        htmlElem.style.fontSize = fontSize + 'px';
 	
 			        for (var name in _views) {
-			            _views[name].active && _views[name].resize();
+			        	if (_views[name].active) { 
+				            _views[name].resize();
+				            _views[name].stages && _views[name].stages.forEach(function(stage) {
+				            	stage.resize && stage.resize();
+				            });		        		
+			        	}
 	
-			            _views.stages.forEach(function(stage) {
-			            	stage.resize && stage.resize();
-			            });
 			        }
 			    }
 			    resize();
@@ -42386,553 +42394,52 @@
 /* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(8);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
 	
-	
-	
-	var IndexView = View.extend(function() {
-		var _welcomeStage;
-		this.stages;
+	var ProgressView = View.extend(function() {
+		var _$progressWrap = $('#progressView');
+		var _$progressVal = $('#progressVal');
+		var _$water = $('.water');
+		var _$waterDivs = _$water.find('div');
 	
 		this.constructor = function() {
 			this.super();
-			var WelcomeStage = __webpack_require__(10);
-			_welcomeStage = new WelcomeStage();
-			this.stages.push(_welcomeStage);
+			this.setProgress(0);
 		}
 	
 		this.activate = function() { 
-			// stage init
-			if (!_welcomeStage.isInit) {
-				_welcomeStage.init(this.activate.bind(this));
-				return;
-			}
-	
-			// welcome animation
-			_welcomeStage.entry().then(function() {
-				// welcome animation over
-			}).catch(function(e) { console.log(e.stack);});
+			_$progressWrap.show();
 		}
 	
 		this.inactivate = function() {
-	
+			setTimeout(function() {
+				_$progressWrap.hide();
+			}, 1000);
 		}
 	
+		this.setProgress = function(percent) {
+			var initColor = [246, 11, 55];
+			var finalColor = [16, 121, 125];
+			var opacity = 0.3;
+			var currentColor;
+	
+			currentColor = finalColor.map(function(colorVal, i) {
+				return initColor[i] + (colorVal - initColor[i]) * percent|0;
+			});
+	
+			_$waterDivs.css('backgroundColor', 'rgba(' + currentColor.join(',') + ',' + opacity + ')');
+	
+			_$progressVal.html( (percent*100 | 0) + '%');
+			percent *= 0.999;
+			_$water.css('transform', 'scaleY(' + percent.toFixed(2) + ')');
+		}
 	});
 	
-	module.exports = IndexView;
+	module.exports = ProgressView;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
 /* 8 */
-/***/ function(module, exports, __webpack_require__) {
-
-	var Time = __webpack_require__(9);
-	
-	var View = Time.extend(function() {
-	    this.active = false;
-	    this.stages = []; // 3d 对象
-	    this.viewManager;
-	
-	    this.constructor = function(viewManager) {
-	        this.super();
-	        this.viewManager = viewManager;
-	    }
-	
-	    // 激活视图，data 为接受的参数
-	    this.activate = function(data) {
-	
-	    }
-	
-	    // 冻结视图，data 为接受的参数
-	    this.inactivate = function(data) {}
-	
-	    this.addStage = function(stage) {
-	
-	    }
-	
-	    // 窗口大小变化的操作
-	    this.resize = function() {}
-	
-	    this.distroy = function() {
-	        this.super.distroy();
-	        this.viewManager.removeView(this);
-	    }
-	
-	});
-	
-	module.exports = View;
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-/***/ },
-/* 9 */
-/***/ function(module, exports) {
-
-	
-	/* 时间 */
-	var TIME = {
-	
-		// 所有时间body对象
-		bodys : []
-	}
-	
-	;(function() {
-	
-	stop = false;
-	TIME.addBody = function(timeBody) {
-		this.bodys.push(timeBody);
-	}
-	
-	TIME.removeBody = function(timeBody) {
-		var index = this.bodys.indexOf(timeBody);
-	
-		if (index !== -1) {
-			this.bodys.splice(index, 1);
-		}
-	}
-	
-	TIME.tick = function() {
-		TIME.handleFrame();
-	
-		if (!stop) {
-			requestAnimationFrame(TIME.tick);
-			//setTimeout(TIME.tick, 20);
-		}
-	}
-	
-	TIME.start = function() {
-		stop = false;
-		this.tick();
-	}
-	
-	TIME.stop = function() {
-		stop = true;
-	}
-	
-	TIME.handleFrame = (function() { 
-		var now = (new Date()).getTime();
-		var last = now;
-		var detal;
-		return (function() { 
-	
-			detal = now - last;
-			detal = detal > 500 ? 30 : (detal < 16? 16 : detal);
-	
-			//console.log(TIME.bodys);
-			TIME.bodys.forEach(function(body) {
-				if (!body.isStop) {
-					body.ticks.forEach(function(tick) {
-						tick.fn && tick.fn(detal); 
-					});
-				}
-			});
-	
-			TWEEN.update();
-		});	
-	})();
-	
-	})();
-	
-	TIME.tick();
-	
-	
-	/* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
-	var TimeBody = Class.extend(function TimeBody() {
-		var that = this;
-	
-		this.ticks = [];
-		this.tweens = [];
-		this.isStop = false;
-	
-		this.constructor = function() {
-			TIME.addBody(this);
-		}
-	
-		/**
-		 * 该物体灭亡
-		 */
-		this.destory = function() {
-			TIME.removeBody(this);
-		}
-	
-		/** 
-		 * 帧更新
-		 * @param timegap 与上一帧的时间间隔
-		 */
-		this.addTick = function(fn) {
-			var tick = {'fn': fn};
-	
-			tick.isStop = false;
-			this.ticks.push(tick);
-			return tick;
-		}
-	
-		this.removeTick = function(tick) {
-			if (!tick) {
-				// remove all
-				this.ticks = [];
-				return;
-			}
-	
-			var index = this.ticks.indexOf(tick);
-	
-			if (index !== -1) {
-				this.ticks.splice(index, 1);
-			}
-		}
-	
-		/** 
-		 * tween
-		 */
-		this.addTween = function(tween) {
-			this.tweens.push(tween);
-		}
-	
-		/*
-		 * tweenObj
-		 */
-		this.addTHREEObjTween = function(threeObj, target, dur, tweenObj) {		
-			var that = this;
-			var init = {};
-			var des = {};
-	
-	        var keys = ['position', 'rotation', 'scale'];
-	        var attrs = ['x', 'y', 'z'];
-			var des = [];
-	
-			keys.forEach(function(key) {
-				if (target[key]) {
-					attrs.forEach(function(attr) {
-						init[key + '___' + attr] = threeObj[key][attr];
-						des[key + '___' + attr] = target[key][attr];
-					});			
-				}
-			});
-			if (target.lookAt) {
-				var lookAt = THREEUtil.getLookAt(threeObj);
-				attrs.forEach(function(attr) {
-					init['lookAt___' + attr] = lookAt[attr];
-					des['lookAt___' + attr] = target['lookAt'][attr];
-				});		
-			}
-	
-			var tween;
-			var tKeys = ['easing', 'onUpdate', 'onComplete'];
-	
-			tweenObj = tweenObj || {};
-			tween = new TWEEN.Tween(init)
-			tween.to(des, dur)
-				.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
-				.onUpdate(function() {
-					var current = this;
-					var lookAt = {};
-					var k;
-					var a;
-					for (var key in current) {
-						if (key.indexOf('___') > 0) {
-							k = key.split('___')[0];
-							a = key.split('___')[1];
-							if (k === 'lookAt') {
-								lookAt.a = current[key];
-							} else {
-								threeObj[k][a] = current[key];
-							}
-						}
-					}
-					if (lookAt.x) {
-						threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
-					}
-					tweenObj.onUpdate && tweenObj.onUpdate();
-				})
-				.onComplete(function() {
-					that.removeTween(tween);
-					tweenObj.onComplete && tweenObj.onComplete();
-				});
-	
-			this.tweens.push(tween);
-			return tween;
-		}
-	
-		this.addTween3 = function(THREEObject, to, dur) {
-	
-		}
-	
-	
-		this.removeTween = function(tween) {
-			if (!tween) {
-				// remove all
-				this.tween = [];
-				return;
-			}
-	
-			var index = this.tweens.indexOf(tween);
-	
-			//tween.stop();
-			if (index !== -1) {
-				this.tweens.splice(index, 1);
-			}
-		}
-	
-		// stop 暂停时间
-		this.stop = function() {
-			this.isStop = true;
-			this.tweens.forEach(function(tween) {
-				tween.stop();
-			});
-		}
-	
-		this.start = function() {
-			this.isStop = false;
-			this.tweens.forEach(function(tween) {
-				tween.start();
-			});
-		}
-	});
-	
-	module.exports = TimeBody;
-	
-	
-	
-	
-	
-	
-	
-	
-
-
-/***/ },
-/* 10 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(12);
-	var Welcome = Stage.extend(function() {
-		this.name = 'welcome';
-		this.isInit = false;
-	
-	
-		var that = this;
-		var logoUrl = __webpack_require__(13);
-		var particleDatas = [];
-		var cloud;
-		var _camera;
-		var baseCrood = new THREE.Vector3(0, 0, 0);
-	
-		this.constructor = function() {
-			this.super();
-			_camera = M3.camera;
-		}
-	
-		this.load = function() {
-			return new Promise(function(resolve, reject) {
-				var img = new Image();
-				img.src = logoUrl;
-				img.onload = function() {
-					particleDatas = getParticlesData(img);
-					createParticle();
-					resolve();
-				}			
-			});
-		}
-	
-		this.init = function(onSuccess) { 
-			this.load().then(function() {
-				this.isInit = true;
-	
-				_camera.position.copy(baseCrood).z += 250;
-	
-				onSuccess();
-			}.bind(this)).catch(function(e) {
-				console.log(e.stack);
-			});
-		}
-	
-		this.inactivate = function() {
-			//this.removeTick(renderTick); // 移除renderTick 
-		}
-	
-		this.resize = function() {
-	
-			_camera.aspect = window.innerWidth / window.innerHeight;
-	        _camera.updateProjectionMatrix();
-	
-			_camera.lookAt(baseCrood);
-		}
-	
-		this.entry = function() { 
-			return new Promise(function(resolve, reject) {
-				var timePass = 0;
-				var aniDatas = $.extend(true, [], particleDatas);
-				var aniDoneNum = 0;
-	
-				// console.log(aniDatas);
-				var aniTick = that.addTick(function(detal) {
-	
-					timePass += detal;
-					aniDoneNum = 0;
-	
-					aniDatas.forEach(function(aniData, i) {
-						if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
-						aniData.percent = (timePass - aniData.delay) / aniData.dur;
-						aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
-	
-						aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
-	
-						aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
-	
-						aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
-						aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
-						aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
-	
-						cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
-	
-					});
-	
-					cloud.geometry.verticesNeedUpdate = true;
-	
-					if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
-						resolve();
-					}
-	
-					cloud.rotation.x += 0.0001;
-					cloud.rotation.y += 0.0001;
-					cloud.rotation.z += 0.0001;
-					if (aniDoneNum/aniDatas.length > 0.99) {
-						//that.removeTick(aniTick);
-					}
-				});			
-			});
-	
-		}
-	
-		function getParticlesData(img) {
-			var particleDatas = [];
-			var width = img.width;
-			var height = img.height;
-	
-			// 从canvas 读取颜色信息，创建粒子
-			var cvs = document.createElement('canvas');
-			cvs.width = width;
-			cvs.height = height;
-			var ctx = cvs.getContext('2d');
-	
-			ctx.drawImage(img, 0, 0);	
-	
-			var pixs = ctx.getImageData(0, 0, width, height).data;
-	
-			for (var i = 0; i < pixs.length; i += 4) {
-			    var r = pixs[i],
-			        g = pixs[i + 1],
-			        b = pixs[i + 2],
-			        a = pixs[i + 3];
-	
-			    if (b > 50) {
-			        var x = (i % (4 * width)) / 4 - width/2;
-			        var y = -(parseInt(i / (4 * width)) - height/2);
-	
-			        particleDatas.push({
-			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
-			        	//'color': '#abcdef',
-			        	'size': {'x': x, 'y': y}
-			        });
-			    }
-			}
-	
-			// 动画相关设置
-			var circleNum = 4;
-			var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
-			var radiusV = 50; // 每旋转一圈半径增长长度
-	
-			particleDatas.forEach(function(particleData, i) {
-	
-				particleData.radiusV = radiusV;
-				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
-				particleData.percent = 0;
-				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
-				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
-				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
-	
-				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
-				particleData.currentAngle = particleData.initAngle;
-				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
-				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
-	
-			});
-	
-			return particleDatas;
-		}
-	
-		function createParticle() {
-	
-	        var geom = new THREE.Geometry();
-	        var material = new THREE.PointCloudMaterial({
-	            size: 1,
-	            transparent: true,
-	            opacity: 0.6,
-	            vertexColors: true,
-	
-	            sizeAttenuation: true,
-	            color: 0xffffff
-	        });
-	
-			particleDatas.forEach(function(particleData) {
-	
-				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
-				geom.vertices.push(particle);
-	
-				var color = new THREE.Color(particleData.color);
-				geom.colors.push(color);
-			});
-	
-	        cloud = new THREE.PointCloud(geom, material);
-	        cloud.name = "particles";
-	        M3.scene.add(cloud);
-		}
-	});
-	
-	module.exports = Welcome;
-	
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(11)))
-
-/***/ },
-/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -52975,10 +52482,559 @@
 
 
 /***/ },
+/* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Time = __webpack_require__(10);
+	
+	var View = Time.extend(function() {
+	    this.active = false;
+	    this.stages = []; // 3d 对象
+	    this.viewManager;
+	
+	    this.constructor = function(viewManager) {
+	        this.super();
+	        this.viewManager = viewManager;
+	    }
+	
+	    // 激活视图，data 为接受的参数
+	    this.activate = function(data) {
+	
+	    }
+	
+	    // 冻结视图，data 为接受的参数
+	    this.inactivate = function(data) {}
+	
+	    this.addStage = function(stage) {
+	
+	    }
+	
+	    // 窗口大小变化的操作
+	    this.resize = function() {}
+	
+	    this.distroy = function() {
+	        this.super.distroy();
+	        this.viewManager.removeView(this);
+	    }
+	
+	});
+	
+	module.exports = View;
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	
+	/* 时间 */
+	var TIME = {
+	
+		// 所有时间body对象
+		bodys : []
+	}
+	
+	;(function() {
+	
+	stop = false;
+	TIME.addBody = function(timeBody) {
+		this.bodys.push(timeBody);
+	}
+	
+	TIME.removeBody = function(timeBody) {
+		var index = this.bodys.indexOf(timeBody);
+	
+		if (index !== -1) {
+			this.bodys.splice(index, 1);
+		}
+	}
+	
+	TIME.tick = function() {
+		TIME.handleFrame();
+	
+		if (!stop) {
+			requestAnimationFrame(TIME.tick);
+			//setTimeout(TIME.tick, 20);
+		}
+	}
+	
+	TIME.start = function() {
+		stop = false;
+		this.tick();
+	}
+	
+	TIME.stop = function() {
+		stop = true;
+	}
+	
+	TIME.handleFrame = (function() { 
+		var now = (new Date()).getTime();
+		var last = now;
+		var detal;
+		return (function() { 
+	
+			detal = now - last;
+			detal = detal > 500 ? 30 : (detal < 16? 16 : detal);
+	
+			//console.log(TIME.bodys);
+			TIME.bodys.forEach(function(body) {
+				if (!body.isStop) {
+					body.ticks.forEach(function(tick) {
+						tick.fn && tick.fn(detal); 
+					});
+				}
+			});
+	
+			TWEEN.update();
+		});	
+	})();
+	
+	})();
+	
+	TIME.tick();
+	
+	
+	/* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
+	var TimeBody = Class.extend(function TimeBody() {
+		var that = this;
+	
+		this.ticks = [];
+		this.tweens = [];
+		this.isStop = false;
+	
+		this.constructor = function() {
+			TIME.addBody(this);
+		}
+	
+		/**
+		 * 该物体灭亡
+		 */
+		this.destory = function() {
+			TIME.removeBody(this);
+		}
+	
+		/** 
+		 * 帧更新
+		 * @param timegap 与上一帧的时间间隔
+		 */
+		this.addTick = function(fn) {
+			var tick = {'fn': fn};
+	
+			tick.isStop = false;
+			this.ticks.push(tick);
+			return tick;
+		}
+	
+		this.removeTick = function(tick) {
+			if (!tick) {
+				// remove all
+				this.ticks = [];
+				return;
+			}
+	
+			var index = this.ticks.indexOf(tick);
+	
+			if (index !== -1) {
+				this.ticks.splice(index, 1);
+			}
+		}
+	
+		/** 
+		 * tween
+		 */
+		this.addTween = function(tween) {
+			this.tweens.push(tween);
+		}
+	
+		/*
+		 * tweenObj
+		 */
+		this.addTHREEObjTween = function(threeObj, target, dur, tweenObj) {		
+			var that = this;
+			var init = {};
+			var des = {};
+	
+	        var keys = ['position', 'rotation', 'scale'];
+	        var attrs = ['x', 'y', 'z'];
+			var des = [];
+	
+			keys.forEach(function(key) {
+				if (target[key]) {
+					attrs.forEach(function(attr) {
+						init[key + '___' + attr] = threeObj[key][attr];
+						des[key + '___' + attr] = target[key][attr];
+					});			
+				}
+			});
+			if (target.lookAt) {
+				var lookAt = THREEUtil.getLookAt(threeObj);
+				attrs.forEach(function(attr) {
+					init['lookAt___' + attr] = lookAt[attr];
+					des['lookAt___' + attr] = target['lookAt'][attr];
+				});		
+			}
+	
+			var tween;
+			var tKeys = ['easing', 'onUpdate', 'onComplete'];
+	
+			tweenObj = tweenObj || {};
+			tween = new TWEEN.Tween(init)
+			tween.to(des, dur)
+				.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
+				.onUpdate(function() {
+					var current = this;
+					var lookAt = {};
+					var k;
+					var a;
+					for (var key in current) {
+						if (key.indexOf('___') > 0) {
+							k = key.split('___')[0];
+							a = key.split('___')[1];
+							if (k === 'lookAt') {
+								lookAt.a = current[key];
+							} else {
+								threeObj[k][a] = current[key];
+							}
+						}
+					}
+					if (lookAt.x) {
+						threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
+					}
+					tweenObj.onUpdate && tweenObj.onUpdate();
+				})
+				.onComplete(function() {
+					that.removeTween(tween);
+					tweenObj.onComplete && tweenObj.onComplete();
+				});
+	
+			this.tweens.push(tween);
+			return tween;
+		}
+	
+		this.addTween3 = function(THREEObject, to, dur) {
+	
+		}
+	
+	
+		this.removeTween = function(tween) {
+			if (!tween) {
+				// remove all
+				this.tween = [];
+				return;
+			}
+	
+			var index = this.tweens.indexOf(tween);
+	
+			//tween.stop();
+			if (index !== -1) {
+				this.tweens.splice(index, 1);
+			}
+		}
+	
+		// stop 暂停时间
+		this.stop = function() {
+			this.isStop = true;
+			this.tweens.forEach(function(tween) {
+				tween.stop();
+			});
+		}
+	
+		this.start = function() {
+			this.isStop = false;
+			this.tweens.forEach(function(tween) {
+				tween.start();
+			});
+		}
+	});
+	
+	module.exports = TimeBody;
+	
+	
+	
+	
+	
+	
+	
+	
+
+
+/***/ },
+/* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var View = __webpack_require__(9);
+	
+	
+	
+	var IndexView = View.extend(function() {
+		var _welcomeStage;
+		this.stages;
+	
+		this.constructor = function() {
+			this.super();
+			var WelcomeStage = __webpack_require__(12);
+			_welcomeStage = new WelcomeStage();
+			this.stages.push(_welcomeStage);
+		}
+	
+		this.activate = function() { 
+			// stage init
+			if (!_welcomeStage.isInit) {
+				_welcomeStage.init(this.activate.bind(this));
+				return;
+			}
+	
+			// welcome animation
+			_welcomeStage.entry().then(function() {
+				// welcome animation over
+			}).catch(function(e) { console.log(e.stack);});
+		}
+	
+		this.inactivate = function() {
+	
+		}
+	
+	});
+	
+	module.exports = IndexView;
+
+/***/ },
 /* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Time = __webpack_require__(9);
+	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(13);
+	var Welcome = Stage.extend(function() {
+		this.name = 'welcome';
+		this.isInit = false;
+	
+	
+		var that = this;
+		var logoUrl = __webpack_require__(14);
+		var particleDatas = [];
+		var cloud;
+		var _camera;
+		var baseCrood = new THREE.Vector3(0, 0, 0);
+	
+		this.constructor = function() {
+			this.super();
+			_camera = M3.camera;
+		}
+	
+		this.load = function() {
+			return new Promise(function(resolve, reject) {
+				var img = new Image();
+				img.src = logoUrl;
+				img.onload = function() {
+					particleDatas = getParticlesData(img);
+					createParticle();
+					resolve();
+				}			
+			});
+		}
+	
+		this.init = function(onSuccess) { 
+			this.load().then(function() {
+				this.isInit = true;
+	
+				_camera.position.copy(baseCrood).z += 250;
+	
+				onSuccess();
+			}.bind(this)).catch(function(e) {
+				console.log(e.stack);
+			});
+		}
+	
+		this.inactivate = function() {
+			//this.removeTick(renderTick); // 移除renderTick 
+		}
+	
+		this.resize = function() {
+	
+			_camera.aspect = window.innerWidth / window.innerHeight;
+	        _camera.updateProjectionMatrix();
+	
+			_camera.lookAt(baseCrood);
+		}
+	
+		this.entry = function() { 
+			return new Promise(function(resolve, reject) {
+				var timePass = 0;
+				var aniDatas = $.extend(true, [], particleDatas);
+				var aniDoneNum = 0;
+	
+				// console.log(aniDatas);
+				var aniTick = that.addTick(function(detal) {
+	
+					timePass += detal;
+					aniDoneNum = 0;
+	
+					aniDatas.forEach(function(aniData, i) {
+						if (timePass < aniData.delay || aniData.percent === 1) { if (aniData.percent === 1) aniDoneNum++; return; };
+						aniData.percent = (timePass - aniData.delay) / aniData.dur;
+						aniData.percent = aniData.percent > 1 ? 1 : aniData.percent;
+	
+						aniData.currentAngle = easing.easeInOutCubic(timePass - aniData.delay, aniData.initAngle, aniData.finalAngle, aniData.dur);
+	
+						aniData.currentRadius = Math.abs((aniData.currentAngle - aniData.initAngle) / (Math.PI * 2)) * aniData.radiusV + aniData.initRadius;
+	
+						aniData.size.y = aniData.currentRadius * Math.cos(aniData.angleY);
+						aniData.size.x = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.cos(aniData.currentAngle);
+						aniData.size.z = aniData.currentRadius * Math.abs(Math.sin(aniData.angleY)) * Math.sin(aniData.currentAngle);
+	
+						cloud.geometry.vertices[i].set(aniData.size.x, aniData.size.y, aniData.size.z)
+	
+					});
+	
+					cloud.geometry.verticesNeedUpdate = true;
+	
+					if (aniDoneNum/aniDatas.length > 0.6 || timePass > 5000) {
+						resolve();
+					}
+	
+					cloud.rotation.x += 0.0001;
+					cloud.rotation.y += 0.0001;
+					cloud.rotation.z += 0.0001;
+					if (aniDoneNum/aniDatas.length > 0.99) {
+						//that.removeTick(aniTick);
+					}
+				});			
+			});
+	
+		}
+	
+		function getParticlesData(img) {
+			var particleDatas = [];
+			var width = img.width;
+			var height = img.height;
+	
+			// 从canvas 读取颜色信息，创建粒子
+			var cvs = document.createElement('canvas');
+			cvs.width = width;
+			cvs.height = height;
+			var ctx = cvs.getContext('2d');
+	
+			ctx.drawImage(img, 0, 0);	
+	
+			var pixs = ctx.getImageData(0, 0, width, height).data;
+	
+			for (var i = 0; i < pixs.length; i += 4) {
+			    var r = pixs[i],
+			        g = pixs[i + 1],
+			        b = pixs[i + 2],
+			        a = pixs[i + 3];
+	
+			    if (b > 50) {
+			        var x = (i % (4 * width)) / 4 - width/2;
+			        var y = -(parseInt(i / (4 * width)) - height/2);
+	
+			        particleDatas.push({
+			        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
+			        	//'color': '#abcdef',
+			        	'size': {'x': x, 'y': y}
+			        });
+			    }
+			}
+	
+			// 动画相关设置
+			var circleNum = 4;
+			var angleV = Math.PI * 2 / 3000; // 每秒转一圈, 转速
+			var radiusV = 50; // 每旋转一圈半径增长长度
+	
+			particleDatas.forEach(function(particleData, i) {
+	
+				particleData.radiusV = radiusV;
+				particleData.angleV = angleV * (0.8 + Math.random() * 0.4);
+				particleData.percent = 0;
+				particleData.delay = 2000 + (particleData.size.x * particleData.size.y) / 1;
+				particleData.initRadius = Math.sqrt(particleData.size.x * particleData.size.x + particleData.size.y * particleData.size.y);
+				particleData.angleY = Math.acos(particleData.size.y * Math.random()/particleData.initRadius); // 与 Y 轴夹角
+	
+				particleData.initAngle = particleData.size.x < 0 ? Math.PI : 0;
+				particleData.currentAngle = particleData.initAngle;
+				particleData.finalAngle = (circleNum + Math.random()) * Math.PI * 2// * (Math.random() > 0.5 ? 1 : -1);
+				particleData.dur = (particleData.finalAngle - particleData.initAngle) / particleData.angleV;
+	
+			});
+	
+			return particleDatas;
+		}
+	
+		function createParticle() {
+	
+	        var geom = new THREE.Geometry();
+	        var material = new THREE.PointCloudMaterial({
+	            size: 1,
+	            transparent: true,
+	            opacity: 0.6,
+	            vertexColors: true,
+	
+	            sizeAttenuation: true,
+	            color: 0xffffff
+	        });
+	
+			particleDatas.forEach(function(particleData) {
+	
+				var particle = new THREE.Vector3(particleData.size.x, particleData.size.y, 0);
+				geom.vertices.push(particle);
+	
+				var color = new THREE.Color(particleData.color);
+				geom.colors.push(color);
+			});
+	
+	        cloud = new THREE.PointCloud(geom, material);
+	        cloud.name = "particles";
+	        M3.scene.add(cloud);
+		}
+	});
+	
+	module.exports = Welcome;
+	
+	
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	var Time = __webpack_require__(10);
 	
 	var Stage = Time.extend(function() {
 		this.objects = {};
@@ -53025,16 +53081,16 @@
 	module.exports = Stage;
 
 /***/ },
-/* 13 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/logo.png";
 
 /***/ },
-/* 14 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG, THREE) {var View = __webpack_require__(8);
+	/* WEBPACK VAR INJECTION */(function($, CONFIG, THREE) {var View = __webpack_require__(9);
 	
 	var ProductsPreview = View.extend(function() {
 		this.name = 'product-preview';
@@ -53222,10 +53278,10 @@
 	module.exports = ProductsPreview;
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(15), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(16), __webpack_require__(1)))
 
 /***/ },
-/* 15 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
@@ -53268,15 +53324,15 @@
 	
 	module.exports = CONFIG;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
 
 /***/ },
-/* 16 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(8);
-	var DisplayContainerStage = __webpack_require__(17);
-	var MobileStage = __webpack_require__(18);
+	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(9);
+	var DisplayContainerStage = __webpack_require__(18);
+	var MobileStage = __webpack_require__(19);
 	
 	var Display = View.extend(function() {
 		var that = this;
@@ -53328,7 +53384,6 @@
 					}
 				}.bind(this));
 	
-	
 				if (!isLoad.bind(this)(this.activate.bind(this))) return;	
 			}
 	
@@ -53347,11 +53402,14 @@
 						// todo entry animate done
 					}
 				});
+				that.stages.push(mobileStage);
 			});
 			createWindowUI();resizeWindows();
 	
 			// UI
 			_$domWrap.removeClass('none');
+			this.stages.push(_containerStage);
+	
 			this.active = true;
 		}
 	
@@ -53366,11 +53424,12 @@
 			this.activeWindows.length = 0;
 	
 			_containerStage.leave();
+			this.stages = [];
 			this.active = false;
 		}
 	
 		this.resize = function() {
-			//resetWindow();
+			resizeWindows();
 		}
 	
 		function init() {
@@ -53491,9 +53550,7 @@
 			var colorTemplate = '<i class="color @color" data-color="@color"></i>';
 			var colorHTML = '';
 	
-	
 			_$windowWrap.html('');
-	
 			_currentWindowDoms = [];
 			_currentMobileStages.forEach(function(mobileStage, i) {
 				if (!_windowDoms[i]) {
@@ -53546,7 +53603,7 @@
 			});
 	
 			_currentWindowDoms.forEach(function($windowDom, i) { 
-				$windowDom.animate(sizePos[i], 1500); 
+				$windowDom.animate(sizePos[i], 1000); 
 			});
 		}
 	
@@ -53576,13 +53633,13 @@
 	module.exports = Display;
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
-/* 17 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(12);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
 	
 	var DisplayContainer = Stage.extend(function() {
 		this.isInit = false;
@@ -53730,12 +53787,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(12);
-	var Mobile = __webpack_require__(19);
-	var TrackballControls = __webpack_require__(21);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
+	var Mobile = __webpack_require__(20);
+	var TrackballControls = __webpack_require__(22);
 	
 	
 	var DisplayMobile = Stage.extend(function() {
@@ -53846,7 +53903,7 @@
 		}
 	
 		// 窗口重置
-		this.resize = function() {  
+		this.resize = function() {
 			var winWidth = window.innerWidth;
 			var winHeight = window.innerHeight;
 	
@@ -53869,7 +53926,7 @@
 			var finalSize = windowSize;
 	
 			that.setState('animate');
-			var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
+			var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1000).onUpdate(function() {
 				_windowSize = this;
 				that.resize();
 			}).onComplete(function() {
@@ -53925,7 +53982,7 @@
 	
 			this.trackball.enabled = true;
 			this.trackball.fullScreen = false;
-			reset();
+			this.reset();
 		}
 	
 		this.getColors = function() {
@@ -54028,15 +54085,14 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {var Time = __webpack_require__(9);
-	var Loader = __webpack_require__(20);
+	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {var Time = __webpack_require__(10);
+	var Loader = __webpack_require__(21);
 	var loader = new Loader();
 	var mobileEnvMap;
 	
-	var JSONLoader = new THREE.JSONLoader();
 	
 	
 	var Mobile = Time.extend(function() {
@@ -54051,6 +54107,8 @@
 		var _colors = [];
 		var _currentColor;
 		var _uuidMaterialNameMap = {};
+		var _texturePath = './assets/texture/';
+		var JSONLoader = new THREE.JSONLoader();
 	
 		this.constructor = function(mobileName) { 
 			this.super();
@@ -54091,53 +54149,53 @@
 			var loadPromise = loader.load(_modelConfigs, onProgress);
 	
 			return loadPromise.then(function(modelRes) {
-				
-				_materials = modelRes.materials;
-				for (var color in _materials) {
-					_colors.push(color);
-					_currentColor = _colors[0];
-					_materials[color] = JSONLoader.parse(JSON.parse(_materials[color])).materials;
-				}
+				return new Promise(function(resolve) {
+					_materials = modelRes.materials;
+					for (var color in _materials) {
+						_colors.push(color);
+						_currentColor = _colors[0];
+						_materials[color] = JSONLoaderParse(_materials[color]).materials;
+					}
 	
-				modelRes.models.forEach(function(modelJson) {
-					var mParse = JSONLoader.parse(JSON.parse(modelJson));
-					var geometry = mParse.geometry;
-					var material = mParse.materials[0];
-					var model;
+					modelRes.models.forEach(function(modelJson) {
+						var mParse = JSONLoaderParse(modelJson);
+						var geometry = mParse.geometry;
+						var material = mParse.materials[0];
+						var model;
 	
-					material.side = THREE.DoubleSide;
-					material.transparent = (material.opacity === 1?false:true);
-					model = new THREE.Mesh(geometry, material);
+						material.side = THREE.DoubleSide;
+						material.transparent = (material.opacity === 1?false:true);
+						model = new THREE.Mesh(geometry, material);
 	
-					// if (mParse.materials[0].name.indexOf('map') >=0) {
-					// 	// console.log(mParse.materials[0]);
-					// 	var texture = THREE.ImageUtils.loadTexture('./assets/pro5/pro5uv.png');
-					// 	var material = new THREE.MeshBasicMaterial();
-	
-					// 	material.map = texture;
-					// 	material.side = THREE.DoubleSide;
-					// 	material.map.needsUpdate = true;
-	
-					// 	model = new THREE.Mesh(mParse.geometry, material);
-					// 	//console.log(model);
-					// }
-	
-	
-					_uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
-	
-					group.add(model);
+						_uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+						group.add(model);
+					});
+					that.mesh = group;
+					resolve();
 				});
-				that.mesh = group;
-				return new Promise(function(r) { r();});
 			}).catch(function(e) { console.error(e.stack); });
+		}
+	
+		function JSONLoaderParse(json) {
+	
+			if (typeof json === 'string') {
+				json = JSON.parse(json);
+			}
+			// change path
+			json.materials.forEach(function(material) {
+				if (material.mapDiffuse) {
+					material.mapDiffuse = _texturePath + material.mapDiffuse;
+				}
+			});
+			return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
 		}
 	});
 	
 	module.exports = Mobile;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(15)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)))
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, THREE) {// 下载缓存
@@ -54305,10 +54363,10 @@
 	}
 	
 	module.exports = Loader;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
-/* 21 */
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {/**
@@ -54835,54 +54893,6 @@
 	
 	module.exports = TrackballControls;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
-/* 22 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(8);
-	
-	var ProgressView = View.extend(function() {
-		var _$progressWrap = $('#progressView');
-		var _$progressVal = $('#progressVal');
-		var _$water = $('.water');
-		var _$waterDivs = _$water.find('div');
-	
-		this.constructor = function() {
-			this.super();
-			this.setProgress(0);
-		}
-	
-		this.activate = function() { 
-			_$progressWrap.show();
-		}
-	
-		this.inactivate = function() {
-			setTimeout(function() {
-				_$progressWrap.hide();
-			}, 100);
-		}
-	
-		this.setProgress = function(percent) {
-			var initColor = [246, 11, 55];
-			var finalColor = [16, 121, 125];
-			var opacity = 0.3;
-			var currentColor;
-	
-			currentColor = finalColor.map(function(colorVal, i) {
-				return initColor[i] + (colorVal - initColor[i]) * percent|0;
-			});
-	
-			_$waterDivs.css('backgroundColor', 'rgba(' + currentColor.join(',') + ',' + opacity + ')');
-	
-			_$progressVal.html( (percent*100 | 0) + '%');
-			percent *= 0.999;
-			_$water.css('transform', 'scaleY(' + percent.toFixed(2) + ')');
-		}
-	});
-	
-	module.exports = ProgressView;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(11)))
 
 /***/ }
 /******/ ]);

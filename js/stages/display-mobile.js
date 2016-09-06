@@ -111,7 +111,7 @@ var DisplayMobile = Stage.extend(function() {
 	}
 
 	// 窗口重置
-	this.resize = function() {  
+	this.resize = function() {
 		var winWidth = window.innerWidth;
 		var winHeight = window.innerHeight;
 
@@ -134,7 +134,7 @@ var DisplayMobile = Stage.extend(function() {
 		var finalSize = windowSize;
 
 		that.setState('animate');
-		var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1500).onUpdate(function() {
+		var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1000).onUpdate(function() {
 			_windowSize = this;
 			that.resize();
 		}).onComplete(function() {
@@ -190,7 +190,7 @@ var DisplayMobile = Stage.extend(function() {
 
 		this.trackball.enabled = true;
 		this.trackball.fullScreen = false;
-		reset();
+		this.reset();
 	}
 
 	this.getColors = function() {

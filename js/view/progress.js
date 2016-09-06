@@ -18,7 +18,7 @@ var ProgressView = View.extend(function() {
 	this.inactivate = function() {
 		setTimeout(function() {
 			_$progressWrap.hide();
-		}, 100);
+		}, 1000);
 	}
 
 	this.setProgress = function(percent) {

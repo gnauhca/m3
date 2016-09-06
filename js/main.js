@@ -33,9 +33,15 @@ M3.tick = m3Time.addTick(function() {
 	M3.renderer.render(M3.scene, M3.camera);
 });
 
+window.addEventListener('resize', function() {
+	winWidth = window.innerWidth;
+	winHeight = window.innerHeight;
+
+	M3.renderer.setSize(winWidth, winHeight);
+});
 
 // M3.viewManager.activateView('index');
-M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5'/*, 'mx6'*/]});
+M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
 
 })();
 
