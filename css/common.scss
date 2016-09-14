@@ -58,6 +58,7 @@ body {
 // progress
 $box-width : 100px;
 .progress {
+    display: none;
     position: absolute;
     z-index: 100000;
     top: 0;

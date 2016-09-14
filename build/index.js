@@ -87,7 +87,8 @@
 	});
 	
 	// M3.viewManager.activateView('index');
-	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
+	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
+	M3.viewManager.activateView('select');
 	
 	})();
 	
@@ -42007,7 +42008,7 @@
 	
 	
 	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n.progress {\n  position: absolute;\n  z-index: 100000;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, 0.99);\n  perspective: 1200px; }\n  .progress .water-box-wrap {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 100px;\n    height: 100px;\n    margin-left: -50px;\n    margin-top: -50px;\n    transform-style: preserve-3d;\n    animation: waterbox 8s infinite alternate; }\n  .progress .box {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-style: preserve-3d; }\n    .progress .box div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(255, 255, 255, 0.4);\n      outline: 1px solid #9cc2c4; }\n      .progress .box div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .box div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .box div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .box div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n  .progress .water {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-origin: center bottom;\n    transition: transform linear 0.2s;\n    transform-style: preserve-3d; }\n    .progress .water div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(16, 121, 155, 0.3);\n      text-align: center; }\n      .progress .water div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .water div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .water div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .water div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n      .progress .water div span {\n        line-height: 100px;\n        font-size: 20px;\n        color: #eee;\n        transform: translate3d(0, 0, -2px); }\n      .progress .water div:nth-child(1) {\n        background-color: rgba(16, 121, 155, 0.3); }\n\n@keyframes waterbox {\n  0% {\n    transform: rotateY(40deg) rotateX(-20deg); }\n  100% {\n    transform: rotateY(-40deg) rotateX(-60deg); } }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
+	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n.progress {\n  display: none;\n  position: absolute;\n  z-index: 100000;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, 0.99);\n  perspective: 1200px; }\n  .progress .water-box-wrap {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 100px;\n    height: 100px;\n    margin-left: -50px;\n    margin-top: -50px;\n    transform-style: preserve-3d;\n    animation: waterbox 8s infinite alternate; }\n  .progress .box {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-style: preserve-3d; }\n    .progress .box div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(255, 255, 255, 0.4);\n      outline: 1px solid #9cc2c4; }\n      .progress .box div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .box div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .box div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .box div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n  .progress .water {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-origin: center bottom;\n    transition: transform linear 0.2s;\n    transform-style: preserve-3d; }\n    .progress .water div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(16, 121, 155, 0.3);\n      text-align: center; }\n      .progress .water div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .water div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .water div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .water div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n      .progress .water div span {\n        line-height: 100px;\n        font-size: 20px;\n        color: #eee;\n        transform: translate3d(0, 0, -2px); }\n      .progress .water div:nth-child(1) {\n        background-color: rgba(16, 121, 155, 0.3); }\n\n@keyframes waterbox {\n  0% {\n    transform: rotateY(40deg) rotateX(-20deg); }\n  100% {\n    transform: rotateY(-40deg) rotateX(-60deg); } }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
 	
 	// exports
 
@@ -53044,8 +53045,10 @@
 	
 		this.constructor = function() {
 			this.super();
-			this.scene = M3.scene;
+	
 			// 如果不使用默认的 M3 scene 重写constructor 设置新的scene
+			this.scene = M3.scene;
+			this.camera = M3.camera;
 		}
 	
 		// 加载，接受 进度回调， 成功回调
@@ -53090,241 +53093,173 @@
 /* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, CONFIG, THREE) {var View = __webpack_require__(9);
+	var View = __webpack_require__(9);
 	
-	var ProductsPreview = View.extend(function() {
-		this.name = 'product-preview';
-	
-		var that = this;
-		var $domWrap;
-	
-		var gridNumHor;
-		var gridNumVer;
-		var gridWidthPercent;
-		var gridHeightPercent;
-	
-		var productDatas = [];
-		var productSelected = [];
-		var itemElems = [];
-	
-		var maxSelect = 4; // 最多选择个数
+	var SelectView = View.extend(function() {
+		var _selectStage;
+		this.stages;
 	
 		this.constructor = function() {
 			this.super();
-			this.init();
+			var WelcomeStage = __webpack_require__(16);
+			_selectStage = new WelcomeStage();
+			this.stages.push(_selectStage);
 		}
 	
-		this.init = function() {
-			productDatas = $.extend(true, [], CONFIG.products);
-			$domWrap = $('#listView');
-			//create();
-			initEvent();
-		}
+		this.activate = function() { 
+			// stage init
+			if (!_selectStage.isInit) {
+				_selectStage.init();
+			}
 	
-		this.activate = function() {
-			this.active = true;
-			productSelected.length = 0;
-			$domWrap.show().find('.list-wrap').html('');
-			create();
-			$domWrap.removeClass('inactive active choosed')
-			setTimeout(function() {
-				$domWrap.addClass('active');
-			}, 50);
+			// select animation
+			_selectStage.entry().then(function() {
+				// select animation over
+			}).catch(function(e) { console.log(e.stack);});
 		}
 	
 		this.inactivate = function() {
-			this.active = false;
-			$domWrap.addClass('inactive');
-			setTimeout(function() {$domWrap.hide();}, 1000);
+	
 		}
 	
-		// 重置大小，位置
-		this.resize = function() {
-			var winWidth = window.innerWidth;
-			var winHeight = window.innerHeight;
-	
-			var gridWidth = 300;
-			var gridHeight = 300;
-	
-			gridNumHor = Math.round(winWidth/gridWidth);
-			gridNumVer = Math.round(winHeight/gridHeight);
-	
-			gridWidthPercent = 100 / (gridNumHor === 0 ? 1 : gridNumHor);
-		 	gridHeightPercent = 100 / (gridNumVer === 0 ? 1 : gridNumVer);
-	
-	
-			var left;
-			var top;
-		 	if (itemElems.length) {
-		 		var max = Math.max(productDatas.length, gridNumHor * gridNumVer);
-	
-		 		for (var i = 0; i < max; i++) {
-			 		left = (i % gridNumHor) * gridWidthPercent;
-			 		top = Math.floor(i / gridNumHor) * gridHeightPercent;
-	
-			 		if (!itemElems[i]) {
-			 			itemElems[i] = $('<li data-preview-index="' + i + '"><div></div></li>')[0];
-			 			$domWrap.find('ul').append(itemElems[i]);
-			 		}
-	
-		 			$(itemElems[i]).css({
-		 				left: left + '%',
-		 				top: top + '%',
-		 				width: gridWidthPercent + '%',
-		 				height: gridHeightPercent + '%'
-		 			});
-		 		}
-		 		itemElems.length = max;
-		 		$domWrap.find('.list-wrap li:gt(' + (max - 1) + ')').remove();
-		 	}
-		}
-	
-		this.getSelected = function() {
-		}
-	
-		function create() {
-			var htmlStr = '';
-	
-		 	productDatas.forEach(function(productData, i) {
-		 		htmlStr += '<li data-preview-index="' + i + '"><div><img src="' + productData.previewImg + '" alt=""></div></li>'
-		 	});	
-		 	htmlStr = htmlStr;
-		 	$domWrap.find('.list-wrap').html(htmlStr);
-	
-		 	itemElems = [];
-		 	Array.prototype.push.apply(itemElems,$domWrap.find('li'));
-		 	that.resize();
-		}
-	
-		function initEvent() {
-			function selectProducts(indexes) {
-				var $li = $domWrap.find('.list-wrap li');
-				$li.removeClass('selected');
-	
-				if (indexes)
-				indexes.forEach(function(index) {
-					$li.eq(index).addClass('selected');
-				});
-	
-				if (indexes && indexes.length) {
-					$domWrap.addClass('show-control');
-				} else {
-					$domWrap.removeClass('show-control');
-				}
-			}
-	
-			$domWrap.on('click', 'li:lt(' + productDatas.length + ')', function() {
-				var previewIndex = $(this).data('previewIndex');
-	
-				var productData = productDatas[previewIndex];
-	
-				if (productSelected.indexOf(productData) < 0) {
-					productSelected.push(productData);
-					if (productSelected.length > maxSelect) {
-						productSelected.shift();
-					}
-				} else {
-					productSelected = productSelected.filter(function(product) {
-						return product !== productData;
-					});
-				}
-	
-				selectProducts(productSelected.map(function(product) {
-					return productDatas.indexOf(product);
-				}));
-			});
-	
-			$domWrap.on('click', '#clear', function() {
-				productSelected.length = 0;
-				selectProducts();
-			});
-			$domWrap.on('click', '#go', function() {
-				goDisplay();
-			});
-		}
-	
-		function goDisplay() {
-			$domWrap.removeClass('show-control').addClass('choosed');
-			var $li = $domWrap.find('.list-wrap li');
-			var selectedPos = calculateSubWindowSize(productSelected.length);
-			var selectedPosCSSes = $.extend(true, [], selectedPos);
-			var index = 0;
-	
-			selectedPosCSSes.forEach(function(selectedPosCSS) {
-				for (var key in selectedPosCSS) {
-					selectedPosCSS[key] = selectedPosCSS[key] * 100 + '%';
-				}			
-			});
-	
-			console.log(selectedPosCSSes);
-	
-			productDatas.forEach(function(product, i) {
-				if (index > productSelected.length - 1) return false;
-				if (productSelected.indexOf(product) != -1) {
-					console.log(selectedPosCSSes[index]);
-					$li.eq(i).css(selectedPosCSSes[index]);
-				    index++;			
-				}
-			});
-	
-			setTimeout(function() {
-				that.inactivate();
-				that.inactivateView('welcome');
-				that.activateView('display-manager', {'productDatas': productSelected, 'cameraPos': new THREE.Vector3(0,0,0)});
-			}, 1000);
-		}
 	});
 	
-	module.exports = ProductsPreview;
-	
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(16), __webpack_require__(1)))
+	module.exports = SelectView;
 
 /***/ },
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
 	
-	// test 
-	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
-	var _products = [];
+	var SelectCube = Stage.extend(function() {
+		this.isInit = false;
+		this.objects;
 	
+		var _BASECROOD = new THREE.Vector3(0, 0, 0);
+		var _CAMERACROOD = new THREE.Vector3(200, 100, 200);
 	
+		var _CUBESIZE = 30; // 立方体大小
+		var _CUBEXCOUNT = 10; // 横向个数
+		var _CUBEZCOUNT = 10; // 纵向 Z(向) 个数
+		var _MINHEIGHT = 5; // 最小高度
+		var _MAXHEIGHT = 100; // 最大高度
 	
-	var mobile = {
-		'name': 'pro5',
-		'models': [
-			{url: './assets/pro5/metal.json', size: 200},
-			{url: './assets/pro5/metal_reflect.json', size: 200},
-			{url: './assets/pro5/glass.json', size: 129},
-			{url: './assets/pro5/plastics.json', size: 54},
-			{url: './assets/pro5/map.json', size: 3},
-			{url: './assets/pro5/plane.json', size: 8}
-		],
+		var _cubes;
 	
-		materials: {
-			'black': {url: './assets/pro5/black.json', size: 6},
-			'red': {url: './assets/pro5/black.json', size: 6},
-		},
+		// this.objects
+		this.init = function() {
+			this.build();
+	        this.isInit = true;
+		}
 	
-		map: [
-			// {url: './assets/pro5/pro5uv.png', size: 75000},
-		]
-	};
+		this.build = function() {
 	
-	CONFIG.mobiles = [];
+			// cubes
+			_cubes = [];
 	
-	products.forEach(function(productName) {
-		var m = $.extend({}, mobile);
+			var cubeGroup = new THREE.Group();
+			var cubeMaterial;
+			var cubeGeom;
+			var cube;
 	
-		m.name = productName;
-		CONFIG.mobiles.push(m);
+			for (var i = 0; i < _CUBEXCOUNT; i++ ) {
+				var x = _BASECROOD.x - _CUBEXCOUNT / 2 + i;
+				_cubes[i] = _cubes[i] || [];
+				for (var j = 0; j < _CUBEZCOUNT; j++ ) {
+					var z = _BASECROOD.z - _CUBEZCOUNT / 2 + j;
+					_cubes[i][j] = {
+						position: {x: x, y: 0, z: z},
+						height: _MINHEIGHT + (_MAXHEIGHT - _MINHEIGHT) * Math.random(),
+						v: (100 * Math.random() | 0) / 2000, // 缩放速度
+						scale: (0.5 * Math.random() | 0) // 缩放范围
+					};
+					cubeGeom = new THREE.BoxGeometry(
+									_CUBESIZE * 0.8, 
+									_cubes[i][j].height, 
+									_CUBESIZE * 0.8
+								);
+					cubeMaterial = new THREE.MeshPhongMaterial(
+						{
+							color: 0x00b9ef,
+							transparent: true,
+							opacity: 0.95,
+							reflectivity: 1,
+							specular: 0xdddddd,
+							shininess: 90
+						}
+					);
+					cube = new THREE.Mesh(cubeGeom, cubeMaterial);
+					cube.position.set(
+						_cubes[i][j].position.x * _CUBESIZE,
+						0,
+						_cubes[i][j].position.z * _CUBESIZE
+					);
+					console.log(cube.position);
+					_cubes[i][j].cube = cube;
+					cubeGroup.add(cube);
+				}
+			}
+			this.objects.cubeGroup = cubeGroup;
+	
+			plane
+			var planeGridCount = 50;
+			var planeWidth = planeGridCount * _CUBESIZE;
+			var planeHeight = planeGridCount * _CUBESIZE;
+			var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
+			var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+			var plane = new THREE.Mesh( phaneGeom, material );
+			plane.rotation.x = Math.PI * 0.5;
+			this.objects.plane = plane;
+	
+			// light
+	        var directionalLightColor = "#ffffff";
+	        var directionalLight = new THREE.DirectionalLight(directionalLightColor);
+	        directionalLight.name = this.name + ' directionalLight';
+	        directionalLight.position.set(-100, 50, 50);
+	        directionalLight.castShadow = true;
+	        directionalLight.shadowCameraNear = 0;
+	        directionalLight.shadowCameraFar = 300;
+	        directionalLight.shadowCameraLeft = -200;
+	        directionalLight.shadowCameraRight = 200;
+	        directionalLight.shadowCameraTop = 200;
+	        directionalLight.shadowCameraBottom = -200;
+	
+	        directionalLight.distance = 0;
+	        directionalLight.intensity = 0.5;
+	        directionalLight.shadowMapHeight = 1024;
+	        directionalLight.shadowMapWidth = 1024;
+	        directionalLight.target = this.objects.sphere;
+	
+	        //this.objects.directionalLight = directionalLight;
+	 		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
+	 		this.objects.spotLight.intensity = 1;
+	 		this.objects.spotLight.position.set(-300, 200, 100);
+	 		this.objects.spotLight.lookAt(_BASECROOD); 
+	
+			_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+	
+		}
+	
+		this.entry = function() {
+			Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
+	
+			this.camera.position.copy(_CAMERACROOD);
+			this.camera.lookAt(_BASECROOD);
+	
+			return new Promise(function(resolve, reject) {
+	
+			});
+		}
+	
+		this.leave = function() {
+			// or return a promise so that can do some ani
+			this.removeTick(); 
+		}
 	});
 	
-	module.exports = CONFIG;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	module.exports = SelectCube;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
 /* 17 */
@@ -53792,7 +53727,7 @@
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
 	var Mobile = __webpack_require__(20);
-	var TrackballControls = __webpack_require__(22);
+	var TrackballControls = __webpack_require__(23);
 	
 	
 	var DisplayMobile = Stage.extend(function() {
@@ -54089,7 +54024,7 @@
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {var Time = __webpack_require__(10);
-	var Loader = __webpack_require__(21);
+	var Loader = __webpack_require__(22);
 	var loader = new Loader();
 	var mobileEnvMap;
 	
@@ -54192,10 +54127,56 @@
 	});
 	
 	module.exports = Mobile;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(16)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(21)))
 
 /***/ },
 /* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
+	
+	// test 
+	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
+	var _products = [];
+	
+	
+	
+	var mobile = {
+		'name': 'pro5',
+		'models': [
+			{url: './assets/pro5/metal.json', size: 200},
+			{url: './assets/pro5/metal_reflect.json', size: 200},
+			{url: './assets/pro5/glass.json', size: 129},
+			{url: './assets/pro5/plastics.json', size: 54},
+			{url: './assets/pro5/map.json', size: 3},
+			{url: './assets/pro5/plane.json', size: 8}
+		],
+	
+		materials: {
+			'black': {url: './assets/pro5/black.json', size: 6},
+			'red': {url: './assets/pro5/black.json', size: 6},
+		},
+	
+		map: [
+			// {url: './assets/pro5/pro5uv.png', size: 75000},
+		]
+	};
+	
+	CONFIG.mobiles = [];
+	
+	products.forEach(function(productName) {
+		var m = $.extend({}, mobile);
+	
+		m.name = productName;
+		CONFIG.mobiles.push(m);
+	});
+	
+	module.exports = CONFIG;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+/* 22 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, THREE) {// 下载缓存
@@ -54366,7 +54347,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
-/* 22 */
+/* 23 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {/**

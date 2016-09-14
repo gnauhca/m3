@@ -52,6 +52,7 @@ var Display = View.extend(function() {
 				}
 			}.bind(this));
 
+			// isload 如果检查到需要加载，会启动加载，并在加载完成之后调用回调
 			if (!isLoad.bind(this)(this.activate.bind(this))) return;	
 		}
 

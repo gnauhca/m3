@@ -5,7 +5,11 @@ var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote
 var _products = [];
 
 
+// select
+var select = {name: 'pro5', size: [0,0]};//or random whatever;
 
+
+// mobile load
 var mobile = {
 	'name': 'pro5',
 	'models': [
@@ -29,11 +33,19 @@ var mobile = {
 
 CONFIG.mobiles = [];
 
+CONFIG.selects = [];
+
 products.forEach(function(productName) {
 	var m = $.extend({}, mobile);
 
 	m.name = productName;
 	CONFIG.mobiles.push(m);
+
+	var s = $.extend({}, mobile);
+
+	s.name = productName;
+	s.size = [Math.random() * 10|0, Math.random() * 10|0]
+	CONFIG.mobiles.push(s);
 });
 
 module.exports = CONFIG;

@@ -42,17 +42,17 @@ TIME.stop = function() {
 TIME.handleFrame = (function() { 
 	var now = (new Date()).getTime();
 	var last = now;
-	var detal;
+	var delta;
 	return (function() { 
 
-		detal = now - last;
-		detal = detal > 500 ? 30 : (detal < 16? 16 : detal);
+		delta = now - last;
+		delta = delta > 500 ? 30 : (delta < 16? 16 : delta);
 
 		//console.log(TIME.bodys);
 		TIME.bodys.forEach(function(body) {
 			if (!body.isStop) {
 				body.ticks.forEach(function(tick) {
-					tick.fn && tick.fn(detal); 
+					tick.fn && tick.fn(delta); 
 				});
 			}
 		});

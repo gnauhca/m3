@@ -8,9 +8,10 @@ var Stage = Time.extend(function() {
 
 	this.constructor = function() {
 		this.super();
-		
+
 		// 如果不使用默认的 M3 scene 重写constructor 设置新的scene
 		this.scene = M3.scene;
+		this.camera = M3.camera;
 	}
 
 	// 加载，接受 进度回调， 成功回调
