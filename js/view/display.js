@@ -38,7 +38,7 @@ var Display = View.extend(function() {
 		// check self init
 		if (!this.isInit) {
 			init();
-			//_containerStage.init();
+			_containerStage.init();
 		}
 
 		if (data) {

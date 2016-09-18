@@ -82,12 +82,13 @@
 	window.addEventListener('resize', function() {
 		winWidth = window.innerWidth;
 		winHeight = window.innerHeight;
-	
+		M3.camera.aspect = winWidth / winHeight;
+		M3.camera.updateProjectionMatrix();
 		M3.renderer.setSize(winWidth, winHeight);
 	});
 	
 	// M3.viewManager.activateView('index');
-	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
+	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
 	M3.viewManager.activateView('select');
 	
 	})();
@@ -42330,7 +42331,7 @@
 	        'progress': __webpack_require__(7),
 	        'index': __webpack_require__(11),
 	        'select': __webpack_require__(15),
-	        'display': __webpack_require__(17),
+	        'display': __webpack_require__(18),
 	    };
 	
 		var _views = {};
@@ -52608,17 +52609,17 @@
 	TIME.handleFrame = (function() { 
 		var now = (new Date()).getTime();
 		var last = now;
-		var detal;
+		var delta;
 		return (function() { 
 	
-			detal = now - last;
-			detal = detal > 500 ? 30 : (detal < 16? 16 : detal);
+			delta = now - last;
+			delta = delta > 500 ? 30 : (delta < 16? 16 : delta);
 	
 			//console.log(TIME.bodys);
 			TIME.bodys.forEach(function(body) {
 				if (!body.isStop) {
 					body.ticks.forEach(function(tick) {
-						tick.fn && tick.fn(detal); 
+						tick.fn && tick.fn(delta); 
 					});
 				}
 			});
@@ -52718,7 +52719,7 @@
 			tweenObj = tweenObj || {};
 			tween = new TWEEN.Tween(init)
 			tween.to(des, dur)
-				.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
+				.easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut)
 				.onUpdate(function() {
 					var current = this;
 					var lookAt = {};
@@ -52749,11 +52750,6 @@
 			return tween;
 		}
 	
-		this.addTween3 = function(THREEObject, to, dur) {
-	
-		}
-	
-	
 		this.removeTween = function(tween) {
 			if (!tween) {
 				// remove all
@@ -52763,8 +52759,8 @@
 	
 			var index = this.tweens.indexOf(tween);
 	
-			//tween.stop();
 			if (index !== -1) {
+				//tween.stop();
 				this.tweens.splice(index, 1);
 			}
 		}
@@ -53101,8 +53097,8 @@
 	
 		this.constructor = function() {
 			this.super();
-			var WelcomeStage = __webpack_require__(16);
-			_selectStage = new WelcomeStage();
+			var SelectStage = __webpack_require__(24);
+			_selectStage = new SelectStage();
 			this.stages.push(_selectStage);
 		}
 	
@@ -53113,161 +53109,84 @@
 			}
 	
 			// select animation
-			_selectStage.entry().then(function() {
+			_selectStage.entry()/*.then(function() {
 				// select animation over
-			}).catch(function(e) { console.log(e.stack);});
+			}).catch(function(e) { console.log(e.stack);});*/
 		}
 	
 		this.inactivate = function() {
 	
 		}
-	
 	});
 	
 	module.exports = SelectView;
 
 /***/ },
-/* 16 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
-	
-	var SelectCube = Stage.extend(function() {
-		this.isInit = false;
-		this.objects;
-	
-		var _BASECROOD = new THREE.Vector3(0, 0, 0);
-		var _CAMERACROOD = new THREE.Vector3(200, 100, 200);
-	
-		var _CUBESIZE = 30; // 立方体大小
-		var _CUBEXCOUNT = 10; // 横向个数
-		var _CUBEZCOUNT = 10; // 纵向 Z(向) 个数
-		var _MINHEIGHT = 5; // 最小高度
-		var _MAXHEIGHT = 100; // 最大高度
-	
-		var _cubes;
-	
-		// this.objects
-		this.init = function() {
-			this.build();
-	        this.isInit = true;
-		}
-	
-		this.build = function() {
-	
-			// cubes
-			_cubes = [];
-	
-			var cubeGroup = new THREE.Group();
-			var cubeMaterial;
-			var cubeGeom;
-			var cube;
-	
-			for (var i = 0; i < _CUBEXCOUNT; i++ ) {
-				var x = _BASECROOD.x - _CUBEXCOUNT / 2 + i;
-				_cubes[i] = _cubes[i] || [];
-				for (var j = 0; j < _CUBEZCOUNT; j++ ) {
-					var z = _BASECROOD.z - _CUBEZCOUNT / 2 + j;
-					_cubes[i][j] = {
-						position: {x: x, y: 0, z: z},
-						height: _MINHEIGHT + (_MAXHEIGHT - _MINHEIGHT) * Math.random(),
-						v: (100 * Math.random() | 0) / 2000, // 缩放速度
-						scale: (0.5 * Math.random() | 0) // 缩放范围
-					};
-					cubeGeom = new THREE.BoxGeometry(
-									_CUBESIZE * 0.8, 
-									_cubes[i][j].height, 
-									_CUBESIZE * 0.8
-								);
-					cubeMaterial = new THREE.MeshPhongMaterial(
-						{
-							color: 0x00b9ef,
-							transparent: true,
-							opacity: 0.95,
-							reflectivity: 1,
-							specular: 0xdddddd,
-							shininess: 90
-						}
-					);
-					cube = new THREE.Mesh(cubeGeom, cubeMaterial);
-					cube.position.set(
-						_cubes[i][j].position.x * _CUBESIZE,
-						0,
-						_cubes[i][j].position.z * _CUBESIZE
-					);
-					console.log(cube.position);
-					_cubes[i][j].cube = cube;
-					cubeGroup.add(cube);
-				}
-			}
-			this.objects.cubeGroup = cubeGroup;
-	
-			plane
-			var planeGridCount = 50;
-			var planeWidth = planeGridCount * _CUBESIZE;
-			var planeHeight = planeGridCount * _CUBESIZE;
-			var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
-			var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
-			var plane = new THREE.Mesh( phaneGeom, material );
-			plane.rotation.x = Math.PI * 0.5;
-			this.objects.plane = plane;
-	
-			// light
-	        var directionalLightColor = "#ffffff";
-	        var directionalLight = new THREE.DirectionalLight(directionalLightColor);
-	        directionalLight.name = this.name + ' directionalLight';
-	        directionalLight.position.set(-100, 50, 50);
-	        directionalLight.castShadow = true;
-	        directionalLight.shadowCameraNear = 0;
-	        directionalLight.shadowCameraFar = 300;
-	        directionalLight.shadowCameraLeft = -200;
-	        directionalLight.shadowCameraRight = 200;
-	        directionalLight.shadowCameraTop = 200;
-	        directionalLight.shadowCameraBottom = -200;
-	
-	        directionalLight.distance = 0;
-	        directionalLight.intensity = 0.5;
-	        directionalLight.shadowMapHeight = 1024;
-	        directionalLight.shadowMapWidth = 1024;
-	        directionalLight.target = this.objects.sphere;
-	
-	        //this.objects.directionalLight = directionalLight;
-	 		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
-	 		this.objects.spotLight.intensity = 1;
-	 		this.objects.spotLight.position.set(-300, 200, 100);
-	 		this.objects.spotLight.lookAt(_BASECROOD); 
-	
-			_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-	
-		}
-	
-		this.entry = function() {
-			Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
-	
-			this.camera.position.copy(_CAMERACROOD);
-			this.camera.lookAt(_BASECROOD);
-	
-			return new Promise(function(resolve, reject) {
-	
-			});
-		}
-	
-		this.leave = function() {
-			// or return a promise so that can do some ani
-			this.removeTick(); 
-		}
-	});
-	
-	module.exports = SelectCube;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
-
-/***/ },
+/* 16 */,
 /* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
+	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
+	
+	// test 
+	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
+	var _products = [];
+	
+	
+	// select
+	var select = {name: 'pro5', size: [0,0]};//or random whatever;
+	
+	
+	// mobile load
+	var mobile = {
+		'name': 'pro5',
+		'models': [
+			{url: './assets/pro5/metal.json', size: 200},
+			{url: './assets/pro5/metal_reflect.json', size: 200},
+			{url: './assets/pro5/glass.json', size: 129},
+			{url: './assets/pro5/plastics.json', size: 54},
+			{url: './assets/pro5/map.json', size: 3},
+			{url: './assets/pro5/plane.json', size: 8}
+		],
+	
+		materials: {
+			'black': {url: './assets/pro5/black.json', size: 6},
+			'red': {url: './assets/pro5/black.json', size: 6},
+		},
+	
+		map: [
+			// {url: './assets/pro5/pro5uv.png', size: 75000},
+		]
+	};
+	
+	CONFIG.mobiles = [];
+	
+	CONFIG.selects = [];
+	
+	products.forEach(function(productName) {
+		var m = $.extend({}, mobile);
+	
+		m.name = productName;
+		CONFIG.mobiles.push(m);
+	
+		var s = $.extend({}, mobile);
+	
+		s.name = productName;
+		s.size = [Math.random() * 10|0, Math.random() * 10|0]
+		CONFIG.mobiles.push(s);
+	});
+	
+	module.exports = CONFIG;
+	
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+
+/***/ },
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
 	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(9);
-	var DisplayContainerStage = __webpack_require__(18);
-	var MobileStage = __webpack_require__(19);
+	var DisplayContainerStage = __webpack_require__(19);
+	var MobileStage = __webpack_require__(20);
 	
 	var Display = View.extend(function() {
 		var that = this;
@@ -53305,7 +53224,7 @@
 			// check self init
 			if (!this.isInit) {
 				init();
-				//_containerStage.init();
+				_containerStage.init();
 			}
 	
 			if (data) {
@@ -53319,6 +53238,7 @@
 					}
 				}.bind(this));
 	
+				// isload 如果检查到需要加载，会启动加载，并在加载完成之后调用回调
 				if (!isLoad.bind(this)(this.activate.bind(this))) return;	
 			}
 	
@@ -53571,7 +53491,7 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
 
 /***/ },
-/* 18 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
@@ -53722,11 +53642,11 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 19 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
-	var Mobile = __webpack_require__(20);
+	var Mobile = __webpack_require__(21);
 	var TrackballControls = __webpack_require__(23);
 	
 	
@@ -54020,10 +53940,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 20 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {var Time = __webpack_require__(10);
+	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {// Dependencies CONFIG.mobiles
+	
+	var Time = __webpack_require__(10);
 	var Loader = __webpack_require__(22);
 	var loader = new Loader();
 	var mobileEnvMap;
@@ -54098,6 +54020,10 @@
 						var material = mParse.materials[0];
 						var model;
 	
+						if (material.name.indexOf('glass') >= 0) {
+							console.log(material);
+						}
+	
 						material.side = THREE.DoubleSide;
 						material.transparent = (material.opacity === 1?false:true);
 						model = new THREE.Mesh(geometry, material);
@@ -54127,53 +54053,7 @@
 	});
 	
 	module.exports = Mobile;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(21)))
-
-/***/ },
-/* 21 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
-	
-	// test 
-	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
-	var _products = [];
-	
-	
-	
-	var mobile = {
-		'name': 'pro5',
-		'models': [
-			{url: './assets/pro5/metal.json', size: 200},
-			{url: './assets/pro5/metal_reflect.json', size: 200},
-			{url: './assets/pro5/glass.json', size: 129},
-			{url: './assets/pro5/plastics.json', size: 54},
-			{url: './assets/pro5/map.json', size: 3},
-			{url: './assets/pro5/plane.json', size: 8}
-		],
-	
-		materials: {
-			'black': {url: './assets/pro5/black.json', size: 6},
-			'red': {url: './assets/pro5/black.json', size: 6},
-		},
-	
-		map: [
-			// {url: './assets/pro5/pro5uv.png', size: 75000},
-		]
-	};
-	
-	CONFIG.mobiles = [];
-	
-	products.forEach(function(productName) {
-		var m = $.extend({}, mobile);
-	
-		m.name = productName;
-		CONFIG.mobiles.push(m);
-	});
-	
-	module.exports = CONFIG;
-	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(17)))
 
 /***/ },
 /* 22 */
@@ -54873,6 +54753,140 @@
 	
 	
 	module.exports = TrackballControls;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
+	
+	// Dependencies CONFIG.selects
+	var SelectCube = Stage.extend(function() {
+		this.isInit = false;
+		this.objects;
+	
+		var that = this;
+		var _BASECROOD = new THREE.Vector3(0, 0, 0);
+		var _CAMERACROOD = new THREE.Vector3(200, 200, 300);
+	
+		// this.objects
+		this.init = function() {
+			this.build();
+	        this.isInit = true;
+		}
+	
+		this.build = function() {
+	
+			// table 2m width
+			var tableTopGemo = new THREE.CylinderGeometry(100, 100, 5, 100);
+			var tableTopMaterial = new THREE.MeshPhongMaterial({color: 0xaaaaff});
+	
+			tableTopMaterial.transparent = true;
+			tableTopMaterial.opacity = 0.3;
+			tableTopMaterial.refractionRatio = 1.3;
+			tableTopMaterial.reflectivity = 1;
+			tableTopMaterial.shininess = 37.46;
+			tableTopMaterial.specular = new THREE.Color("rgb(0.54, 0.54, 0.54)");
+	
+			var tableTop = new THREE.Mesh(tableTopGemo, tableTopMaterial);
+			tableTop.position.set(0, 31, 0);
+	
+			var tableBottomGemo = new THREE.CylinderGeometry(100, 90, 30, 100, 10);
+			var tableBottomMaterial = new THREE.MeshLambertMaterial({color: 0x3a5c67,'side': THREE.DoubleSide, 'emissive': 0x888888}); 
+			var tableBottom = new THREE.Mesh(tableBottomGemo, tableBottomMaterial);
+			tableBottom.position.set(0, 15, 0);
+	
+			this.objects.table = new THREE.Group();
+			this.objects.table.add(tableTop);
+			this.objects.table.add(tableBottom);
+			//console.log(tableTop.material);
+	
+			// meizu logo
+			var svgString = 'M120.9,269.9H28.2c-7.8,0-14.2,6.4-14.2,14.2V355h16.7v-65.5c0-3.1,2.5-5.7,5.7-5.7h29.8V355h16.7v-71.2h29.8c3.1,0,5.7,2.5,5.7,5.7V355H135v-70.9C135,276.3,128.7,269.9,120.9,269.9z';
+			var shape = transformSVGPathExposed(svgString);
+			var options = {
+	            amount: 10,
+	            bevelThickness: 2,
+	            bevelSize: 02,
+	            bevelSegments: 4,
+	            bevelEnabled: true,
+	            curveSegments: 20,
+	            steps: 1
+	        };
+	        var svgGemo = new THREE.ExtrudeGeometry(shape, options)
+	        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x3a5c67, shininess: 100, metal: true});
+	        var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
+	        svgMesh.position.set(-200, 240, -200);
+	        svgMesh.scale.set(01,01,01);
+	        svgMesh.rotation.x = Math.PI
+	        //console.log(svgMesh);
+	        M3.scene.add(svgMesh);
+	        this.objects.svgLogo = svgMesh;
+	
+			// plane
+			var planeGridCount = 50;
+			var planeWidth = planeGridCount * 20;
+			var planeHeight = planeGridCount * 20;
+			var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
+			var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+			var plane = new THREE.Mesh( phaneGeom, material );
+			plane.rotation.x = Math.PI * 0.5;
+			// this.objects.plane = plane;
+	
+			// light
+	        var directionalLightColor = "#ffffff";
+	        var directionalLight = new THREE.DirectionalLight(directionalLightColor);
+	        directionalLight.name = this.name + ' directionalLight';
+	        directionalLight.position.set(-100, 50, 50);
+	        directionalLight.castShadow = true;
+	        directionalLight.shadowCameraNear = 0;
+	        directionalLight.shadowCameraFar = 300;
+	        directionalLight.shadowCameraLeft = -200;
+	        directionalLight.shadowCameraRight = 200;
+	        directionalLight.shadowCameraTop = 200;
+	        directionalLight.shadowCameraBottom = -200;
+	
+	        directionalLight.distance = 0;
+	        directionalLight.intensity = 0.5;
+	        directionalLight.shadowMapHeight = 1024;
+	        directionalLight.shadowMapWidth = 1024;
+	        directionalLight.target = this.objects.sphere;
+	
+	 		this.objects.spotLight = new THREE.SpotLight(0xffffff);
+	 		this.objects.spotLight.intensity = 0.8;
+	 		this.objects.spotLight.position.set(-300, 200, 100);
+	 		this.objects.spotLight.lookAt(_BASECROOD); 
+	
+	 		this.objects.spotLight2 = new THREE.SpotLight(0xffffff);
+	 		this.objects.spotLight2.intensity = 0.5;
+	 		this.objects.spotLight2.position.set(100, 200, -100);
+	 		this.objects.spotLight2.lookAt(_BASECROOD); 
+	
+			_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+	
+		}
+	
+		this.entry = function() {
+			Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
+	
+			this.camera.position.copy(_CAMERACROOD);
+			this.camera.lookAt(_BASECROOD);
+		}
+	
+	
+		this.selectProduct = function(productNames) {
+	
+		}
+	
+		this.leave = function() {
+			// or return a promise so that can do some ani
+			this.removeTick(); 
+		}
+	
+	});
+	
+	module.exports = SelectCube;
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ }

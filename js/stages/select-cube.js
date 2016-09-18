@@ -5,15 +5,16 @@ var SelectCube = Stage.extend(function() {
 	this.isInit = false;
 	this.objects;
 
+	var that = this;
 	var _BASECROOD = new THREE.Vector3(0, 0, 0);
 	var _CAMERACROOD = new THREE.Vector3(200, 100, 200);
 
-	var _CUBESIZE = 30; // 立方体大小
-	var _CUBEXCOUNT = 10; // 横向个数
-	var _CUBEZCOUNT = 10; // 纵向 Z(向) 个数
+	var _CUBESIZE = 20; // 立方体大小
+	var _CUBEXCOUNT = 20; // 横向个数
+	var _CUBEZCOUNT = 20; // 纵向 Z(向) 个数
 	var _CUBEHEIGHT = 100;
 	var _MINSCALE = 0.1; // 最小高度缩放
-	var _MAXSCALE = 0.9; // 最大高度缩放
+	var _MAXSCALE = 0.6; // 最大高度缩放
 
 	var _cubes; // 存储方块信息的二维数组
 	var _productCubes; // 产品方块
@@ -44,21 +45,20 @@ var SelectCube = Stage.extend(function() {
 				var z = _BASECROOD.z - _CUBEZCOUNT / 2 + j;
 				_cubes[i][j] = {
 					position: {x: x, y: 0, z: z},
-					height: _CUBEHEIGHT * 2,
-					scaleV: (Math.random() | 0) / 2000, // 缩放速度每一帧缩放 0.??
-					scale: _MINSCALE + (_MAXSCALE - _MINSCALE) * Math.random(), // 缩放范围
-					percent: Math.random()
+					scaleV: (Math.random() / 6000), // 缩放速度每一帧缩放 0.??
+					scaleMin: _MINSCALE + (_MAXSCALE - _MINSCALE) * Math.random() / 2,
+					scaleMax: _MAXSCALE - (_MAXSCALE - _MINSCALE) * Math.random() / 2, // 缩放范围
 				};
 				cubeGeom = new THREE.BoxGeometry(
-								_CUBESIZE * 0.8, 
-								0, 
-								_CUBESIZE * 0.8
+								_CUBESIZE * 0.5, 
+								_CUBEHEIGHT, 
+								_CUBESIZE * 0.5
 							);
 				cubeMaterial = new THREE.MeshPhongMaterial(
 					{
 						color: 0x00b9ef,
-						transparent: true,
-						opacity: 0.95,
+						//transparent: true,
+						opacity: 0.9,
 						reflectivity: 1,
 						specular: 0xdddddd,
 						shininess: 90
@@ -70,7 +70,7 @@ var SelectCube = Stage.extend(function() {
 					0,
 					_cubes[i][j].position.z * _CUBESIZE
 				);
-				console.log(cube.position);
+				cube.scale.set(1, 0.01, 1);
 				_cubes[i][j].cube = cube;
 				cubeGroup.add(cube);
 			}
@@ -79,12 +79,14 @@ var SelectCube = Stage.extend(function() {
 		//product cube
 		_productCubes = [];
 		CONFIG.selects.forEach(function(select) {
-			_productCubes.push(_cubes[select.size[0]][select.size[1]]);
+			var cube = _cubes[select.size[0]][select.size[1]];
+			cube.name = select.name;
+			_productCubes.push(cube);
 		});
 
 		this.objects.cubeGroup = cubeGroup;
 
-		plane
+		// plane
 		var planeGridCount = 50;
 		var planeWidth = planeGridCount * _CUBESIZE;
 		var planeHeight = planeGridCount * _CUBESIZE;
@@ -113,11 +115,15 @@ var SelectCube = Stage.extend(function() {
         directionalLight.shadowMapWidth = 1024;
         directionalLight.target = this.objects.sphere;
 
-        //this.objects.directionalLight = directionalLight;
- 		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
- 		this.objects.spotLight.intensity = 1;
+ 		this.objects.spotLight = new THREE.SpotLight(0xffffff);
+ 		this.objects.spotLight.intensity = 0.8;
  		this.objects.spotLight.position.set(-300, 200, 100);
  		this.objects.spotLight.lookAt(_BASECROOD); 
+
+ 		this.objects.spotLight2 = new THREE.SpotLight(0xffffff);
+ 		this.objects.spotLight2.intensity = 0.5;
+ 		this.objects.spotLight2.position.set(200, 200, -100);
+ 		this.objects.spotLight2.lookAt(_BASECROOD); 
 
 		_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
@@ -129,7 +135,7 @@ var SelectCube = Stage.extend(function() {
 		this.camera.position.copy(_CAMERACROOD);
 		this.camera.lookAt(_BASECROOD);
 
-		_cubeTick = this.addTick(moveCube);
+		moveCubes();
 	}
 
 
@@ -142,26 +148,51 @@ var SelectCube = Stage.extend(function() {
 		this.removeTick(); 
 	}
 
+	function moveCube(cube) {
+		var target = {};
+		var dur;
+
+		cube.scaleMin = _MINSCALE + (_MAXSCALE - _MINSCALE) * Math.random() / 2;
+		cube.scaleMax = _MAXSCALE - (_MAXSCALE - _MINSCALE) * Math.random() / 2; // 缩放范围
+		
+		if (cube.cube.scale.y <= cube.scaleMin) {
+			target.scale = new THREE.Vector3(1, cube.scaleMax + 0.01, 1);
+		} else if (cube.cube.scale.y >= cube.scaleMax) {
+			target.scale = new THREE.Vector3(1, cube.scaleMin - 0.01, 1);
+		} else {
+			target.scale = new THREE.Vector3(1, cube.scaleMin - 0.01, 1);
+		}
+		target.scale.x = target.scale.z = target.scale.y < 0.7 ? 0.7: target.scale.y;
+		target.rotation = new THREE.Euler( 0, cube.cube.rotation.y + Math.random() * Math.PI * (1 - Math.random()), 0, 'XYZ' );
+
+		dur = Math.abs(target.scale.y - cube.cube.scale.y) / cube.scaleV;
+		cube.tween = that.addTHREEObjTween(cube.cube, target, dur, {
+			onComplete: function() {
+				// console.log(target);
+				that.removeTween(cube.tween);
+				moveCube(cube);
+			}
+		});
+		cube.tween.start();
+	}
+
 	// Normal 方块移动
-	function moveCube = function(delta) {
+	function moveCubes() {
 		for (var cube, i = _cubes.length - 1; i >= 0; i--) {
 			_cubes[i]
-			for (var j = _cobes[i].length - 1; j >= 0; j--) {
-				cube = _cobes[i][j];
-
-				if (!cube.selected) {
-					cube.scale += delta * cube.scaleV;
-					
-				}
-
+			for (var j = _cubes[i].length - 1; j >= 0; j--) {
+				cube = _cubes[i][j];
+				moveCube(cube);
 			};
 		};
+		 // moveCube(_cubes[0][0]);
+		// console.log(_cubes[0][0]);
 	}
 
 
 
 
-
+	//a
 
 
 });

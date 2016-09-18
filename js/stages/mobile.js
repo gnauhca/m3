@@ -75,6 +75,10 @@ var Mobile = Time.extend(function() {
 					var material = mParse.materials[0];
 					var model;
 
+					if (material.name.indexOf('glass') >= 0) {
+						console.log(material);
+					}
+
 					material.side = THREE.DoubleSide;
 					material.transparent = (material.opacity === 1?false:true);
 					model = new THREE.Mesh(geometry, material);

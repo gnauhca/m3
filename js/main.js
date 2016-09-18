@@ -36,12 +36,13 @@ M3.tick = m3Time.addTick(function() {
 window.addEventListener('resize', function() {
 	winWidth = window.innerWidth;
 	winHeight = window.innerHeight;
-
+	M3.camera.aspect = winWidth / winHeight;
+	M3.camera.updateProjectionMatrix();
 	M3.renderer.setSize(winWidth, winHeight);
 });
 
 // M3.viewManager.activateView('index');
-// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6', 'mx5', 'mx6']});
+// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
 M3.viewManager.activateView('select');
 
 })();

@@ -152,7 +152,7 @@ var TimeBody = Class.extend(function TimeBody() {
 		tweenObj = tweenObj || {};
 		tween = new TWEEN.Tween(init)
 		tween.to(des, dur)
-			.easing(tweenObj.easing||TWEEN.Easing.Cubic.InOut)
+			.easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut)
 			.onUpdate(function() {
 				var current = this;
 				var lookAt = {};
@@ -183,11 +183,6 @@ var TimeBody = Class.extend(function TimeBody() {
 		return tween;
 	}
 
-	this.addTween3 = function(THREEObject, to, dur) {
-
-	}
-
-
 	this.removeTween = function(tween) {
 		if (!tween) {
 			// remove all
@@ -197,8 +192,8 @@ var TimeBody = Class.extend(function TimeBody() {
 
 		var index = this.tweens.indexOf(tween);
 
-		//tween.stop();
 		if (index !== -1) {
+			//tween.stop();
 			this.tweens.splice(index, 1);
 		}
 	}
