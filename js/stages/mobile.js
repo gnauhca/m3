@@ -75,8 +75,19 @@ var Mobile = Time.extend(function() {
 					var material = mParse.materials[0];
 					var model;
 
-					if (material.name.indexOf('glass') >= 0) {
-						console.log(material);
+					if (material.name.indexOf('metal') >= 0) {
+						var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
+						texture.repeat.set(50,50);
+	            		texture.wrapS = THREE.RepeatWrapping;
+	            		texture.wrapT = THREE.RepeatWrapping;
+
+						material = new THREE.MeshPhongMaterial({
+							map: texture,
+							bumpMap: texture,
+							bumpScale: 0.1
+							// aoMapIntensity: 2
+						});
+
 					}
 
 					material.side = THREE.DoubleSide;

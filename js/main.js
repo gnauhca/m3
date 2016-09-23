@@ -41,9 +41,28 @@ window.addEventListener('resize', function() {
 	M3.renderer.setSize(winWidth, winHeight);
 });
 
+
+/* helper */
+var axisHelper = new THREE.AxisHelper( 30 );
+M3.scene.add( axisHelper );
+
+
+
 // M3.viewManager.activateView('index');
-// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-M3.viewManager.activateView('select');
+M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
+// M3.viewManager.activateView('select');
 
 })();
+
+
+
+
+
+
+
+
+
+
+
+
 

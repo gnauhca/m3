@@ -30,6 +30,7 @@ var SelectCube = Stage.extend(function() {
 
 		var tableTop = new THREE.Mesh(tableTopGemo, tableTopMaterial);
 		tableTop.position.set(0, 31, 0);
+		// this.objects.table.add(tableTop);
 
 		var tableBottomGemo = new THREE.CylinderGeometry(100, 90, 30, 100, 10);
 		var tableBottomMaterial = new THREE.MeshLambertMaterial({color: 0x3a5c67,'side': THREE.DoubleSide, 'emissive': 0x888888}); 
@@ -37,27 +38,26 @@ var SelectCube = Stage.extend(function() {
 		tableBottom.position.set(0, 15, 0);
 
 		this.objects.table = new THREE.Group();
-		this.objects.table.add(tableTop);
-		this.objects.table.add(tableBottom);
+		// this.objects.table.add(tableBottom);
 		//console.log(tableTop.material);
 
 		// meizu logo
-		var svgString = 'M120.9,269.9H28.2c-7.8,0-14.2,6.4-14.2,14.2V355h16.7v-65.5c0-3.1,2.5-5.7,5.7-5.7h29.8V355h16.7v-71.2h29.8c3.1,0,5.7,2.5,5.7,5.7V355H135v-70.9C135,276.3,128.7,269.9,120.9,269.9z';
+		var svgString = "M106.9,0H14.2C6.4,0,0,6.4,0,14.2v70.9h16.7V19.6c0-3.1,2.5-5.7,5.7-5.7h29.8v71.2h16.7V13.9h29.8c3.1,0,5.7,2.5,5.7,5.7v65.5H121V14.2C121,6.4,114.7,0,106.9,0zM138.8,14.2v56.7c0,7.8,6.3,14.2,14.2,14.2h72.3V71.3h-64.1c-3.1,0-5.7-2.5-5.7-5.7V49.5h66.3V35.6h-66.3V19.5c0-3.1,2.5-5.7,5.7-5.7h64.1V0H153C145.1,0,138.8,6.4,138.8,14.2zM243.2,0L260.7,0L260.7,85,L243.2,85zM353.6,0H279v13.8h61.7l-59.2,52.6c-9.5,8.1-3.3,18.6,4.6,18.6h75.4V71.2h-62.9l59.3-52.6C367.5,10,361.8,0,353.6,0zM453,0v65.5c0,3.1-2.5,5.7-5.7,5.7l0,0h-47.6l0,0c-3.1,0-5.7-2.5-5.7-5.7V0h-16.6v70.9c0,7.8,6.3,14.2,14.2,14.2h63.8c7.8,0,14.2-6.3,14.2-14.2V0H453z";
 		var shape = transformSVGPathExposed(svgString);
 		var options = {
             amount: 10,
-            bevelThickness: 2,
+            bevelThickness: 3,
             bevelSize: 02,
-            bevelSegments: 4,
+            bevelSegments: 12,
             bevelEnabled: true,
-            curveSegments: 20,
+            curveSegments: 80,
             steps: 1
         };
         var svgGemo = new THREE.ExtrudeGeometry(shape, options)
-        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x3a5c67, shininess: 100, metal: true});
+        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true});
         var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
-        svgMesh.position.set(-200, 240, -200);
-        svgMesh.scale.set(01,01,01);
+        svgMesh.scale.set(1, 1, 1);
+        svgMesh.position.set(-330, 0, 0);
         svgMesh.rotation.x = Math.PI
         //console.log(svgMesh);
         M3.scene.add(svgMesh);
