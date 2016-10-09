@@ -1,10 +1,7 @@
 (function() { 
 require('../css/common.scss');//return;
 
-
-
 window.M3 = {};
-
 M3.viewManager = require('./view/view-manager.js');
 
 // todo: webgl 检查
@@ -43,14 +40,28 @@ window.addEventListener('resize', function() {
 
 
 /* helper */
-var axisHelper = new THREE.AxisHelper( 30 );
+var axisHelper = new THREE.AxisHelper( 100 );
 M3.scene.add( axisHelper );
+
+var size = 400;
+var step = 10;
+
+// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+// gridHelperX.rotation.z = Math.PI / 2;
+// M3.scene.add( gridHelperX );
+
+// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+// M3.scene.add( gridHelperY );
+
+// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+// gridHelperZ.rotation.x = Math.PI / 2;
+// M3.scene.add( gridHelperZ );
 
 
 
 // M3.viewManager.activateView('index');
-M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
-// M3.viewManager.activateView('select');
+// M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
+M3.viewManager.activateView('select');
 
 })();
 

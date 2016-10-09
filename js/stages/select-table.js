@@ -7,7 +7,7 @@ var SelectCube = Stage.extend(function() {
 
 	var that = this;
 	var _BASECROOD = new THREE.Vector3(0, 0, 0);
-	var _CAMERACROOD = new THREE.Vector3(200, 200, 300);
+	var _CAMERACROOD = new THREE.Vector3(00, 00, 500);
 
 	// this.objects
 	this.init = function() {
@@ -42,12 +42,12 @@ var SelectCube = Stage.extend(function() {
 		//console.log(tableTop.material);
 
 		// meizu logo
-		var svgString = "M106.9,0H14.2C6.4,0,0,6.4,0,14.2v70.9h16.7V19.6c0-3.1,2.5-5.7,5.7-5.7h29.8v71.2h16.7V13.9h29.8c3.1,0,5.7,2.5,5.7,5.7v65.5H121V14.2C121,6.4,114.7,0,106.9,0zM138.8,14.2v56.7c0,7.8,6.3,14.2,14.2,14.2h72.3V71.3h-64.1c-3.1,0-5.7-2.5-5.7-5.7V49.5h66.3V35.6h-66.3V19.5c0-3.1,2.5-5.7,5.7-5.7h64.1V0H153C145.1,0,138.8,6.4,138.8,14.2zM243.2,0L260.7,0L260.7,85,L243.2,85zM353.6,0H279v13.8h61.7l-59.2,52.6c-9.5,8.1-3.3,18.6,4.6,18.6h75.4V71.2h-62.9l59.3-52.6C367.5,10,361.8,0,353.6,0zM453,0v65.5c0,3.1-2.5,5.7-5.7,5.7l0,0h-47.6l0,0c-3.1,0-5.7-2.5-5.7-5.7V0h-16.6v70.9c0,7.8,6.3,14.2,14.2,14.2h63.8c7.8,0,14.2-6.3,14.2-14.2V0H453z";
+		var svgString = "M22.8,41H3c-1.7,0-3,1.4-3,3v15.1h3.6V45.2c0-0.7,0.5-1.2,1.2-1.2h6.3v15.2h3.6V44H21c0.7,0,1.2,0.5,1.2,1.2v13.9h3.5V44C25.8,42.4,24.4,41,22.8,41zM29.6,44v12.1c0,1.7,1.3,3,3,3H48v-2.9H34.3c-0.7,0-1.2-0.5-1.2-1.2v-3.4h14.1v-3H33.1v-3.4c0-0.7,0.5-1.2,1.2-1.2H48V41H32.6C30.9,41,29.6,42.4,29.6,44zM75.3,41H59.4v2.9h13.1L59.9,55.1c-2,1.7-0.7,4,1,4H77v-2.9H63.6L76.2,45C78.3,43.1,77,41,75.3,41zM96.5,41v13.9c0,0.7-0.5,1.2-1.2,1.2l0,0H85.1l0,0c-0.7,0-1.2-0.5-1.2-1.2V41h-3.5v15.1c0,1.7,1.3,3,3,3H97c1.7,0,3-1.3,3-3V41H96.5zM51.8 41L55.5 41L55.5 59.1L51.8 59.1z";
 		var shape = transformSVGPathExposed(svgString);
 		var options = {
-            amount: 10,
-            bevelThickness: 3,
-            bevelSize: 02,
+            amount: 5,
+            bevelThickness: 0.5,
+            bevelSize: 0.5,
             bevelSegments: 12,
             bevelEnabled: true,
             curveSegments: 80,
@@ -56,9 +56,10 @@ var SelectCube = Stage.extend(function() {
         var svgGemo = new THREE.ExtrudeGeometry(shape, options)
         var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true});
         var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
-        svgMesh.scale.set(1, 1, 1);
-        svgMesh.position.set(-330, 0, 0);
-        svgMesh.rotation.x = Math.PI
+        svgGemo.center();
+        svgGemo.rotateX(Math.PI);
+        // svgMesh.applyMatrix( new THREE.Matrix4().makeTranslation(-50, -50, 0) );
+        // svgMesh.position.set(0, 0, 0);
         //console.log(svgMesh);
         M3.scene.add(svgMesh);
         this.objects.svgLogo = svgMesh;

@@ -47,11 +47,8 @@
 	/* WEBPACK VAR INJECTION */(function(THREE) {(function() { 
 	__webpack_require__(2);//return;
 	
-	
-	
 	window.M3 = {};
-	
-	M3.viewManager = __webpack_require__(6);
+	M3.viewManager = __webpack_require__(4);
 	
 	// todo: webgl 检查
 	//
@@ -72,7 +69,7 @@
 	M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
 	// main render tick
-	var Time = __webpack_require__(10);
+	var Time = __webpack_require__(8);
 	var m3Time = new Time();
 	
 	M3.tick = m3Time.addTick(function() {
@@ -89,14 +86,28 @@
 	
 	
 	/* helper */
-	var axisHelper = new THREE.AxisHelper( 30 );
+	var axisHelper = new THREE.AxisHelper( 100 );
 	M3.scene.add( axisHelper );
+	
+	var size = 400;
+	var step = 10;
+	
+	// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+	// gridHelperX.rotation.z = Math.PI / 2;
+	// M3.scene.add( gridHelperX );
+	
+	// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+	// M3.scene.add( gridHelperY );
+	
+	// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+	// gridHelperZ.rotation.x = Math.PI / 2;
+	// M3.scene.add( gridHelperZ );
 	
 	
 	
 	// M3.viewManager.activateView('index');
-	M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
-	// M3.viewManager.activateView('select');
+	// M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
+	M3.viewManager.activateView('select');
 	
 	})();
 	
@@ -41995,362 +42006,21 @@
 
 /***/ },
 /* 2 */
-/***/ function(module, exports, __webpack_require__) {
-
-	// style-loader: Adds some css to the DOM by adding a <style> tag
-	
-	// load the styles
-	var content = __webpack_require__(3);
-	if(typeof content === 'string') content = [[module.id, content, '']];
-	// add the styles to the DOM
-	var update = __webpack_require__(5)(content, {});
-	if(content.locals) module.exports = content.locals;
-	// Hot Module Replacement
-	if(false) {
-		// When the styles change, update the <style> tags
-		if(!content.locals) {
-			module.hot.accept("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss", function() {
-				var newContent = require("!!./../node_modules/css-loader/index.js!./../node_modules/sass-loader/index.js!./common.scss");
-				if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
-				update(newContent);
-			});
-		}
-		// When the module is disposed, remove the <style> tags
-		module.hot.dispose(function() { update(); });
-	}
-
-/***/ },
-/* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	exports = module.exports = __webpack_require__(4)();
-	// imports
-	
-	
-	// module
-	exports.push([module.id, "/* RESET*/\nhtml, body, div, ul, ol, li, dl, dt, dd, h1, h2, h3, h4, h5, h6, pre, form, p, blockquote, fieldset, input, abbr, article, aside, command, details, figcaption, figure, footer, header, hgroup, mark, meter, nav, output, progress, section, summary, time {\n  margin: 0;\n  padding: 0; }\n\nh1, h2, h3, h4, h5, h6, pre, code, address, caption, cite, code, em, strong, th, figcaption {\n  font-size: 1em;\n  font-weight: normal;\n  font-style: normal; }\n\nfieldset, iframe {\n  border: none; }\n\ncaption, th {\n  text-align: left; }\n\ntable {\n  border-collapse: collapse;\n  border-spacing: 0; }\n\narticle, aside, footer, header, hgroup, nav, section, figure, figcaption {\n  display: block; }\n\nhtml, body {\n  width: 100%;\n  height: 100%;\n  position: relative; }\n\nhtml {\n  background-color: #fff; }\n\nimg {\n  border: 0; }\n\na {\n  text-decoration: none;\n  color: #515151; }\n  a:focus {\n    outline: none; }\n\ni {\n  font-style: normal; }\n\nul, li {\n  list-style: none; }\n\np {\n  max-height: 100%; }\n\n.clearfix:after, .clearfix:before {\n  content: \"\";\n  display: table;\n  height: 0px;\n  clear: both;\n  visibility: hidden; }\n\n.clearfix {\n  *zoom: 1; }\n\nbody {\n  font-family: 'microsoft yahei';\n  background-image: radial-gradient(circle, #276378, #000); }\n\n.none {\n  display: none !important; }\n\n.progress {\n  display: none;\n  position: absolute;\n  z-index: 100000;\n  top: 0;\n  left: 0;\n  width: 100%;\n  height: 100%;\n  background-color: rgba(0, 0, 0, 0.99);\n  perspective: 1200px; }\n  .progress .water-box-wrap {\n    position: absolute;\n    top: 50%;\n    left: 50%;\n    width: 100px;\n    height: 100px;\n    margin-left: -50px;\n    margin-top: -50px;\n    transform-style: preserve-3d;\n    animation: waterbox 8s infinite alternate; }\n  .progress .box {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-style: preserve-3d; }\n    .progress .box div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(255, 255, 255, 0.4);\n      outline: 1px solid #9cc2c4; }\n      .progress .box div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .box div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .box div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .box div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .box div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n  .progress .water {\n    position: absolute;\n    top: 0;\n    left: 0;\n    width: 100%;\n    height: 100%;\n    transform-origin: center bottom;\n    transition: transform linear 0.2s;\n    transform-style: preserve-3d; }\n    .progress .water div {\n      position: absolute;\n      box-sizing: border-box;\n      width: 100%;\n      height: 100%;\n      background-color: rgba(16, 121, 155, 0.3);\n      text-align: center; }\n      .progress .water div:nth-child(1) {\n        transform: rotate3d(1, 0, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(2) {\n        transform: rotate3d(1, 0, 0, -90deg) translateZ(50px); }\n      .progress .water div:nth-child(3) {\n        transform: rotate3d(0, 0, 0, 0deg) translateZ(50px); }\n      .progress .water div:nth-child(4) {\n        transform: rotate3d(1, 0, 0, 180deg) translateZ(50px); }\n      .progress .water div:nth-child(5) {\n        transform: rotate3d(0, 1, 0, 90deg) translateZ(50px); }\n      .progress .water div:nth-child(6) {\n        transform: rotate3d(0, 1, 0, -90deg) translateZ(50px); }\n      .progress .water div span {\n        line-height: 100px;\n        font-size: 20px;\n        color: #eee;\n        transform: translate3d(0, 0, -2px); }\n      .progress .water div:nth-child(1) {\n        background-color: rgba(16, 121, 155, 0.3); }\n\n@keyframes waterbox {\n  0% {\n    transform: rotateY(40deg) rotateX(-20deg); }\n  100% {\n    transform: rotateY(-40deg) rotateX(-60deg); } }\n\n#listView {\n  perspective: 1200px;\n  position: fixed;\n  display: none;\n  width: 100%;\n  height: 100%;\n  top: 0;\n  left: 0;\n  z-index: 100; }\n  #listView .list-wrap {\n    position: relative;\n    width: 100%;\n    height: 100%;\n    transition: all 1s; }\n    #listView .list-wrap li {\n      box-sizing: border-box;\n      position: absolute;\n      overflow: hidden;\n      cursor: pointer;\n      transition: left 1s, top 1s, width 1s, height 1s;\n      border: 10px solid transparent; }\n      #listView .list-wrap li div {\n        position: absolute;\n        width: 100%;\n        height: 100%;\n        opacity: 0;\n        transform: translate3d(0, 300px, -100px);\n        background-color: rgba(255, 255, 255, 0.5); }\n      #listView .list-wrap li img {\n        position: absolute;\n        left: 50%;\n        top: 50%;\n        width: 60%;\n        max-width: 300px;\n        transform: translate(-50%, -50%);\n        transition: all 0.2s; }\n      #listView .list-wrap li.selected {\n        z-index: 101; }\n        #listView .list-wrap li.selected img {\n          transform: translate(-50%, -50%) scale(1.2); }\n  #listView .controls {\n    position: absolute;\n    top: 0;\n    right: 0;\n    width: 10%;\n    color: #fff;\n    line-height: 50px;\n    font-size: 30px;\n    width: 0;\n    transition: all 1s; }\n    #listView .controls div {\n      margin: 60% 20%;\n      white-space: nowrap;\n      cursor: pointer; }\n  #listView.active .list-wrap li div {\n    opacity: 1;\n    transform: none; }\n  #listView.active .list-wrap li:nth-child(1) div {\n    transition: all 1s 0.1s; }\n  #listView.active .list-wrap li:nth-child(2) div {\n    transition: all 1s 0.2s; }\n  #listView.active .list-wrap li:nth-child(3) div {\n    transition: all 1s 0.3s; }\n  #listView.active .list-wrap li:nth-child(4) div {\n    transition: all 1s 0.4s; }\n  #listView.active .list-wrap li:nth-child(5) div {\n    transition: all 1s 0.5s; }\n  #listView.active .list-wrap li:nth-child(6) div {\n    transition: all 1s 0.6s; }\n  #listView.active .list-wrap li:nth-child(7) div {\n    transition: all 1s 0.7s; }\n  #listView.active .list-wrap li:nth-child(8) div {\n    transition: all 1s 0.8s; }\n  #listView.active .list-wrap li:nth-child(9) div {\n    transition: all 1s 0.9s; }\n  #listView.active .list-wrap li:nth-child(10) div {\n    transition: all 1s 1s; }\n  #listView.active .list-wrap li:nth-child(11) div {\n    transition: all 1s 1.1s; }\n  #listView.active .list-wrap li:nth-child(12) div {\n    transition: all 1s 1.2s; }\n  #listView.active .list-wrap li:nth-child(13) div {\n    transition: all 1s 1.3s; }\n  #listView.active .list-wrap li:nth-child(14) div {\n    transition: all 1s 1.4s; }\n  #listView.active .list-wrap li:nth-child(15) div {\n    transition: all 1s 1.5s; }\n  #listView.active .list-wrap li:nth-child(16) div {\n    transition: all 1s 1.6s; }\n  #listView.active .list-wrap li:nth-child(17) div {\n    transition: all 1s 1.7s; }\n  #listView.active .list-wrap li:nth-child(18) div {\n    transition: all 1s 1.8s; }\n  #listView.active .list-wrap li:nth-child(19) div {\n    transition: all 1s 1.9s; }\n  #listView.active .list-wrap li:nth-child(20) div {\n    transition: all 1s 2s; }\n  #listView.active .list-wrap li:nth-child(21) div {\n    transition: all 1s 2.1s; }\n  #listView.active .list-wrap li:nth-child(22) div {\n    transition: all 1s 2.2s; }\n  #listView.active .list-wrap li:nth-child(23) div {\n    transition: all 1s 2.3s; }\n  #listView.active .list-wrap li:nth-child(24) div {\n    transition: all 1s 2.4s; }\n  #listView.active .list-wrap li:nth-child(25) div {\n    transition: all 1s 2.5s; }\n  #listView.active .list-wrap li:nth-child(26) div {\n    transition: all 1s 2.6s; }\n  #listView.active .list-wrap li:nth-child(27) div {\n    transition: all 1s 2.7s; }\n  #listView.active .list-wrap li:nth-child(28) div {\n    transition: all 1s 2.8s; }\n  #listView.active .list-wrap li:nth-child(29) div {\n    transition: all 1s 2.9s; }\n  #listView.active .list-wrap li:nth-child(30) div {\n    transition: all 1s 3s; }\n  #listView.show-control .list-wrap {\n    width: 90%; }\n  #listView.show-control .controls {\n    width: 10%; }\n  #listView.active.choosed .list-wrap li {\n    opacity: 0; }\n    #listView.active.choosed .list-wrap li.selected {\n      opacity: 1; }\n  #listView.inactive {\n    transition: opacity 1s;\n    opacity: 0; }\n\n#displayView {\n  position: fixed;\n  width: 100%;\n  height: 100%;\n  z-index: 100;\n  top: 0;\n  left: 0;\n  font-weight: 100;\n  color: rgba(255, 255, 255, 0.6); }\n  #displayView.bright {\n    color: rgba(0, 0, 0, 0.6); }\n\n#displayView .display-window {\n  box-sizing: border-box;\n  position: absolute;\n  outline: 1px solid rgba(0, 0, 0, 0.2); }\n  #displayView .display-window .window-control {\n    margin: 0 auto;\n    width: 100%;\n    text-align: right;\n    font-size: 3rem;\n    line-height: 4rem; }\n    #displayView .display-window .window-control i.btn {\n      cursor: pointer;\n      margin: 0rem 1rem;\n      vertical-align: middle; }\n    #displayView .display-window .window-control i.close-btn {\n      font-size: 6rem;\n      margin-right: 2rem; }\n  #displayView .display-window .colors-control {\n    position: absolute;\n    width: 100%;\n    left: 0%;\n    bottom: 0;\n    font-size: 3rem;\n    text-align: right; }\n    #displayView .display-window .colors-control .color {\n      display: inline-block;\n      box-sizing: border-box;\n      width: 3rem;\n      height: 3rem;\n      max-width: 30px;\n      max-height: 30px;\n      margin: 1rem 1rem;\n      opacity: 0.3;\n      cursor: pointer;\n      box-shadow: 0 0 4px #888;\n      outline: 1px solid #333; }\n      #displayView .display-window .colors-control .color.selected {\n        opacity: 1; }\n      #displayView .display-window .colors-control .color.white {\n        background-color: #eee;\n        outline-color: #eee; }\n      #displayView .display-window .colors-control .color.black {\n        background-color: #000;\n        outline-color: #000; }\n      #displayView .display-window .colors-control .color.red {\n        background-color: #f00;\n        outline-color: #f00; }\n\n#displayView .display-manager {\n  position: absolute;\n  width: 100%;\n  height: 100%; }\n  #displayView .display-manager .setting-btn {\n    position: absolute;\n    z-index: 102;\n    top: 0;\n    left: 0;\n    font-size: 4rem;\n    line-height: 5rem;\n    margin: 0.5rem 1rem;\n    opacity: 0.7;\n    cursor: pointer;\n    transition: all 1s; }\n    #displayView .display-manager .setting-btn:hover {\n      opacity: 1; }\n  #displayView .display-manager .setting-wrap {\n    display: none;\n    position: absolute;\n    z-index: 102;\n    width: 100%;\n    height: 100%;\n    background-color: rgba(0, 0, 0, 0.8);\n    transition: all 1s; }\n    #displayView .display-manager .setting-wrap .btn-wrap {\n      position: absolute;\n      width: 100%;\n      top: 50%;\n      transform: translateY(-50%);\n      text-align: center;\n      font-size: 10rem; }\n      #displayView .display-manager .setting-wrap .btn-wrap .btn {\n        margin: 10%;\n        vertical-align: middle;\n        display: inline-block;\n        opacity: 0.7;\n        cursor: pointer; }\n        #displayView .display-manager .setting-wrap .btn-wrap .btn:hover {\n          opacity: 1; }\n      #displayView .display-manager .setting-wrap .btn-wrap .lock-btn {\n        display: inline-block; }\n      #displayView .display-manager .setting-wrap .btn-wrap .unlock-btn {\n        display: inline-block; }\n  #displayView .display-manager.show .setting-btn {\n    transform: translate(-200%, -200%); }\n  #displayView .display-manager.show .setting-wrap {\n    display: block; }\n", ""]);
-	
-	// exports
-
-
-/***/ },
-/* 4 */
 /***/ function(module, exports) {
 
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	// css base code, injected by the css-loader
-	module.exports = function() {
-		var list = [];
-	
-		// return the list of modules as css string
-		list.toString = function toString() {
-			var result = [];
-			for(var i = 0; i < this.length; i++) {
-				var item = this[i];
-				if(item[2]) {
-					result.push("@media " + item[2] + "{" + item[1] + "}");
-				} else {
-					result.push(item[1]);
-				}
-			}
-			return result.join("");
-		};
-	
-		// import a list of modules into the list
-		list.i = function(modules, mediaQuery) {
-			if(typeof modules === "string")
-				modules = [[null, modules, ""]];
-			var alreadyImportedModules = {};
-			for(var i = 0; i < this.length; i++) {
-				var id = this[i][0];
-				if(typeof id === "number")
-					alreadyImportedModules[id] = true;
-			}
-			for(i = 0; i < modules.length; i++) {
-				var item = modules[i];
-				// skip already imported module
-				// this implementation is not 100% perfect for weird media query combinations
-				//  when a module is imported multiple times with different media queries.
-				//  I hope this will never occur (Hey this way we have smaller bundles)
-				if(typeof item[0] !== "number" || !alreadyImportedModules[item[0]]) {
-					if(mediaQuery && !item[2]) {
-						item[2] = mediaQuery;
-					} else if(mediaQuery) {
-						item[2] = "(" + item[2] + ") and (" + mediaQuery + ")";
-					}
-					list.push(item);
-				}
-			}
-		};
-		return list;
-	};
-
+	// removed by extract-text-webpack-plugin
 
 /***/ },
-/* 5 */
-/***/ function(module, exports, __webpack_require__) {
-
-	/*
-		MIT License http://www.opensource.org/licenses/mit-license.php
-		Author Tobias Koppers @sokra
-	*/
-	var stylesInDom = {},
-		memoize = function(fn) {
-			var memo;
-			return function () {
-				if (typeof memo === "undefined") memo = fn.apply(this, arguments);
-				return memo;
-			};
-		},
-		isOldIE = memoize(function() {
-			return /msie [6-9]\b/.test(window.navigator.userAgent.toLowerCase());
-		}),
-		getHeadElement = memoize(function () {
-			return document.head || document.getElementsByTagName("head")[0];
-		}),
-		singletonElement = null,
-		singletonCounter = 0,
-		styleElementsInsertedAtTop = [];
-	
-	module.exports = function(list, options) {
-		if(false) {
-			if(typeof document !== "object") throw new Error("The style-loader cannot be used in a non-browser environment");
-		}
-	
-		options = options || {};
-		// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
-		// tags it will allow on a page
-		if (typeof options.singleton === "undefined") options.singleton = isOldIE();
-	
-		// By default, add <style> tags to the bottom of <head>.
-		if (typeof options.insertAt === "undefined") options.insertAt = "bottom";
-	
-		var styles = listToStyles(list);
-		addStylesToDom(styles, options);
-	
-		return function update(newList) {
-			var mayRemove = [];
-			for(var i = 0; i < styles.length; i++) {
-				var item = styles[i];
-				var domStyle = stylesInDom[item.id];
-				domStyle.refs--;
-				mayRemove.push(domStyle);
-			}
-			if(newList) {
-				var newStyles = listToStyles(newList);
-				addStylesToDom(newStyles, options);
-			}
-			for(var i = 0; i < mayRemove.length; i++) {
-				var domStyle = mayRemove[i];
-				if(domStyle.refs === 0) {
-					for(var j = 0; j < domStyle.parts.length; j++)
-						domStyle.parts[j]();
-					delete stylesInDom[domStyle.id];
-				}
-			}
-		};
-	}
-	
-	function addStylesToDom(styles, options) {
-		for(var i = 0; i < styles.length; i++) {
-			var item = styles[i];
-			var domStyle = stylesInDom[item.id];
-			if(domStyle) {
-				domStyle.refs++;
-				for(var j = 0; j < domStyle.parts.length; j++) {
-					domStyle.parts[j](item.parts[j]);
-				}
-				for(; j < item.parts.length; j++) {
-					domStyle.parts.push(addStyle(item.parts[j], options));
-				}
-			} else {
-				var parts = [];
-				for(var j = 0; j < item.parts.length; j++) {
-					parts.push(addStyle(item.parts[j], options));
-				}
-				stylesInDom[item.id] = {id: item.id, refs: 1, parts: parts};
-			}
-		}
-	}
-	
-	function listToStyles(list) {
-		var styles = [];
-		var newStyles = {};
-		for(var i = 0; i < list.length; i++) {
-			var item = list[i];
-			var id = item[0];
-			var css = item[1];
-			var media = item[2];
-			var sourceMap = item[3];
-			var part = {css: css, media: media, sourceMap: sourceMap};
-			if(!newStyles[id])
-				styles.push(newStyles[id] = {id: id, parts: [part]});
-			else
-				newStyles[id].parts.push(part);
-		}
-		return styles;
-	}
-	
-	function insertStyleElement(options, styleElement) {
-		var head = getHeadElement();
-		var lastStyleElementInsertedAtTop = styleElementsInsertedAtTop[styleElementsInsertedAtTop.length - 1];
-		if (options.insertAt === "top") {
-			if(!lastStyleElementInsertedAtTop) {
-				head.insertBefore(styleElement, head.firstChild);
-			} else if(lastStyleElementInsertedAtTop.nextSibling) {
-				head.insertBefore(styleElement, lastStyleElementInsertedAtTop.nextSibling);
-			} else {
-				head.appendChild(styleElement);
-			}
-			styleElementsInsertedAtTop.push(styleElement);
-		} else if (options.insertAt === "bottom") {
-			head.appendChild(styleElement);
-		} else {
-			throw new Error("Invalid value for parameter 'insertAt'. Must be 'top' or 'bottom'.");
-		}
-	}
-	
-	function removeStyleElement(styleElement) {
-		styleElement.parentNode.removeChild(styleElement);
-		var idx = styleElementsInsertedAtTop.indexOf(styleElement);
-		if(idx >= 0) {
-			styleElementsInsertedAtTop.splice(idx, 1);
-		}
-	}
-	
-	function createStyleElement(options) {
-		var styleElement = document.createElement("style");
-		styleElement.type = "text/css";
-		insertStyleElement(options, styleElement);
-		return styleElement;
-	}
-	
-	function createLinkElement(options) {
-		var linkElement = document.createElement("link");
-		linkElement.rel = "stylesheet";
-		insertStyleElement(options, linkElement);
-		return linkElement;
-	}
-	
-	function addStyle(obj, options) {
-		var styleElement, update, remove;
-	
-		if (options.singleton) {
-			var styleIndex = singletonCounter++;
-			styleElement = singletonElement || (singletonElement = createStyleElement(options));
-			update = applyToSingletonTag.bind(null, styleElement, styleIndex, false);
-			remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true);
-		} else if(obj.sourceMap &&
-			typeof URL === "function" &&
-			typeof URL.createObjectURL === "function" &&
-			typeof URL.revokeObjectURL === "function" &&
-			typeof Blob === "function" &&
-			typeof btoa === "function") {
-			styleElement = createLinkElement(options);
-			update = updateLink.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-				if(styleElement.href)
-					URL.revokeObjectURL(styleElement.href);
-			};
-		} else {
-			styleElement = createStyleElement(options);
-			update = applyToTag.bind(null, styleElement);
-			remove = function() {
-				removeStyleElement(styleElement);
-			};
-		}
-	
-		update(obj);
-	
-		return function updateStyle(newObj) {
-			if(newObj) {
-				if(newObj.css === obj.css && newObj.media === obj.media && newObj.sourceMap === obj.sourceMap)
-					return;
-				update(obj = newObj);
-			} else {
-				remove();
-			}
-		};
-	}
-	
-	var replaceText = (function () {
-		var textStore = [];
-	
-		return function (index, replacement) {
-			textStore[index] = replacement;
-			return textStore.filter(Boolean).join('\n');
-		};
-	})();
-	
-	function applyToSingletonTag(styleElement, index, remove, obj) {
-		var css = remove ? "" : obj.css;
-	
-		if (styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = replaceText(index, css);
-		} else {
-			var cssNode = document.createTextNode(css);
-			var childNodes = styleElement.childNodes;
-			if (childNodes[index]) styleElement.removeChild(childNodes[index]);
-			if (childNodes.length) {
-				styleElement.insertBefore(cssNode, childNodes[index]);
-			} else {
-				styleElement.appendChild(cssNode);
-			}
-		}
-	}
-	
-	function applyToTag(styleElement, obj) {
-		var css = obj.css;
-		var media = obj.media;
-	
-		if(media) {
-			styleElement.setAttribute("media", media)
-		}
-	
-		if(styleElement.styleSheet) {
-			styleElement.styleSheet.cssText = css;
-		} else {
-			while(styleElement.firstChild) {
-				styleElement.removeChild(styleElement.firstChild);
-			}
-			styleElement.appendChild(document.createTextNode(css));
-		}
-	}
-	
-	function updateLink(linkElement, obj) {
-		var css = obj.css;
-		var sourceMap = obj.sourceMap;
-	
-		if(sourceMap) {
-			// http://stackoverflow.com/a/26603875
-			css += "\n/*# sourceMappingURL=data:application/json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + " */";
-		}
-	
-		var blob = new Blob([css], { type: "text/css" });
-	
-		var oldSrc = linkElement.href;
-	
-		linkElement.href = URL.createObjectURL(blob);
-	
-		if(oldSrc)
-			URL.revokeObjectURL(oldSrc);
-	}
-
-
-/***/ },
-/* 6 */
+/* 3 */,
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var ViewManager = Class.extend(function() {
 	    var _viewConstructors = {
-	        'progress': __webpack_require__(7),
-	        'index': __webpack_require__(11),
-	        'select': __webpack_require__(15),
-	        'display': __webpack_require__(17),
+	        'progress': __webpack_require__(5),
+	        'index': __webpack_require__(9),
+	        'select': __webpack_require__(13),
+	        'display': __webpack_require__(15),
 	    };
 	
 		var _views = {};
@@ -42412,10 +42082,10 @@
 
 
 /***/ },
-/* 7 */
+/* 5 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(9);
+	/* WEBPACK VAR INJECTION */(function($) {var View = __webpack_require__(7);
 	
 	var ProgressView = View.extend(function() {
 		var _$progressWrap = $('#progressView');
@@ -42457,10 +42127,10 @@
 	});
 	
 	module.exports = ProgressView;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
-/* 8 */
+/* 6 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -52503,10 +52173,10 @@
 
 
 /***/ },
-/* 9 */
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Time = __webpack_require__(10);
+	var Time = __webpack_require__(8);
 	
 	var View = Time.extend(function() {
 	    this.active = false;
@@ -52581,7 +52251,7 @@
 
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports) {
 
 	
@@ -52812,10 +52482,10 @@
 
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(9);
+	var View = __webpack_require__(7);
 	
 	
 	
@@ -52825,7 +52495,7 @@
 	
 		this.constructor = function() {
 			this.super();
-			var WelcomeStage = __webpack_require__(12);
+			var WelcomeStage = __webpack_require__(10);
 			_welcomeStage = new WelcomeStage();
 			this.stages.push(_welcomeStage);
 		}
@@ -52852,17 +52522,17 @@
 	module.exports = IndexView;
 
 /***/ },
-/* 12 */
+/* 10 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(13);
+	/* WEBPACK VAR INJECTION */(function(THREE, $) {var Stage = __webpack_require__(11);
 	var Welcome = Stage.extend(function() {
 		this.name = 'welcome';
 		this.isInit = false;
 	
 	
 		var that = this;
-		var logoUrl = __webpack_require__(14);
+		var logoUrl = __webpack_require__(12);
 		var particleDatas = [];
 		var cloud;
 		var _camera;
@@ -53044,13 +52714,13 @@
 	
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(6)))
 
 /***/ },
-/* 13 */
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var Time = __webpack_require__(10);
+	var Time = __webpack_require__(8);
 	
 	var Stage = Time.extend(function() {
 		this.objects = {};
@@ -53099,16 +52769,16 @@
 	module.exports = Stage;
 
 /***/ },
-/* 14 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/logo.png";
 
 /***/ },
-/* 15 */
+/* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	var View = __webpack_require__(9);
+	var View = __webpack_require__(7);
 	
 	var SelectView = View.extend(function() {
 		var _selectStage;
@@ -53116,7 +52786,7 @@
 	
 		this.constructor = function() {
 			this.super();
-			var SelectStage = __webpack_require__(16);
+			var SelectStage = __webpack_require__(14);
 			_selectStage = new SelectStage();
 			this.stages.push(_selectStage);
 		}
@@ -53141,10 +52811,10 @@
 	module.exports = SelectView;
 
 /***/ },
-/* 16 */
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(11);
 	
 	// Dependencies CONFIG.selects
 	var SelectCube = Stage.extend(function() {
@@ -53153,7 +52823,7 @@
 	
 		var that = this;
 		var _BASECROOD = new THREE.Vector3(0, 0, 0);
-		var _CAMERACROOD = new THREE.Vector3(200, 200, 300);
+		var _CAMERACROOD = new THREE.Vector3(00, 00, 500);
 	
 		// this.objects
 		this.init = function() {
@@ -53188,12 +52858,12 @@
 			//console.log(tableTop.material);
 	
 			// meizu logo
-			var svgString = "M106.9,0H14.2C6.4,0,0,6.4,0,14.2v70.9h16.7V19.6c0-3.1,2.5-5.7,5.7-5.7h29.8v71.2h16.7V13.9h29.8c3.1,0,5.7,2.5,5.7,5.7v65.5H121V14.2C121,6.4,114.7,0,106.9,0zM138.8,14.2v56.7c0,7.8,6.3,14.2,14.2,14.2h72.3V71.3h-64.1c-3.1,0-5.7-2.5-5.7-5.7V49.5h66.3V35.6h-66.3V19.5c0-3.1,2.5-5.7,5.7-5.7h64.1V0H153C145.1,0,138.8,6.4,138.8,14.2zM243.2,0L260.7,0L260.7,85,L243.2,85zM353.6,0H279v13.8h61.7l-59.2,52.6c-9.5,8.1-3.3,18.6,4.6,18.6h75.4V71.2h-62.9l59.3-52.6C367.5,10,361.8,0,353.6,0zM453,0v65.5c0,3.1-2.5,5.7-5.7,5.7l0,0h-47.6l0,0c-3.1,0-5.7-2.5-5.7-5.7V0h-16.6v70.9c0,7.8,6.3,14.2,14.2,14.2h63.8c7.8,0,14.2-6.3,14.2-14.2V0H453z";
+			var svgString = "M22.8,41H3c-1.7,0-3,1.4-3,3v15.1h3.6V45.2c0-0.7,0.5-1.2,1.2-1.2h6.3v15.2h3.6V44H21c0.7,0,1.2,0.5,1.2,1.2v13.9h3.5V44C25.8,42.4,24.4,41,22.8,41zM29.6,44v12.1c0,1.7,1.3,3,3,3H48v-2.9H34.3c-0.7,0-1.2-0.5-1.2-1.2v-3.4h14.1v-3H33.1v-3.4c0-0.7,0.5-1.2,1.2-1.2H48V41H32.6C30.9,41,29.6,42.4,29.6,44zM75.3,41H59.4v2.9h13.1L59.9,55.1c-2,1.7-0.7,4,1,4H77v-2.9H63.6L76.2,45C78.3,43.1,77,41,75.3,41zM96.5,41v13.9c0,0.7-0.5,1.2-1.2,1.2l0,0H85.1l0,0c-0.7,0-1.2-0.5-1.2-1.2V41h-3.5v15.1c0,1.7,1.3,3,3,3H97c1.7,0,3-1.3,3-3V41H96.5zM51.8 41L55.5 41L55.5 59.1L51.8 59.1z";
 			var shape = transformSVGPathExposed(svgString);
 			var options = {
-	            amount: 10,
-	            bevelThickness: 3,
-	            bevelSize: 02,
+	            amount: 5,
+	            bevelThickness: 0.5,
+	            bevelSize: 0.5,
 	            bevelSegments: 12,
 	            bevelEnabled: true,
 	            curveSegments: 80,
@@ -53202,9 +52872,10 @@
 	        var svgGemo = new THREE.ExtrudeGeometry(shape, options)
 	        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true});
 	        var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
-	        svgMesh.scale.set(1, 1, 1);
-	        svgMesh.position.set(-330, 0, 0);
-	        svgMesh.rotation.x = Math.PI
+	        svgGemo.center();
+	        svgGemo.rotateX(Math.PI);
+	        // svgMesh.applyMatrix( new THREE.Matrix4().makeTranslation(-50, -50, 0) );
+	        // svgMesh.position.set(0, 0, 0);
 	        //console.log(svgMesh);
 	        M3.scene.add(svgMesh);
 	        this.objects.svgLogo = svgMesh;
@@ -53275,12 +52946,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 17 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(9);
-	var DisplayContainerStage = __webpack_require__(18);
-	var MobileStage = __webpack_require__(19);
+	/* WEBPACK VAR INJECTION */(function($, THREE) {var View = __webpack_require__(7);
+	var DisplayContainerStage = __webpack_require__(16);
+	var MobileStage = __webpack_require__(17);
 	
 	var Display = View.extend(function() {
 		var that = this;
@@ -53582,13 +53253,13 @@
 	module.exports = Display;
 	
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(1)))
 
 /***/ },
-/* 18 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(11);
 	
 	var DisplayContainer = Stage.extend(function() {
 		this.isInit = false;
@@ -53736,12 +53407,12 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 19 */
+/* 17 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(13);
-	var Mobile = __webpack_require__(20);
-	var TrackballControls = __webpack_require__(23);
+	/* WEBPACK VAR INJECTION */(function(THREE) {var Stage = __webpack_require__(11);
+	var Mobile = __webpack_require__(18);
+	var TrackballControls = __webpack_require__(21);
 	
 	
 	var DisplayMobile = Stage.extend(function() {
@@ -54034,13 +53705,13 @@
 	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1)))
 
 /***/ },
-/* 20 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE, CONFIG) {// Dependencies CONFIG.mobiles
 	
-	var Time = __webpack_require__(10);
-	var Loader = __webpack_require__(22);
+	var Time = __webpack_require__(8);
+	var Loader = __webpack_require__(20);
 	var loader = new Loader();
 	var mobileEnvMap;
 	
@@ -54158,10 +53829,10 @@
 	});
 	
 	module.exports = Mobile;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(21)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(1), __webpack_require__(19)))
 
 /***/ },
-/* 21 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {var CONFIG = {};
@@ -54216,10 +53887,10 @@
 	
 	module.exports = CONFIG;
 	
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6)))
 
 /***/ },
-/* 22 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($, THREE) {// 下载缓存
@@ -54387,10 +54058,10 @@
 	}
 	
 	module.exports = Loader;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(8), __webpack_require__(1)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(6), __webpack_require__(1)))
 
 /***/ },
-/* 23 */
+/* 21 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function(THREE) {/**
