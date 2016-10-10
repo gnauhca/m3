@@ -1,0 +1,13 @@
+module.exports = {
+	model: {
+		glass: require('./glass.json'),
+		metal: require('./metal.json'),
+		metal_reflect: require('./metal_reflect.json'),
+		plane: require('./plane.json'),
+		plastics: require('./plastics.json'),
+		map: require('./map.json'),
+	},
+	materials: {
+		black: require('./materials/black.json')
+	}
+}

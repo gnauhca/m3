@@ -607,5 +607,4 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.update();
 
 };
-
 THREE.TrackballControls.prototype = Object.create( THREE.EventDispatcher.prototype );

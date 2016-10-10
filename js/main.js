@@ -30,6 +30,7 @@ M3.tick = m3Time.addTick(function() {
 	M3.renderer.render(M3.scene, M3.camera);
 });
 
+
 window.addEventListener('resize', function() {
 	winWidth = window.innerWidth;
 	winHeight = window.innerHeight;
