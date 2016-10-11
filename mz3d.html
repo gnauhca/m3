@@ -68,11 +68,41 @@
 
 </div>
 
+<!-- ---------------- Custom Shader Code ------------------------ -->
+<script id="glowVertexShader" type="x-shader/x-vertex">
+uniform vec3 viewVector;
+uniform float c;
+uniform float p;
+varying float intensity;
+void main() 
+{
+    vec3 vNormal = normalize( normalMatrix * normal );
+	vec3 vNormel = normalize( normalMatrix * viewVector );
+	intensity = pow( c - dot(vNormal, vNormel), p );
+	
+    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+}
+</script>
 
+<!-- fragment shader a.k.a. pixel shader -->
+<script id="glowFragmentShader" type="x-shader/x-vertex"> 
+uniform vec3 glowColor;
+varying float intensity;
+void main() 
+{
+	vec3 glow = glowColor * intensity;
+    gl_FragColor = vec4( glow, 1.0 );
+}
+</script>
+<!-- ----------------------------------------------------------- -->
+
+
+<script type='text/javascript' src='./js/libs/dat.gui.js'></script>
 <script type="text/javascript" src="./js/libs/tween.js"></script>
 <script type="text/javascript" src="./js/libs/three.js"></script>
 <script type="text/javascript" src="./js/libs/d3-threeD.js"></script>
 <script type="text/javascript" src="./js/libs/TrackballControls.js"></script>
+<script type="text/javascript" src="./js/libs/OrbitControls.js"></script>
 <script type="text/javascript" src="./js/common/utils.js"></script>
 <script type="text/javascript" src="./build/index.js"></script>
 </body>
