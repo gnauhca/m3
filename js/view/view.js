@@ -1,38 +1,37 @@
-var Time = require('time');
+import Time in 'time.js';
 
-var View = Time.extend(function() {
-    this.active = false;
-    this.stages = []; // 3d 对象
-    this.viewManager;
+class View extends Time {
 
-    this.constructor = function(viewManager) {
-        this.super();
+    constructor(viewManager) {
+        super();
         this.viewManager = viewManager;
+        this.stages = []; // 3d 对象
+        this.active = false;
     }
 
     // 激活视图，data 为接受的参数
-    this.activate = function(data) {
+    activate(data) {
 
     }
 
     // 冻结视图，data 为接受的参数
-    this.inactivate = function(data) {}
+    inactivate(data) {}
 
-    this.addStage = function(stage) {
+    addStage(stage) {
 
     }
 
     // 窗口大小变化的操作
-    this.resize = function() {}
+    resize() {}
 
-    this.distroy = function() {
+    distroy() {
         this.super.distroy();
         this.viewManager.removeView(this);
     }
 
 });
 
-module.exports = View;
+export default View;
 
 
 

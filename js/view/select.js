@@ -1,31 +1,27 @@
-var View = require('./view.js');
+import View from './view.js';
+import SelectStage from '../stages/select-table.js';
 
-var SelectView = View.extend(function() {
-	var _selectStage;
-	this.stages;
+class SelectView = View.extend(function() {
 
-	this.constructor = function() {
+	constructor() {
 		this.super();
-		var SelectStage = require('../stages/select-table.js');
-		_selectStage = new SelectStage();
-		this.stages.push(_selectStage);
+		this._selectStage = new SelectStage();
+		this.stages.push(this._selectStage); // super
 	}
 
-	this.activate = function() { 
+	activate() { 
 		// stage init
-		if (!_selectStage.isInit) {
-			_selectStage.init();
+		if (!this._selectStage.isInit) {
+			this._selectStage.init();
 		}
 
 		// select animation
-		_selectStage.entry()/*.then(function() {
+		this._selectStage.entry()/*.then(function() {
 			// select animation over
 		}).catch(function(e) { console.log(e.stack);});*/
 	}
 
-	this.inactivate = function() {
-
-	}
+	inactivate() { }
 });
 
-module.exports = SelectView;
+ export default SelectView;

@@ -1,4 +1,4 @@
-var View = require('./view.js');
+import View from './view.js';
 
 var ProgressView = View.extend(function() {
 	var _$progressWrap = $('#progressView');
@@ -39,4 +39,4 @@ var ProgressView = View.extend(function() {
 	}
 });
 
-module.exports = ProgressView;
+export default ProgressView;

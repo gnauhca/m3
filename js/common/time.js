@@ -1,12 +1,9 @@
-
 /* 时间 */
 var TIME = {
 
 	// 所有时间body对象
 	bodys : []
 }
-
-;(function() {
 
 stop = false;
 TIME.addBody = function(timeBody) {
@@ -61,27 +58,24 @@ TIME.handleFrame = (function() {
 	});	
 })();
 
-})();
-
 TIME.tick();
 
 
 /* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
-var TimeBody = Class.extend(function TimeBody() {
-	var that = this;
+class Time {
 
-	this.ticks = [];
-	this.tweens = [];
-	this.isStop = false;
-
-	this.constructor = function() {
+	constructor() {
 		TIME.addBody(this);
+		this.ticks = [];
+		this.tweens = [];
+		this.isStop = false;
 	}
+
 
 	/**
 	 * 该物体灭亡
 	 */
-	this.destory = function() {
+	destory() {
 		TIME.removeBody(this);
 	}
 
@@ -89,15 +83,15 @@ var TimeBody = Class.extend(function TimeBody() {
 	 * 帧更新
 	 * @param timegap 与上一帧的时间间隔
 	 */
-	this.addTick = function(fn) {
-		var tick = {'fn': fn};
+	addTick(fn) {
+		var tick = {'fn': fn.bind(this)};
 
 		tick.isStop = false;
 		this.ticks.push(tick);
 		return tick;
 	}
 
-	this.removeTick = function(tick) {
+	removeTick(tick) {
 		if (!tick) {
 			// remove all
 			this.ticks = [];
@@ -114,63 +108,62 @@ var TimeBody = Class.extend(function TimeBody() {
 	/** 
 	 * tween
 	 */
-	this.addTween = function(tween) {
+	addTween(tween) {
 		this.tweens.push(tween);
 	}
 
 	/*
 	 * tweenObj
 	 */
-	this.addTHREEObjTween = function(threeObj, target, dur, tweenObj) {		
+	addTHREEObjTween(threeObj, target, dur, tweenObj) {		
 		var that = this;
 		var init = {};
-		var des = {};
+		var dest = {};
+	    
+	    var attrs = ['x', 'y', 'z', 'r', 'g', 'b', 'opacity'];
+		var separater = '_';
 
-        var keys = ['position', 'rotation', 'scale'];
-        var attrs = ['x', 'y', 'z'];
-		var des = [];
-
-		keys.forEach(function(key) {
-			if (target[key]) {
-				attrs.forEach(function(attr) {
-					init[key + '___' + attr] = threeObj[key][attr];
-					des[key + '___' + attr] = target[key][attr];
-				});			
+		for (let key in target) {
+			let destKey = key;
+			if (typeof target[key] === 'object') {
+				for (let cKey in target[key]) {
+					if (attrs.indexOf(cKey) !== -1) {
+						destKey += cKey;
+						dest[destKey] = target[key][cKey];
+					}
+				}
+			} else {
+				dest[destKey] = target[key];
 			}
-		});
-		if (target.lookAt) {
-			var lookAt = THREEUtil.getLookAt(threeObj);
-			attrs.forEach(function(attr) {
-				init['lookAt___' + attr] = lookAt[attr];
-				des['lookAt___' + attr] = target['lookAt'][attr];
-			});		
+
+			if (destKey.indexOf('lookAt') === -1) {
+				let keyArr = destKey.split('_');
+				let subObj = threeObj;
+
+				keyArr.forEach(function(subKey) { subObj = subObj[key]; });
+				init[destKey] = subObj;
+			} else {
+				init[destKey] = dest[destKey]; // lookAt
+			}
 		}
 
 		var tween;
-		var tKeys = ['easing', 'onUpdate', 'onComplete'];
-
 		tweenObj = tweenObj || {};
 		tween = new TWEEN.Tween(init)
-		tween.to(des, dur)
+		tween.to(dest, dur)
 			.easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut)
 			.onUpdate(function() {
-				var current = this;
-				var lookAt = {};
-				var k;
-				var a;
-				for (var key in current) {
-					if (key.indexOf('___') > 0) {
-						k = key.split('___')[0];
-						a = key.split('___')[1];
-						if (k === 'lookAt') {
-							lookAt.a = current[key];
-						} else {
-							threeObj[k][a] = current[key];
-						}
+				let current = this;
+				for (let currentKey in current) {
+					if (currentKey.indexOf['lookAt'] !== -1) {
+						let lookAt = current[currentKey];
+						threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
 					}
-				}
-				if (lookAt.x) {
-					threeObj.lookAt(new Vector3(lookAt.x, lookAt.y, lookAt.z));
+					let keyArr = currentKey.split('_');
+					let last = keyArr.pop();
+					let subObj = threeObj;
+					keyArr.forEach(function(key) { subObj = subObj[key]; });
+					subObj[last] = current[currentKey];
 				}
 				tweenObj.onUpdate && tweenObj.onUpdate();
 			})
@@ -183,7 +176,7 @@ var TimeBody = Class.extend(function TimeBody() {
 		return tween;
 	}
 
-	this.removeTween = function(tween) {
+	removeTween(tween) {
 		if (!tween) {
 			// remove all
 			this.tween = [];
@@ -199,22 +192,22 @@ var TimeBody = Class.extend(function TimeBody() {
 	}
 
 	// stop 暂停时间
-	this.stop = function() {
+	stop() {
 		this.isStop = true;
 		this.tweens.forEach(function(tween) {
 			tween.stop();
 		});
 	}
 
-	this.start = function() {
+	start() {
 		this.isStop = false;
 		this.tweens.forEach(function(tween) {
 			tween.start();
 		});
 	}
-});
+}
 
-module.exports = TimeBody;
+export default Time;
 
 
 
