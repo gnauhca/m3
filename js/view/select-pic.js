@@ -18,7 +18,7 @@ var ProductsPreview = View.extend(function() {
 	var maxSelect = 4; // 最多选择个数
 
 	this.constructor = function() {
-		this.super();
+		super();
 		this.init();
 	}
 

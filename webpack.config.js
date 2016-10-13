@@ -24,7 +24,15 @@ module.exports = {
     module: {
         loaders: [
             { test: /css\/common\.scss$/, loader: ExtractTextPlugin.extract(['css', 'sass']) },
-            { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] }
+            { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] },
+            {
+                test: /js.*?\.js$/,
+                exclude: /node_modules/,
+                loader: 'babel', 
+                query: { presets: ['es2015'] }
+            }
+
+
         ]
     },
 

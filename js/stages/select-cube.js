@@ -1,7 +1,7 @@
-var Stage = require('./stage.js');
+import Stage from './stage.js';
 
 // Dependencies CONFIG.selects
-var SelectCube = Stage.extend(function() {
+class SelectCube extends Stage {
 	this.isInit = false;
 	this.objects;
 
@@ -195,6 +195,6 @@ var SelectCube = Stage.extend(function() {
 	//a
 
 
-});
+}
 
 module.exports = SelectCube;

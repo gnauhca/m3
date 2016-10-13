@@ -30,7 +30,7 @@ var Display = View.extend(function() {
 		_progressView = M3.viewManager.getView('progress');
 		_containerStage = new DisplayContainerStage();
 		this.stages.push(_containerStage);
-		this.super();
+		super();
 	}
 
 	// data : {mobile: [pro5, mx6 ...]}

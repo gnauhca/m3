@@ -2,7 +2,7 @@ import Stage from './stage.js';
 import selectCfg from 'select-conf.js';
 
 // Dependencies CONFIG.selects
-class SelectCube extends Stage {
+class SelectTable extends Stage {
 
 	constructor() {
 		super();
@@ -10,7 +10,7 @@ class SelectCube extends Stage {
 		this.objects;
 
 		this._BASECROOD = new THREE.Vector3(0, 0, 0);
-		this._CAMERACROOD = new THREE.Vector3(00, 400, 300);
+		this._CAMERACROOD = new THREE.Vector3(0, 100, 400);
 
 		this._products = {}; // {'pro5': {mesh: xx, glowMesh, selected: false}}
 
@@ -25,8 +25,8 @@ class SelectCube extends Stage {
 	init() {
 		this._glowMaterial = new THREE.ShaderMaterial({
 		    uniforms: {
-		        "c": { type: "f", value: 0.2 },
-		        "p": { type: "f", value: 1.9},
+		        "c": { type: "f", value: 0.79 },
+		        "p": { type: "f", value:1.2},
 		        glowColor: { type: "c", value: new THREE.Color(0xffffff) },
 		        viewVector: { type: "v3", value: this.camera.position }
 		    },
@@ -139,7 +139,7 @@ class SelectCube extends Stage {
 		tableTopMaterial.specular = new THREE.Color("rgb(0.54, 0.54, 0.54)");
 
 		var tableTop = new THREE.Mesh(tableTopGemo, tableTopMaterial);
-		tableTop.position.set(0, 35, 0);
+		tableTop.position.set(0, 33, 0);
 
 
 		var tableBottomGemo = new THREE.CylinderGeometry(100, 90, 30, 100, 10);
@@ -152,7 +152,7 @@ class SelectCube extends Stage {
 
 
 		var tableGlowGemo = new THREE.CylinderGeometry(95.1, 95, 2, 100, 10);
-		var tableGlow = new THREE.Mesh(tableGlowGemo, this._glowMaterial.clone());
+		var tableGlow = new THREE.Mesh(tableGlowGemo, this._glowMaterial);
 		tableGlow.position.set(0, 15, 0);
 
 		this.objects.tableTop = tableTop;
@@ -177,24 +177,36 @@ class SelectCube extends Stage {
 
         var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true});
         var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
-        svgMesh.position.set(0, 0, 200);
+        svgMesh.position.set(0, 0, 150);
         // this.objects.svgLogo = svgMesh;
 
 
-        var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), this._glowMaterial.clone());
+        var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), this._glowMaterial);
 		glowSvgMesh.position.copy(svgMesh.position);
-		glowSvgMesh.scale.multiplyScalar(1.2);
+		glowSvgMesh.scale.multiplyScalar(1.1);
 		this.objects.glowSvgMesh = glowSvgMesh;
 
 		// plane
-		var planeGridCount = 50;
+		var planeGridCount = 100;
 		var planeWidth = planeGridCount * 20;
 		var planeHeight = planeGridCount * 20;
 		var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
-		var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+		// var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+		var material = new THREE.MeshBasicMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( phaneGeom, material );
 		plane.rotation.x = Math.PI * 0.5;
 		this.objects.plane = plane;
+
+
+		// grid 
+		var gridGroup = new THREE.Group();
+		var gridMesh;
+
+
+		/*for (let i = 0; i < 100; i++) {
+			gridMesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height, 1, 1), new MeshPhongMaterial({color: 0xffffff}));
+		}*/
+
 
 		// light
         var directionalLightColor = "#ffffff";
@@ -213,7 +225,8 @@ class SelectCube extends Stage {
         directionalLight.intensity = 0.5;
         directionalLight.shadowMapHeight = 1024;
         directionalLight.shadowMapWidth = 1024;
-        directionalLight.target = this.objects.sphere;
+        directionalLight.target.lookAt(this._BASECROOD); 
+        //this.objects.directionalLight = directionalLight;
 
  		this.objects.spotLight = new THREE.SpotLight(0xffffff);
  		this.objects.spotLight.intensity = 0.8;
@@ -227,11 +240,11 @@ class SelectCube extends Stage {
 	}
 
 	_buildProductLogo() {
-		var logoMaterial = new THREE.MeshPhongMaterial({color: 0xdddddd});
+		var logoMaterial = new THREE.MeshPhongMaterial({color: 0x999999});
 		var group = new THREE.Group();
 		var len = selectCfg.products.length;
 		var angelStep = Math.PI * 2 / len;
-		var Radius = 80;
+		var Radius = 90;
 		var y = 32;
 		var x;
 		var z;
@@ -246,11 +259,9 @@ class SelectCube extends Stage {
             steps: 1
         };
 
-
-
 		selectCfg.products.forEach(function(product, i) {
 			var gemo = this._createSVGGemo(product.svgString, svgOption);
-			var mesh = new THREE.Mesh(gemo, logoMaterial.clone());
+			var mesh = new THREE.Mesh(gemo, logoMaterial/*.clone()*/);
 			
 			var glowMesh = new THREE.Mesh(gemo.clone(), this._glowMaterial.clone());
 
@@ -260,26 +271,42 @@ class SelectCube extends Stage {
 
 			this._products[product.name] = {'mesh': mesh, 'glowMesh': glowMesh, 'selected':false};
 
-			mesh.scale.set(0.1, 0.1, 0.1);
+			mesh.scale.set(0.15, 0.15, 0.15);
 			mesh.position.set(x, y, z);
 			mesh.rotation.x = Math.PI / 2;
 			mesh.rotation.z = Math.PI / 2 + angelStep * i;
 
-			glowMesh.scale.set(0.1, 0.1, 0.1).multiplyScalar(1.2);;
+			glowMesh.scale.set(0.15, 0.15, 0.15).multiplyScalar(1.2);;
 			glowMesh.position.set(x, y, z);
 			glowMesh.rotation.x = Math.PI / 2;
 			glowMesh.rotation.z = Math.PI / 2 + angelStep * i;
 
 			// group.add(glowMesh);
 			group.add(mesh);
+
+
+			if (i === 0) {
+				// mesh.material.color.set(0xffffff);
+				// mesh.material.emissive.set(0xeeeeee);
+
+				this.addTHREEObjTween(mesh.material, {color: new THREE.Color(0x0cbbef), emissive: new THREE.Color(0xcccccc)}, 3000).start();
+
+				this.addTHREEObjTween(this.objects.glowSvgMesh.material, {
+					uniforms_c_value: 0.46,
+					uniforms_p_value: 0.2,
+					uniforms_glowColor_value: new THREE.Color(0x59c0de)
+				}, 4000).start();
+
+			}
+
 		}.bind(this));
 
 		this.objects.products = group;
 	}
 
-});
+}
 
-export default SelectCube;
+export default SelectTable;
 
 
 

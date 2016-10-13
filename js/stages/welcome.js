@@ -12,7 +12,7 @@ var Welcome = Stage.extend(function() {
 	var baseCrood = new THREE.Vector3(0, 0, 0);
 
 	this.constructor = function() {
-		this.super();
+		super();
 		_camera = M3.camera;
 	}
 

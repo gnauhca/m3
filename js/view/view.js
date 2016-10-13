@@ -1,4 +1,4 @@
-import Time in 'time.js';
+import Time from 'time.js';
 
 class View extends Time {
 
@@ -25,11 +25,11 @@ class View extends Time {
     resize() {}
 
     distroy() {
-        this.super.distroy();
+        super.distroy();
         this.viewManager.removeView(this);
     }
 
-});
+}
 
 export default View;
 

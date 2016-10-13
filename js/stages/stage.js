@@ -1,9 +1,9 @@
 import Time from 'time.js';
 
-class Stage extend Time {
+class Stage extends Time {
 
 	constructor() {
-		this.super();
+		super();
 
 		this.objects = {};
 		this.state; // unload, loading, setup, animate
@@ -37,12 +37,12 @@ class Stage extend Time {
 	}
 
 	destory() {
-		this.super(); // remove tick of time
+		super.destory(); // remove tick of time
 		this.remove();
 		for (var name in this.objects) {
 			delete this.objects[name];
 		}
 	}
-});
+}
 
 export default Stage;

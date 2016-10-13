@@ -1,8 +1,13 @@
+import ViewManager from './view/view-manager.js';
+import Time from 'time.js';
+
+
+
 (function() { 
 require('../css/common.scss');//return;
 
 window.M3 = {};
-M3.viewManager = require('./view/view-manager.js');
+M3.viewManager = new ViewManager();
 
 // todo: webgl 检查
 //
@@ -20,10 +25,9 @@ var winHeight = window.innerHeight;
 M3.renderer.setSize(winWidth, winHeight);
 
 
-M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 
 // main render tick
-var Time = require('time');
 var m3Time = new Time();
 
 M3.tick = m3Time.addTick(function() {
@@ -37,6 +41,7 @@ window.addEventListener('resize', function() {
 	M3.camera.aspect = winWidth / winHeight;
 	M3.camera.updateProjectionMatrix();
 	M3.renderer.setSize(winWidth, winHeight);
+	console.log('r');
 });
 
 

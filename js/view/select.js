@@ -1,12 +1,20 @@
 import View from './view.js';
 import SelectStage from '../stages/select-table.js';
+import selectCfg from 'select-conf.js';
 
-class SelectView = View.extend(function() {
+
+class SelectView extends View {
 
 	constructor() {
-		this.super();
+		super();
 		this._selectStage = new SelectStage();
+		this._products = selectCfg.products;
+		this.init();
 		this.stages.push(this._selectStage); // super
+	}
+
+	init() {
+		
 	}
 
 	activate() { 
@@ -22,6 +30,6 @@ class SelectView = View.extend(function() {
 	}
 
 	inactivate() { }
-});
+}
 
- export default SelectView;
+export default SelectView;

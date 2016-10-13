@@ -19,7 +19,7 @@ var DisplayRoom = View.extend(function() {
 
 
 	this.constructor = function() {
-		this.super();
+		super();
 		config = $.extend(true, {}, CONFIG);
 	}
 

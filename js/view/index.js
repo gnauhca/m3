@@ -7,7 +7,7 @@ var IndexView = View.extend(function() {
 	this.stages;
 
 	this.constructor = function() {
-		this.super();
+		super();
 		var WelcomeStage = require('../stages/welcome.js');
 		_welcomeStage = new WelcomeStage();
 		this.stages.push(_welcomeStage);

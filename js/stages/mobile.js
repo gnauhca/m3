@@ -23,7 +23,7 @@ var Mobile = Time.extend(function() {
 	var JSONLoader = new THREE.JSONLoader();
 
 	this.constructor = function(mobileName) { 
-		this.super();
+		super();
 		CONFIG.mobiles.forEach(function(mobile) {
 			if (mobile.name === mobileName) {
 				_modelConfigs = mobile;

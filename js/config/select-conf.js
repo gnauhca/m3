@@ -15,7 +15,7 @@ products.forEach(function(productName) {
 	);
 });
 
-module.exports = SVG;
+export default SVG;
 
 
 

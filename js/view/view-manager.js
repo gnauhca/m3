@@ -5,9 +5,9 @@ import Select from './select.js';
 
 var _viewConstructors = {
     'progress': Progress,
-    'index': Index,
+    // 'index': Index,
     'select': Select,
-    'display': Display,
+    // 'display': Display,
 };
 
 var _views = {};
@@ -67,7 +67,7 @@ class ViewManager {
     	delete views[view.name];
     }
 
-});
+}
 
 export default ViewManager;
 

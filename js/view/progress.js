@@ -1,27 +1,28 @@
 import View from './view.js';
 
-var ProgressView = View.extend(function() {
-	var _$progressWrap = $('#progressView');
-	var _$progressVal = $('#progressVal');
-	var _$water = $('.water');
-	var _$waterDivs = _$water.find('div');
+class ProgressView extends View {
 
-	this.constructor = function() {
-		this.super();
+	constructor() {
+		super();
+
+		this._$progressWrap = $('#progressView');
+		this._$progressVal = $('#progressVal');
+		this._$water = $('.water');
+		this._$waterDivs = this._$water.find('div');
 		this.setProgress(0);
 	}
 
-	this.activate = function() { 
-		_$progressWrap.show();
+	activate() { 
+		this._$progressWrap.show();
 	}
 
-	this.inactivate = function() {
+	inactivate() {
 		setTimeout(function() {
-			_$progressWrap.hide();
+			this._$progressWrap.hide();
 		}, 1000);
 	}
 
-	this.setProgress = function(percent) {
+	setProgress(percent) {
 		var initColor = [246, 11, 55];
 		var finalColor = [16, 121, 125];
 		var opacity = 0.3;
@@ -31,12 +32,12 @@ var ProgressView = View.extend(function() {
 			return initColor[i] + (colorVal - initColor[i]) * percent|0;
 		});
 
-		_$waterDivs.css('backgroundColor', 'rgba(' + currentColor.join(',') + ',' + opacity + ')');
+		this._$waterDivs.css('backgroundColor', 'rgba(' + currentColor.join(',') + ',' + opacity + ')');
 
-		_$progressVal.html( (percent*100 | 0) + '%');
+		this._$progressVal.html( (percent*100 | 0) + '%');
 		percent *= 0.999;
-		_$water.css('transform', 'scaleY(' + percent.toFixed(2) + ')');
+		this._$water.css('transform', 'scaleY(' + percent.toFixed(2) + ')');
 	}
-});
+}
 
 export default ProgressView;

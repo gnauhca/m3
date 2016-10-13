@@ -36,7 +36,7 @@ var DisplayMobile = Stage.extend(function() {
 
 	this.constructor = function(mobileName) {
 		this.name = mobileName;
-		this.super();
+		super();
 		_mobile = new Mobile(this.name);
 		this.size = _mobile.size;
 	}
@@ -203,7 +203,7 @@ var DisplayMobile = Stage.extend(function() {
 	 * 从scene 中移除模型
 	 */
 	this.remove = function() {
-		this.super();
+		super();
 		this.removeTick();
 	}
 
