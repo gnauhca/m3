@@ -2,158 +2,113 @@ import Stage from './stage.js';
 
 // Dependencies CONFIG.selects
 class SelectCube extends Stage {
-	this.isInit = false;
-	this.objects;
 
-	var that = this;
-	var _BASECROOD = new THREE.Vector3(0, 0, 0);
-	var _CAMERACROOD = new THREE.Vector3(200, 100, 200);
-
-	var _CUBESIZE = 20; // 立方体大小
-	var _CUBEXCOUNT = 20; // 横向个数
-	var _CUBEZCOUNT = 20; // 纵向 Z(向) 个数
-	var _CUBEHEIGHT = 100;
-	var _MINSCALE = 0.1; // 最小高度缩放
-	var _MAXSCALE = 0.6; // 最大高度缩放
-
-	var _cubes; // 存储方块信息的二维数组
-	var _productCubes; // 产品方块
-
-	var _cubeTick;
-
+	constructor() {
+		super();
+		this.objects;
+		this._BASECROOD = new THREE.Vector3();
+		this._PLANEWIDTH = 1500;
+		this._PLANEHEIGHT = 1500;
+		this._CUBESIZE = 60; // 立方体大小
+		this._GRIDXCOUNT = (this._PLANEWIDTH / this._CUBESIZE)|0; // 横向个数
+		this._GRIDZCOUNT = (this._PLANEHEIGHT / this._CUBESIZE)|0; // 纵向 Z(向) 个数
+		this._CUBEHEIGHT = 400;
+		this._MINSCALE = 0.1; // 最小高度缩放
+		this._MAXSCALE = 0.6; // 最大高度缩放
+		this._cubes; // 存储方块信息的二维数组		
+		this.isInit = false;
+	}
 
 	// this.objects
-	this.init = function() {
+	init() {
 		this.build();
         this.isInit = true;
 	}
 
-	this.build = function() {
+	build() {
 
 		// cubes
-		_cubes = [];
+		this._cubes = [];
 
+		var emptySpace = 0.3;
 		var cubeGroup = new THREE.Group();
 		var cubeMaterial;
 		var cubeGeom;
 		var cube;
 
-		for (var i = 0; i < _CUBEXCOUNT; i++ ) {
-			var x = _BASECROOD.x - _CUBEXCOUNT / 2 + i;
-			_cubes[i] = _cubes[i] || [];
-			for (var j = 0; j < _CUBEZCOUNT; j++ ) {
-				var z = _BASECROOD.z - _CUBEZCOUNT / 2 + j;
-				_cubes[i][j] = {
+		for (let i = 0; i < this._GRIDXCOUNT; i++ ) {
+	
+			for (let j = 0; j < this._GRIDZCOUNT; j++ ) {
+
+				var x = this._BASECROOD.x - this._GRIDXCOUNT / 2 + i;
+				var z = this._BASECROOD.z - this._GRIDZCOUNT / 2 + j;
+				if (x * x + z * z < this._GRIDXCOUNT * emptySpace * this._GRIDXCOUNT * emptySpace ||
+					(Math.random() + 0.5) | 0) {
+					continue;
+				}
+
+				this._cubes[i] = this._cubes[i] || [];
+				this._cubes[i][j] = {
 					position: {x: x, y: 0, z: z},
 					scaleV: (Math.random() / 6000), // 缩放速度每一帧缩放 0.??
-					scaleMin: _MINSCALE + (_MAXSCALE - _MINSCALE) * Math.random() / 2,
-					scaleMax: _MAXSCALE - (_MAXSCALE - _MINSCALE) * Math.random() / 2, // 缩放范围
+					scaleMin: this._MINSCALE + (this._MAXSCALE - this._MINSCALE) * Math.random() / 2,
+					scaleMax: this._MAXSCALE - (this._MAXSCALE - this._MINSCALE) * Math.random() / 2, // 缩放范围
 				};
+				// console.log(this._cubes[i][j].position);
+				// 
+				var cubeSize = this._CUBESIZE *  (0.2 + 0.8 * Math.random());
 				cubeGeom = new THREE.BoxGeometry(
-								_CUBESIZE * 0.5, 
-								_CUBEHEIGHT, 
-								_CUBESIZE * 0.5
+								cubeSize, 
+								this._CUBEHEIGHT, 
+								cubeSize
 							);
-				cubeMaterial = new THREE.MeshPhongMaterial(
+				cubeMaterial = new THREE.MeshLambertMaterial(
 					{
-						color: 0x00b9ef,
+						color: 0x888888,
 						//transparent: true,
-						opacity: 0.9,
-						reflectivity: 1,
-						specular: 0xdddddd,
-						shininess: 90
+						// opacity: 0.9,
+						// reflectivity: 1,
+						// specular: 0xdddddd,
+						// shininess: 90
 					}
 				);
 				cube = new THREE.Mesh(cubeGeom, cubeMaterial);
 				cube.position.set(
-					_cubes[i][j].position.x * _CUBESIZE,
+					(this._cubes[i][j].position.x + Math.random() - 0.5) * this._CUBESIZE,
 					0,
-					_cubes[i][j].position.z * _CUBESIZE
+					(this._cubes[i][j].position.z + Math.random() - 0.5) * this._CUBESIZE
 				);
 				cube.scale.set(1, 0.01, 1);
-				_cubes[i][j].cube = cube;
+				this._cubes[i][j].cube = cube;
 				cubeGroup.add(cube);
+
+
+
 			}
 		}
 
-		//product cube
-		_productCubes = [];
-		CONFIG.selects.forEach(function(select) {
-			var cube = _cubes[select.size[0]][select.size[1]];
-			cube.name = select.name;
-			_productCubes.push(cube);
-		});
-
 		this.objects.cubeGroup = cubeGroup;
 
-		// plane
-		var planeGridCount = 50;
-		var planeWidth = planeGridCount * _CUBESIZE;
-		var planeHeight = planeGridCount * _CUBESIZE;
-		var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
-		var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
-		var plane = new THREE.Mesh( phaneGeom, material );
-		plane.rotation.x = Math.PI * 0.5;
-		this.objects.plane = plane;
-
-		// light
-        var directionalLightColor = "#ffffff";
-        var directionalLight = new THREE.DirectionalLight(directionalLightColor);
-        directionalLight.name = this.name + ' directionalLight';
-        directionalLight.position.set(-100, 50, 50);
-        directionalLight.castShadow = true;
-        directionalLight.shadowCameraNear = 0;
-        directionalLight.shadowCameraFar = 300;
-        directionalLight.shadowCameraLeft = -200;
-        directionalLight.shadowCameraRight = 200;
-        directionalLight.shadowCameraTop = 200;
-        directionalLight.shadowCameraBottom = -200;
-
-        directionalLight.distance = 0;
-        directionalLight.intensity = 0.5;
-        directionalLight.shadowMapHeight = 1024;
-        directionalLight.shadowMapWidth = 1024;
-        directionalLight.target = this.objects.sphere;
-
- 		this.objects.spotLight = new THREE.SpotLight(0xffffff);
- 		this.objects.spotLight.intensity = 0.8;
- 		this.objects.spotLight.position.set(-300, 200, 100);
- 		this.objects.spotLight.lookAt(_BASECROOD); 
-
- 		this.objects.spotLight2 = new THREE.SpotLight(0xffffff);
- 		this.objects.spotLight2.intensity = 0.5;
- 		this.objects.spotLight2.position.set(200, 200, -100);
- 		this.objects.spotLight2.lookAt(_BASECROOD); 
-
-		_camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 	}
 
-	this.entry = function() {
+	entry() {
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
-
-		this.camera.position.copy(_CAMERACROOD);
-		this.camera.lookAt(_BASECROOD);
-
-		moveCubes();
+		this._moveCubes();
 	}
 
-
-	this.selectProduct = function(productNames) {
-
-	}
-
-	this.leave = function() {
+	leave() {
 		// or return a promise so that can do some ani
 		this.removeTick(); 
 	}
 
-	function moveCube(cube) {
+	_moveCube(cube) {
+		var that = this;
 		var target = {};
 		var dur;
 
-		cube.scaleMin = _MINSCALE + (_MAXSCALE - _MINSCALE) * Math.random() / 2;
-		cube.scaleMax = _MAXSCALE - (_MAXSCALE - _MINSCALE) * Math.random() / 2; // 缩放范围
+		cube.scaleMin = this._MINSCALE + (this._MAXSCALE - this._MINSCALE) * Math.random() / 2;
+		cube.scaleMax = this._MAXSCALE - (this._MAXSCALE - this._MINSCALE) * Math.random() / 2; // 缩放范围
 		
 		if (cube.cube.scale.y <= cube.scaleMin) {
 			target.scale = new THREE.Vector3(1, cube.scaleMax + 0.01, 1);
@@ -170,31 +125,26 @@ class SelectCube extends Stage {
 			onComplete: function() {
 				// console.log(target);
 				that.removeTween(cube.tween);
-				moveCube(cube);
+				that._moveCube(cube);
 			}
 		});
 		cube.tween.start();
 	}
 
 	// Normal 方块移动
-	function moveCubes() {
-		for (var cube, i = _cubes.length - 1; i >= 0; i--) {
-			_cubes[i]
-			for (var j = _cubes[i].length - 1; j >= 0; j--) {
-				cube = _cubes[i][j];
-				moveCube(cube);
+	_moveCubes() {
+		for (let cube, i = this._cubes.length - 1; i >= 0; i--) {
+			if (!this._cubes[i]) { continue; }
+			for (let j = this._cubes[i].length - 1; j >= 0; j--) {
+				if (!this._cubes[i][j]) { continue; }
+				cube = this._cubes[i][j];
+				this._moveCube(cube);
 			};
 		};
-		 // moveCube(_cubes[0][0]);
-		// console.log(_cubes[0][0]);
 	}
 
 
 
-
-	//a
-
-
 }
 
-module.exports = SelectCube;
+export default SelectCube;

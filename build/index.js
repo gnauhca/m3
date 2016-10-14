@@ -50,14 +50,14 @@
 	
 	var _viewManager2 = _interopRequireDefault(_viewManager);
 	
-	var _time = __webpack_require__(6);
+	var _time = __webpack_require__(5);
 	
 	var _time2 = _interopRequireDefault(_time);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	(function () {
-		__webpack_require__(4); //return;
+		__webpack_require__(10); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
@@ -137,7 +137,7 @@
 	
 	var _progress2 = _interopRequireDefault(_progress);
 	
-	var _select = __webpack_require__(3);
+	var _select = __webpack_require__(6);
 	
 	var _select2 = _interopRequireDefault(_select);
 	
@@ -233,7 +233,7 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _view = __webpack_require__(8);
+	var _view = __webpack_require__(4);
 	
 	var _view2 = _interopRequireDefault(_view);
 	
@@ -297,354 +297,10 @@
 	}(_view2.default);
 	
 	exports.default = ProgressView;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
 /* 3 */
-/***/ function(module, exports, __webpack_require__) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	var _view = __webpack_require__(8);
-	
-	var _view2 = _interopRequireDefault(_view);
-	
-	var _selectTable = __webpack_require__(9);
-	
-	var _selectTable2 = _interopRequireDefault(_selectTable);
-	
-	var _selectConf = __webpack_require__(11);
-	
-	var _selectConf2 = _interopRequireDefault(_selectConf);
-	
-	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
-	
-	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
-	
-	var SelectView = function (_View) {
-		_inherits(SelectView, _View);
-	
-		function SelectView() {
-			_classCallCheck(this, SelectView);
-	
-			var _this = _possibleConstructorReturn(this, (SelectView.__proto__ || Object.getPrototypeOf(SelectView)).call(this));
-	
-			_this._selectStage = new _selectTable2.default();
-			_this._products = _selectConf2.default.products;
-			_this.init();
-			_this.stages.push(_this._selectStage); // super
-			return _this;
-		}
-	
-		_createClass(SelectView, [{
-			key: 'init',
-			value: function init() {}
-		}, {
-			key: 'activate',
-			value: function activate() {
-				// stage init
-				if (!this._selectStage.isInit) {
-					this._selectStage.init();
-				}
-	
-				// select animation
-				this._selectStage.entry(); /*.then(function() {
-	                              // select animation over
-	                              }).catch(function(e) { console.log(e.stack);});*/
-			}
-		}, {
-			key: 'inactivate',
-			value: function inactivate() {}
-		}]);
-	
-		return SelectView;
-	}(_view2.default);
-	
-	exports.default = SelectView;
-
-/***/ },
-/* 4 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 5 */,
-/* 6 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	Object.defineProperty(exports, "__esModule", {
-		value: true
-	});
-	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-	
-	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
-	
-	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
-	
-	/* 时间 */
-	var TIME = {
-	
-		// 所有时间body对象
-		bodys: []
-	};
-	
-	stop = false;
-	TIME.addBody = function (timeBody) {
-		this.bodys.push(timeBody);
-	};
-	
-	TIME.removeBody = function (timeBody) {
-		var index = this.bodys.indexOf(timeBody);
-	
-		if (index !== -1) {
-			this.bodys.splice(index, 1);
-		}
-	};
-	
-	TIME.tick = function () {
-		TIME.handleFrame();
-	
-		if (!stop) {
-			requestAnimationFrame(TIME.tick);
-			//setTimeout(TIME.tick, 20);
-		}
-	};
-	
-	TIME.start = function () {
-		stop = false;
-		this.tick();
-	};
-	
-	TIME.stop = function () {
-		stop = true;
-	};
-	
-	TIME.handleFrame = function () {
-		var now = new Date().getTime();
-		var last = now;
-		var delta;
-		return function () {
-	
-			delta = now - last;
-			delta = delta > 500 ? 30 : delta < 16 ? 16 : delta;
-	
-			//console.log(TIME.bodys);
-			TIME.bodys.forEach(function (body) {
-				if (!body.isStop) {
-					body.ticks.forEach(function (tick) {
-						tick.fn && tick.fn(delta);
-					});
-				}
-			});
-	
-			TWEEN.update();
-		};
-	}();
-	
-	TIME.tick();
-	
-	/* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
-	
-	var Time = function () {
-		function Time() {
-			_classCallCheck(this, Time);
-	
-			TIME.addBody(this);
-			this.ticks = [];
-			this.tweens = [];
-			this.isStop = false;
-		}
-	
-		/**
-	  * 该物体灭亡
-	  */
-	
-	
-		_createClass(Time, [{
-			key: 'destory',
-			value: function destory() {
-				TIME.removeBody(this);
-			}
-	
-			/** 
-	   * 帧更新
-	   * @param timegap 与上一帧的时间间隔
-	   */
-	
-		}, {
-			key: 'addTick',
-			value: function addTick(fn) {
-				var tick = { 'fn': fn.bind(this) };
-	
-				tick.isStop = false;
-				this.ticks.push(tick);
-				return tick;
-			}
-		}, {
-			key: 'removeTick',
-			value: function removeTick(tick) {
-				if (!tick) {
-					// remove all
-					this.ticks = [];
-					return;
-				}
-	
-				var index = this.ticks.indexOf(tick);
-	
-				if (index !== -1) {
-					this.ticks.splice(index, 1);
-				}
-			}
-	
-			/** 
-	   * tween
-	   */
-	
-		}, {
-			key: 'addTween',
-			value: function addTween(tween) {
-				this.tweens.push(tween);
-			}
-	
-			/*
-	   * tweenObj
-	   */
-	
-		}, {
-			key: 'addTHREEObjTween',
-			value: function addTHREEObjTween(threeObj, target, dur, tweenObj) {
-				var that = this;
-				var init = {};
-				var dest = {};
-	
-				var attrs = ['x', 'y', 'z', 'r', 'g', 'b', 'opacity'];
-				var separater = '_';
-	
-				function setInit(key) {
-					if (key.indexOf('lookAt') === -1) {
-						(function () {
-							var keyArr = key.split('_');
-							var subObj = threeObj;
-	
-							keyArr.forEach(function (subKey) {
-								subObj = subObj[subKey];
-							});
-							init[key] = subObj;
-						})();
-					} else {
-						init[key] = dest[key]; // lookAt
-					}
-				}
-	
-				for (var key in target) {
-					var destKey = key;
-					if (_typeof(target[key]) === 'object') {
-						for (var cKey in target[key]) {
-							destKey = key;
-							if (attrs.indexOf(cKey) !== -1) {
-								destKey += '_' + cKey;
-								dest[destKey] = target[key][cKey];
-								setInit(destKey);
-							}
-						}
-					} else {
-						dest[destKey] = target[key];
-						setInit(destKey);
-					}
-				}
-	
-				console.log(init, dest);
-	
-				var tween;
-				tweenObj = tweenObj || {};
-				tween = new TWEEN.Tween(init);
-				tween.to(dest, dur).easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut).onUpdate(function () {
-					var current = this;
-	
-					var _loop = function _loop(currentKey) {
-						if (currentKey.indexOf('lookAt') !== -1) {
-							var lookAt = current[currentKey];
-							threeObj.lookAt(new THREE.Vector3(lookAt.x, lookAt.y, lookAt.z));
-						}
-						var keyArr = currentKey.split('_');
-						var last = keyArr.pop();
-						var subObj = threeObj;
-						keyArr.forEach(function (key) {
-							subObj = subObj[key];
-						});
-						subObj[last] = current[currentKey];
-					};
-	
-					for (var currentKey in current) {
-						_loop(currentKey);
-					}
-					tweenObj.onUpdate && tweenObj.onUpdate();
-				}).onComplete(function () {
-					that.removeTween(tween);
-					tweenObj.onComplete && tweenObj.onComplete();
-				});
-	
-				this.tweens.push(tween);
-				return tween;
-			}
-		}, {
-			key: 'removeTween',
-			value: function removeTween(tween) {
-				if (!tween) {
-					// remove all
-					this.tween = [];
-					return;
-				}
-	
-				var index = this.tweens.indexOf(tween);
-	
-				if (index !== -1) {
-					//tween.stop();
-					this.tweens.splice(index, 1);
-				}
-			}
-	
-			// stop 暂停时间
-	
-		}, {
-			key: 'stop',
-			value: function stop() {
-				this.isStop = true;
-				this.tweens.forEach(function (tween) {
-					tween.stop();
-				});
-			}
-		}, {
-			key: 'start',
-			value: function start() {
-				this.isStop = false;
-				this.tweens.forEach(function (tween) {
-					tween.start();
-				});
-			}
-		}]);
-	
-		return Time;
-	}();
-	
-	exports.default = Time;
-
-/***/ },
-/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;/*!
@@ -10687,7 +10343,7 @@
 
 
 /***/ },
-/* 8 */
+/* 4 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -10700,7 +10356,7 @@
 	
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 	
-	var _time = __webpack_require__(6);
+	var _time = __webpack_require__(5);
 	
 	var _time2 = _interopRequireDefault(_time);
 	
@@ -10761,7 +10417,351 @@
 	exports.default = View;
 
 /***/ },
-/* 9 */
+/* 5 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	/* 时间 */
+	var TIME = {
+	
+		// 所有时间body对象
+		bodys: []
+	};
+	
+	stop = false;
+	TIME.addBody = function (timeBody) {
+		this.bodys.push(timeBody);
+	};
+	
+	TIME.removeBody = function (timeBody) {
+		var index = this.bodys.indexOf(timeBody);
+	
+		if (index !== -1) {
+			this.bodys.splice(index, 1);
+		}
+	};
+	
+	TIME.tick = function () {
+		TIME.handleFrame();
+	
+		if (!stop) {
+			requestAnimationFrame(TIME.tick);
+			//setTimeout(TIME.tick, 20);
+		}
+	};
+	
+	TIME.start = function () {
+		stop = false;
+		this.tick();
+	};
+	
+	TIME.stop = function () {
+		stop = true;
+	};
+	
+	TIME.handleFrame = function () {
+		var now = new Date().getTime();
+		var last = now;
+		var delta;
+		return function () {
+	
+			delta = now - last;
+			delta = delta > 500 ? 30 : delta < 16 ? 16 : delta;
+	
+			//console.log(TIME.bodys);
+			TIME.bodys.forEach(function (body) {
+				if (!body.isStop) {
+					body.ticks.forEach(function (tick) {
+						tick.fn && tick.fn(delta);
+					});
+				}
+			});
+	
+			TWEEN.update();
+		};
+	}();
+	
+	TIME.tick();
+	
+	/* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
+	
+	var Time = function () {
+		function Time() {
+			_classCallCheck(this, Time);
+	
+			TIME.addBody(this);
+			this.ticks = [];
+			this.tweens = [];
+			this.isStop = false;
+		}
+	
+		/**
+	  * 该物体灭亡
+	  */
+	
+	
+		_createClass(Time, [{
+			key: 'destory',
+			value: function destory() {
+				TIME.removeBody(this);
+			}
+	
+			/** 
+	   * 帧更新
+	   * @param timegap 与上一帧的时间间隔
+	   */
+	
+		}, {
+			key: 'addTick',
+			value: function addTick(fn) {
+				var tick = { 'fn': fn.bind(this) };
+	
+				tick.isStop = false;
+				this.ticks.push(tick);
+				return tick;
+			}
+		}, {
+			key: 'removeTick',
+			value: function removeTick(tick) {
+				if (!tick) {
+					// remove all
+					this.ticks = [];
+					return;
+				}
+	
+				var index = this.ticks.indexOf(tick);
+	
+				if (index !== -1) {
+					this.ticks.splice(index, 1);
+				}
+			}
+	
+			/** 
+	   * tween
+	   */
+	
+		}, {
+			key: 'addTween',
+			value: function addTween(tween) {
+				this.tweens.push(tween);
+			}
+	
+			/*
+	   * tweenObj
+	   */
+	
+		}, {
+			key: 'addTHREEObjTween',
+			value: function addTHREEObjTween(threeObj, target, dur, tweenObj) {
+				var that = this;
+				var init = {};
+				var dest = {};
+	
+				var attrs = ['x', 'y', 'z', 'r', 'g', 'b', 'opacity'];
+				var separater = '_';
+	
+				function setInit(key) {
+					if (key.indexOf('lookAt') === -1) {
+						(function () {
+							var keyArr = key.split('_');
+							var subObj = threeObj;
+	
+							keyArr.forEach(function (subKey) {
+								subObj = subObj[subKey];
+							});
+							init[key] = subObj;
+						})();
+					} else {
+						init[key] = dest[key]; // lookAt
+					}
+				}
+	
+				for (var key in target) {
+					var destKey = key;
+					if (_typeof(target[key]) === 'object') {
+						for (var cKey in target[key]) {
+							destKey = key;
+							if (attrs.indexOf(cKey) !== -1) {
+								destKey += '_' + cKey;
+								dest[destKey] = target[key][cKey];
+								setInit(destKey);
+							}
+						}
+					} else {
+						dest[destKey] = target[key];
+						setInit(destKey);
+					}
+				}
+	
+				// console.log(init,dest);
+	
+				var tween;
+				tweenObj = tweenObj || {};
+				tween = new TWEEN.Tween(init);
+				tween.to(dest, dur).easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut).onUpdate(function () {
+					var current = this;
+	
+					var _loop = function _loop(currentKey) {
+						if (currentKey.indexOf('lookAt') !== -1) {
+							var lookAt = current[currentKey];
+							threeObj.lookAt(new THREE.Vector3(lookAt.x, lookAt.y, lookAt.z));
+						}
+						var keyArr = currentKey.split('_');
+						var last = keyArr.pop();
+						var subObj = threeObj;
+						keyArr.forEach(function (key) {
+							subObj = subObj[key];
+						});
+						subObj[last] = current[currentKey];
+					};
+	
+					for (var currentKey in current) {
+						_loop(currentKey);
+					}
+					tweenObj.onUpdate && tweenObj.onUpdate();
+				}).onComplete(function () {
+					that.removeTween(tween);
+					tweenObj.onComplete && tweenObj.onComplete();
+				});
+	
+				this.tweens.push(tween);
+				return tween;
+			}
+		}, {
+			key: 'removeTween',
+			value: function removeTween(tween) {
+				if (!tween) {
+					// remove all
+					this.tween = [];
+					return;
+				}
+	
+				var index = this.tweens.indexOf(tween);
+	
+				if (index !== -1) {
+					//tween.stop();
+					this.tweens.splice(index, 1);
+				}
+			}
+	
+			// stop 暂停时间
+	
+		}, {
+			key: 'stop',
+			value: function stop() {
+				this.isStop = true;
+				this.tweens.forEach(function (tween) {
+					tween.stop();
+				});
+			}
+		}, {
+			key: 'start',
+			value: function start() {
+				this.isStop = false;
+				this.tweens.forEach(function (tween) {
+					tween.start();
+				});
+			}
+		}]);
+	
+		return Time;
+	}();
+	
+	exports.default = Time;
+
+/***/ },
+/* 6 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _view = __webpack_require__(4);
+	
+	var _view2 = _interopRequireDefault(_view);
+	
+	var _selectTable = __webpack_require__(7);
+	
+	var _selectTable2 = _interopRequireDefault(_selectTable);
+	
+	var _selectCube = __webpack_require__(12);
+	
+	var _selectCube2 = _interopRequireDefault(_selectCube);
+	
+	var _selectConf = __webpack_require__(9);
+	
+	var _selectConf2 = _interopRequireDefault(_selectConf);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var SelectView = function (_View) {
+		_inherits(SelectView, _View);
+	
+		function SelectView() {
+			_classCallCheck(this, SelectView);
+	
+			var _this = _possibleConstructorReturn(this, (SelectView.__proto__ || Object.getPrototypeOf(SelectView)).call(this));
+	
+			_this._selectStage = new _selectTable2.default();
+			_this._selectCubeStage = new _selectCube2.default();
+			_this._products = _selectConf2.default.products;
+			_this.init();
+			_this.stages.push(_this._selectStage); // super
+			return _this;
+		}
+	
+		_createClass(SelectView, [{
+			key: 'init',
+			value: function init() {}
+		}, {
+			key: 'activate',
+			value: function activate() {
+				// stage init
+				if (!this._selectStage.isInit) {
+					this._selectStage.init();
+				}
+				if (!this._selectCubeStage.isInit) {
+					this._selectCubeStage.init();
+				}
+	
+				// select animation
+				this._selectStage.entry();
+				this._selectCubeStage.entry();
+			}
+		}, {
+			key: 'inactivate',
+			value: function inactivate() {}
+		}]);
+	
+		return SelectView;
+	}(_view2.default);
+	
+	exports.default = SelectView;
+
+/***/ },
+/* 7 */
 /***/ function(module, exports, __webpack_require__) {
 
 	/* WEBPACK VAR INJECTION */(function($) {'use strict';
@@ -10772,11 +10772,11 @@
 	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
-	var _stage = __webpack_require__(10);
+	var _stage = __webpack_require__(8);
 	
 	var _stage2 = _interopRequireDefault(_stage);
 	
-	var _selectConf = __webpack_require__(11);
+	var _selectConf = __webpack_require__(9);
 	
 	var _selectConf2 = _interopRequireDefault(_selectConf);
 	
@@ -10821,8 +10821,8 @@
 			value: function init() {
 				this._glowMaterial = new THREE.ShaderMaterial({
 					uniforms: {
-						"c": { type: "f", value: 0.79 },
-						"p": { type: "f", value: 1.2 },
+						"c": { type: "f", value: 0.35 },
+						"p": { type: "f", value: 5.1 },
 						glowColor: { type: "c", value: new THREE.Color(0xffffff) },
 						viewVector: { type: "v3", value: this.camera.position }
 					},
@@ -10830,7 +10830,7 @@
 					fragmentShader: document.getElementById('glowFragmentShader').textContent,
 					side: THREE.FrontSide,
 					blending: THREE.AdditiveBlending,
-					transparent: true
+					transparent: false
 				});
 	
 				this._buildBase();
@@ -10919,7 +10919,7 @@
 			key: '_buildBase',
 			value: function _buildBase() {
 	
-				// table 2m width
+				// TABLE 2m width
 				var tableTopGemo = new THREE.CylinderGeometry(100, 100, 3, 100);
 				var tableTopMaterial = new THREE.MeshPhongMaterial({ color: 0xaaaaff });
 	
@@ -10949,7 +10949,7 @@
 				this.objects.tableBottom = tableBottom;
 				this.objects.tableGlow = tableGlow;
 	
-				// meizu logo
+				// MEIZU LOGO
 				var svgString = _selectConf2.default.logo;
 				var options = {
 					amount: 5,
@@ -10976,24 +10976,42 @@
 				glowSvgMesh.scale.multiplyScalar(1.1);
 				this.objects.glowSvgMesh = glowSvgMesh;
 	
-				// plane
-				var planeGridCount = 100;
-				var planeWidth = planeGridCount * 20;
-				var planeHeight = planeGridCount * 20;
+				// PLANE & GRID & cube
+	
+				// PLANE 
+				var planeGridCount = 30;
+				var gridWidth = 100;
+				var planeWidth = planeGridCount * gridWidth;
+				var planeHeight = planeGridCount * gridWidth;
 				var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
 				// var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
-				var material = new THREE.MeshBasicMaterial({ color: 0x3a5c67, side: THREE.DoubleSide });
+				var material = new THREE.MeshBasicMaterial({ color: 0x333333, side: THREE.DoubleSide });
 				var plane = new THREE.Mesh(phaneGeom, material);
 				plane.rotation.x = Math.PI * 0.5;
 				this.objects.plane = plane;
 	
-				// grid 
+				// GRID 
 				var gridGroup = new THREE.Group();
+				// var gridMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.DoubleSide});
+				var gridMaterial = this._glowMaterial.clone();
 				var gridMesh;
 	
-				/*for (let i = 0; i < 100; i++) {
-	   	gridMesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height, 1, 1), new MeshPhongMaterial({color: 0xffffff}));
-	   }*/
+				for (var i = 0; i < planeGridCount; i++) {
+					for (var j = 0; j < planeGridCount; j++) {
+						if (i % 2 && !(j % 2) || !(i % 2) && j % 2) {
+							gridMesh = new THREE.Mesh(new THREE.PlaneGeometry(gridWidth, gridWidth, 1, 1), gridMaterial);
+							gridMesh.userData.crood = { x: i, y: j };
+							gridMesh.rotation.x = -Math.PI * 0.5;
+							gridMesh.position.set(i * gridWidth - planeWidth / 2, 0.1, j * gridWidth - planeHeight / 2);
+							gridGroup.add(gridMesh);
+						}
+					}
+				}
+				this.objects.gridGroup = gridGroup;
+	
+				// CUBE corner
+				var cubeGridCount = 35;
+				var cubeWidth = planeWidth / cubeGridCount;
 	
 				// light
 				var directionalLightColor = "#ffffff";
@@ -11013,7 +11031,7 @@
 				directionalLight.shadowMapHeight = 1024;
 				directionalLight.shadowMapWidth = 1024;
 				directionalLight.target.lookAt(this._BASECROOD);
-				//this.objects.directionalLight = directionalLight;
+				// this.objects.directionalLight = directionalLight;
 	
 				this.objects.spotLight = new THREE.SpotLight(0xffffff);
 				this.objects.spotLight.intensity = 0.8;
@@ -11079,8 +11097,7 @@
 	
 						this.addTHREEObjTween(this.objects.glowSvgMesh.material, {
 							uniforms_c_value: 0.46,
-							uniforms_p_value: 0.2,
-							uniforms_glowColor_value: new THREE.Color(0x59c0de)
+							uniforms_p_value: 0.05
 						}, 4000).start();
 					}
 				}.bind(this));
@@ -11093,10 +11110,10 @@
 	}(_stage2.default);
 	
 	exports.default = SelectTable;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(7)))
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(3)))
 
 /***/ },
-/* 10 */
+/* 8 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11109,7 +11126,7 @@
 	
 	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
 	
-	var _time = __webpack_require__(6);
+	var _time = __webpack_require__(5);
 	
 	var _time2 = _interopRequireDefault(_time);
 	
@@ -11182,7 +11199,7 @@
 	exports.default = Stage;
 
 /***/ },
-/* 11 */
+/* 9 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -11206,6 +11223,186 @@
 	});
 	
 	exports.default = SVG;
+
+/***/ },
+/* 10 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 11 */,
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _stage = __webpack_require__(8);
+	
+	var _stage2 = _interopRequireDefault(_stage);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	// Dependencies CONFIG.selects
+	var SelectCube = function (_Stage) {
+		_inherits(SelectCube, _Stage);
+	
+		function SelectCube() {
+			_classCallCheck(this, SelectCube);
+	
+			var _this = _possibleConstructorReturn(this, (SelectCube.__proto__ || Object.getPrototypeOf(SelectCube)).call(this));
+	
+			_this.objects;
+			_this._BASECROOD = new THREE.Vector3();
+			_this._PLANEWIDTH = 1500;
+			_this._PLANEHEIGHT = 1500;
+			_this._CUBESIZE = 60; // 立方体大小
+			_this._GRIDXCOUNT = _this._PLANEWIDTH / _this._CUBESIZE | 0; // 横向个数
+			_this._GRIDZCOUNT = _this._PLANEHEIGHT / _this._CUBESIZE | 0; // 纵向 Z(向) 个数
+			_this._CUBEHEIGHT = 400;
+			_this._MINSCALE = 0.1; // 最小高度缩放
+			_this._MAXSCALE = 0.6; // 最大高度缩放
+			_this._cubes; // 存储方块信息的二维数组		
+			_this.isInit = false;
+			return _this;
+		}
+	
+		// this.objects
+	
+	
+		_createClass(SelectCube, [{
+			key: 'init',
+			value: function init() {
+				this.build();
+				this.isInit = true;
+			}
+		}, {
+			key: 'build',
+			value: function build() {
+	
+				// cubes
+				this._cubes = [];
+	
+				var emptySpace = 0.3;
+				var cubeGroup = new THREE.Group();
+				var cubeMaterial;
+				var cubeGeom;
+				var cube;
+	
+				for (var i = 0; i < this._GRIDXCOUNT; i++) {
+	
+					for (var j = 0; j < this._GRIDZCOUNT; j++) {
+	
+						var x = this._BASECROOD.x - this._GRIDXCOUNT / 2 + i;
+						var z = this._BASECROOD.z - this._GRIDZCOUNT / 2 + j;
+						if (x * x + z * z < this._GRIDXCOUNT * emptySpace * this._GRIDXCOUNT * emptySpace || Math.random() + 0.5 | 0) {
+							continue;
+						}
+	
+						this._cubes[i] = this._cubes[i] || [];
+						this._cubes[i][j] = {
+							position: { x: x, y: 0, z: z },
+							scaleV: Math.random() / 6000, // 缩放速度每一帧缩放 0.??
+							scaleMin: this._MINSCALE + (this._MAXSCALE - this._MINSCALE) * Math.random() / 2,
+							scaleMax: this._MAXSCALE - (this._MAXSCALE - this._MINSCALE) * Math.random() / 2 };
+						// console.log(this._cubes[i][j].position);
+						// 
+						var cubeSize = this._CUBESIZE * (0.2 + 0.8 * Math.random());
+						cubeGeom = new THREE.BoxGeometry(cubeSize, this._CUBEHEIGHT, cubeSize);
+						cubeMaterial = new THREE.MeshLambertMaterial({
+							color: 0x888888
+						});
+						cube = new THREE.Mesh(cubeGeom, cubeMaterial);
+						cube.position.set((this._cubes[i][j].position.x + Math.random() - 0.5) * this._CUBESIZE, 0, (this._cubes[i][j].position.z + Math.random() - 0.5) * this._CUBESIZE);
+						cube.scale.set(1, 0.01, 1);
+						this._cubes[i][j].cube = cube;
+						cubeGroup.add(cube);
+					}
+				}
+	
+				this.objects.cubeGroup = cubeGroup;
+			}
+		}, {
+			key: 'entry',
+			value: function entry() {
+				Object.keys(this.objects).forEach(function (o) {
+					M3.scene.add(this.objects[o]);
+				}.bind(this));
+				this._moveCubes();
+			}
+		}, {
+			key: 'leave',
+			value: function leave() {
+				// or return a promise so that can do some ani
+				this.removeTick();
+			}
+		}, {
+			key: '_moveCube',
+			value: function _moveCube(cube) {
+				var that = this;
+				var target = {};
+				var dur;
+	
+				cube.scaleMin = this._MINSCALE + (this._MAXSCALE - this._MINSCALE) * Math.random() / 2;
+				cube.scaleMax = this._MAXSCALE - (this._MAXSCALE - this._MINSCALE) * Math.random() / 2; // 缩放范围
+	
+				if (cube.cube.scale.y <= cube.scaleMin) {
+					target.scale = new THREE.Vector3(1, cube.scaleMax + 0.01, 1);
+				} else if (cube.cube.scale.y >= cube.scaleMax) {
+					target.scale = new THREE.Vector3(1, cube.scaleMin - 0.01, 1);
+				} else {
+					target.scale = new THREE.Vector3(1, cube.scaleMin - 0.01, 1);
+				}
+				target.scale.x = target.scale.z = target.scale.y < 0.7 ? 0.7 : target.scale.y;
+				target.rotation = new THREE.Euler(0, cube.cube.rotation.y + Math.random() * Math.PI * (1 - Math.random()), 0, 'XYZ');
+	
+				dur = Math.abs(target.scale.y - cube.cube.scale.y) / cube.scaleV;
+				cube.tween = that.addTHREEObjTween(cube.cube, target, dur, {
+					onComplete: function onComplete() {
+						// console.log(target);
+						that.removeTween(cube.tween);
+						that._moveCube(cube);
+					}
+				});
+				cube.tween.start();
+			}
+	
+			// Normal 方块移动
+	
+		}, {
+			key: '_moveCubes',
+			value: function _moveCubes() {
+				for (var cube, i = this._cubes.length - 1; i >= 0; i--) {
+					if (!this._cubes[i]) {
+						continue;
+					}
+					for (var j = this._cubes[i].length - 1; j >= 0; j--) {
+						if (!this._cubes[i][j]) {
+							continue;
+						}
+						cube = this._cubes[i][j];
+						this._moveCube(cube);
+					};
+				};
+			}
+		}]);
+	
+		return SelectCube;
+	}(_stage2.default);
+	
+	exports.default = SelectCube;
 
 /***/ }
 /******/ ]);

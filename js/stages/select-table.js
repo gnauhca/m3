@@ -25,8 +25,8 @@ class SelectTable extends Stage {
 	init() {
 		this._glowMaterial = new THREE.ShaderMaterial({
 		    uniforms: {
-		        "c": { type: "f", value: 0.79 },
-		        "p": { type: "f", value:1.2},
+		        "c": { type: "f", value: 0.35 },
+		        "p": { type: "f", value: 5.1},
 		        glowColor: { type: "c", value: new THREE.Color(0xffffff) },
 		        viewVector: { type: "v3", value: this.camera.position }
 		    },
@@ -34,7 +34,7 @@ class SelectTable extends Stage {
 		    fragmentShader: document.getElementById('glowFragmentShader').textContent,
 		    side: THREE.FrontSide,
 		    blending: THREE.AdditiveBlending,
-		    transparent: true
+		    transparent: false
 		});
 
 		this._buildBase();
@@ -127,7 +127,7 @@ class SelectTable extends Stage {
 
 	_buildBase() {
 
-		// table 2m width
+		// TABLE 2m width
 		var tableTopGemo = new THREE.CylinderGeometry(100, 100, 3, 100);
 		var tableTopMaterial = new THREE.MeshPhongMaterial({color: 0xaaaaff});
 
@@ -159,7 +159,7 @@ class SelectTable extends Stage {
 		this.objects.tableBottom = tableBottom;
 		this.objects.tableGlow = tableGlow;
 
-		// meizu logo
+		// MEIZU LOGO
 		var svgString = selectCfg.logo;
 		var options = {
             amount: 5,
@@ -186,26 +186,49 @@ class SelectTable extends Stage {
 		glowSvgMesh.scale.multiplyScalar(1.1);
 		this.objects.glowSvgMesh = glowSvgMesh;
 
-		// plane
-		var planeGridCount = 100;
-		var planeWidth = planeGridCount * 20;
-		var planeHeight = planeGridCount * 20;
+		// PLANE & GRID & cube
+		
+		// PLANE 
+		var planeGridCount = 30;
+		var gridWidth = 100;
+		var planeWidth = planeGridCount * gridWidth;
+		var planeHeight = planeGridCount * gridWidth;
 		var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
 		// var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
-		var material = new THREE.MeshBasicMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+		var material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( phaneGeom, material );
 		plane.rotation.x = Math.PI * 0.5;
 		this.objects.plane = plane;
 
 
-		// grid 
+		// GRID 
 		var gridGroup = new THREE.Group();
+		// var gridMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.DoubleSide});
+		var gridMaterial = this._glowMaterial.clone();
 		var gridMesh;
 
 
-		/*for (let i = 0; i < 100; i++) {
-			gridMesh = new THREE.Mesh(new THREE.PlaneGeometry(width, height, 1, 1), new MeshPhongMaterial({color: 0xffffff}));
-		}*/
+		for (let i = 0; i < planeGridCount; i++) {
+			for (let j = 0; j < planeGridCount; j++) {
+				if ( (i % 2 && !(j % 2)) || (!(i % 2) && j % 2) ) {
+					gridMesh = new THREE.Mesh(
+						new THREE.PlaneGeometry(gridWidth, gridWidth, 1, 1), 
+						gridMaterial
+					);
+					gridMesh.userData.crood = {x: i, y: j};
+					gridMesh.rotation.x = -Math.PI * 0.5;
+					gridMesh.position.set(i * gridWidth - planeWidth/2, 0.1, j * gridWidth - planeHeight/2);
+					gridGroup.add(gridMesh);
+				}
+			}
+		}
+		this.objects.gridGroup = gridGroup;
+
+
+		// CUBE corner
+		var cubeGridCount = 35;
+		var cubeWidth = planeWidth / cubeGridCount;
+
 
 
 		// light
@@ -226,7 +249,7 @@ class SelectTable extends Stage {
         directionalLight.shadowMapHeight = 1024;
         directionalLight.shadowMapWidth = 1024;
         directionalLight.target.lookAt(this._BASECROOD); 
-        //this.objects.directionalLight = directionalLight;
+        // this.objects.directionalLight = directionalLight;
 
  		this.objects.spotLight = new THREE.SpotLight(0xffffff);
  		this.objects.spotLight.intensity = 0.8;
@@ -293,8 +316,8 @@ class SelectTable extends Stage {
 
 				this.addTHREEObjTween(this.objects.glowSvgMesh.material, {
 					uniforms_c_value: 0.46,
-					uniforms_p_value: 0.2,
-					uniforms_glowColor_value: new THREE.Color(0x59c0de)
+					uniforms_p_value: 0.05,
+					// uniforms_glowColor_value: new THREE.Color(0x59c0de)
 				}, 4000).start();
 
 			}

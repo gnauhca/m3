@@ -153,7 +153,7 @@ class Time {
 		}
 
 
-		console.log(init,dest);
+		// console.log(init,dest);
 
 		var tween;
 		tweenObj = tweenObj || {};
