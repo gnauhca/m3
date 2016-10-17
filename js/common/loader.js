@@ -1,12 +1,12 @@
 // 下载缓存
-loadedCache = {};
+var loadedCache = {};
 
-var Loader = Class.extend(function() {
-	var that = this;
+class Loader {
+	constructor() {}
 
-	this.calculateSize = function(loadParams) {
+	calculateSize(loadParams) {
 		var totalSize = 0;
-		var loadTasks = getLoadTasks(loadParams);
+		var loadTasks = this._getLoadTasks(loadParams);
 
 		for (var i = 0; i < loadTasks.length; i++) {
 			totalSize += loadTasks[i].size;
@@ -14,14 +14,16 @@ var Loader = Class.extend(function() {
 		return totalSize;
 	}
 
-	this.load = function(loadParams, onProgress) {
+	// Params 下载任务格式 {url: xx, size: xx}
+	load(loadParams, onProgress) {
+		var that = this;
 		return new Promise(function(onLoad, reject) {
 			var totalSize = 0; // 总大小
 			var loadedSize = 0; // 已经下载大小
 			var loadTasks = [];
 			var loadTask;
 
-			loadTasks = getLoadTasks(loadParams); 
+			loadTasks = that._getLoadTasks(loadParams); 
 
 			function getLoadedSize() {
 				var loadedSize = 0;
@@ -47,7 +49,7 @@ var Loader = Class.extend(function() {
 
 						// 成功回调
 						if (getLoadedSize() / totalSize === 1) {
-							onLoad(getResults(loadParams));
+							onLoad(that._getResults(loadParams));
 						}
 					}, function(progress) {
 						loadTask.loaded = loadTask.size * progress;
@@ -60,10 +62,11 @@ var Loader = Class.extend(function() {
 	}
 
 	// 获取下载类型
-	function getLoaderType(ext) {
+	_getLoaderType(ext) {
 		var typeExtMap = {
 			'img': /(jpg|jpeg|gif|png)/,
-			'json': /json/
+			'json': /json/,
+			'js': /js/
 		};
 
 		for (var type in typeExtMap) {
@@ -74,12 +77,13 @@ var Loader = Class.extend(function() {
 	}
 
 	// 收集下载参数里的 url
-	function getLoadTasks(_params) { 
+	_getLoadTasks(_params) { 
 		var urlRegx = /.+\.(\w{1,6})$/;
 		var sizeDefault = {
 			'img': 100,
 			'json': 100	
 		};
+		var that = this;
 
 		function _getLoadTasks(params) {
 			var urls = [];
@@ -100,17 +104,16 @@ var Loader = Class.extend(function() {
 				urls.push({
 					'url': params.url,
 					'size': (params.size || sizeDefault[type] || 1),
-					'type': getLoaderType(type)
+					'type': that._getLoaderType(type)
 				});
 			}
 			return urls;
 		}
-		getLoadTasks = _getLoadTasks;
 		return _getLoadTasks(_params);
 	}
 
 	// 遍历下载参数里的 url， 替换成下载结果缓存
-	function getResults(_params) {
+	_getResults(_params) {
 		var params = $.extend(true, {}, _params);
 
 		function _getResults(params) {
@@ -132,7 +135,7 @@ var Loader = Class.extend(function() {
 
 		return _getResults(params);
 	}
-});
+}
 
 
 /*
@@ -140,13 +143,11 @@ var Loader = Class.extend(function() {
  * loadMethod 根据不同type 应用相应策略下载资源缓存在 loaded cache 中
  * img直接缓存 url 
  */
-var imgLoader = new THREE.ImageLoader();
-var xhrLoader = new THREE.XHRLoader();
-
 var loadMethod = {
 
 	// 下载图片
 	'img': function(url, onLoad, onProgress) {
+		var imgLoader = new THREE.ImageLoader();
 		imgLoader.load(url, function() {
 			onLoad(url);
 		}, function(xhr) {
@@ -156,10 +157,41 @@ var loadMethod = {
 
 	// 下载 dae 模型
 	'json': function(url, onLoad, onProgress) {
+		var xhrLoader = new THREE.XHRLoader();
 		xhrLoader.load(url, onLoad, function(xhr) {
 			return onProgress(xhr.loaded / xhr.total);
 		});
+	},
+
+	// 下载 script 
+	'js': function(url, onload, onProgress) {
+
+		var req = new XMLHttpRequest();
+
+		// report progress events
+		req.addEventListener("progress", function(xhr) {
+		    if (xhr.lengthComputable) {
+		        onProgress(xhr.loaded / xhr.total);
+		    }
+		}, false);
+
+		// load responseText into a new script element
+		req.addEventListener("load", function(event) {
+		    var e = event.target;
+		    var s = document.createElement("script");
+		    s.innerHTML = e.responseText;
+		    // or: s[s.innerText!=undefined?"innerText":"textContent"] = e.responseText
+		    document.documentElement.appendChild(s);
+			onload();
+		    /*s.addEventListener("load", function() {
+		    	console.log(1);
+		        
+		    });*/
+		}, false);
+
+		req.open("GET", url);
+		req.send();
 	}
 }
 
-module.exports = Loader;
+export default Loader;

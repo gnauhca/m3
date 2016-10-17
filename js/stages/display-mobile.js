@@ -67,7 +67,7 @@ var DisplayMobile = Stage.extend(function() {
         _camera.up.copy(M3.camera.up);
         _camera.position.copy(M3.camera.position);
 		_camera.position.z += 40;
-		_camera.lookAt(THREEUtil.getLookAt(M3.camera));
+		_camera.lookAt(THREE.THREEUtil.getLookAt(M3.camera));
 
 		// light
         this.objects.spotLight.position.copy(this.target);

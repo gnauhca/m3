@@ -1,5 +1,5 @@
 // t: current time, b: begInnIng value, c: change In value, d: duration
-var easing= {
+window.easing= {
 	def: 'easeOutQuad',
 	swing: function (t, b, c, d) {
 		//alert(easing.default);
@@ -131,9 +131,7 @@ var easing= {
 	}
 };
 
-
-
-var calculateSubWindowSize = (function() {
+window.calculateSubWindowSize = (function() {
 	var r13 = 1/3;
 	var r23 = 2/3;
 
@@ -209,7 +207,8 @@ var calculateSubWindowSize = (function() {
 	}
 })();
 
-var THREEUtil = {
+
+THREE.THREEUtil = {
 
 	getLookAt: function (mesh) {
 		var lookAt = new THREE.Vector3(0, 0, -1);
@@ -221,6 +220,44 @@ var THREEUtil = {
 		lookAt.add(mesh.position);
 		return lookAt;
 	}
-
 }
+
+
+// custom material
+
+THREE.GlowMaterial = (function() {
+	var defaults = {
+		c: 0.35,
+		p: 5,
+		color: new THREE.Color,
+		v: new THREE.Vector3,
+		transparent: true,
+		side: THREE.FrontSide
+	};	
+	var vertexShaderCode = document.getElementById('glowVertexShader').textContent;
+	var fragmentShaderCode = document.getElementById('glowFragmentShader').textContent;
+
+	return function(options) {
+		options = $.extend({}, defaults, options);
+		return new THREE.ShaderMaterial({
+		    uniforms: {
+		        "c": { type: "f", value: options.c },
+		        "p": { type: "f", value: options.p },
+		        glowColor: { type: "c", value: options.color },
+		        viewVector: { type: "v3", value: options.v }
+		    },
+		    vertexShader: vertexShaderCode,
+		    fragmentShader: fragmentShaderCode,
+		    side: options.side,
+		    blending: THREE.AdditiveBlending,
+		    transparent: options.transparent
+		});
+	}
+
+
+})();
+
+
+
+
 

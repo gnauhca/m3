@@ -9,9 +9,12 @@ function getModelEntrys() {
 
 
 module.exports = {
-    entry: './js/main.js',
+    entry: {
+        main: './js/main.js',
+        presets: './js/presets.js'
+    },
     output: {
-        'filename': 'index.js',
+        'filename': '[name].js',
         'path': './build'
     },
     resolve: {
@@ -31,17 +34,16 @@ module.exports = {
                 loader: 'babel', 
                 query: { presets: ['es2015'] }
             }
-
-
         ]
     },
 
     plugins: [
         new webpack.ProvidePlugin({
-            $: "jquery",
-            jQuery: "jquery",
-            "window.$": "jquery",
-            CONFIG: 'config'
+            // $: "jquery",
+            // jQuery: "jquery",
+            // "window.$": "jquery",
+            CONFIG: 'config',
+            Util: 'util'
         }),
         new ExtractTextPlugin("common.css")
     ],

@@ -54,69 +54,80 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
+	var _loader = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"loader.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _loader2 = _interopRequireDefault(_loader);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	(function () {
-		__webpack_require__(10); //return;
+		__webpack_require__(11); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
 	
 		// todo: webgl 检查
-		//
+		// ...
 	
-		// 基本场景
-		M3.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	
-		M3.scene = new THREE.Scene();
-		document.body.appendChild(M3.renderer.domElement);
-		M3.renderer.setClearColor(0x2abced, 0);
+		var loader = new _loader2.default();
+		loader.load({ url: './build/preset.js', size: 100 });
 	
-		var winWidth = window.innerWidth;
-		var winHeight = window.innerHeight;
+		function appInit() {
 	
-		M3.renderer.setSize(winWidth, winHeight);
+			// 基本场景
+			M3.renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
 	
-		M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
+			M3.scene = new THREE.Scene();
+			document.body.appendChild(M3.renderer.domElement);
+			M3.renderer.setClearColor(0x2abced, 0);
 	
-		// main render tick
-		var m3Time = new _time2.default();
+			var winWidth = window.innerWidth;
+			var winHeight = window.innerHeight;
 	
-		M3.tick = m3Time.addTick(function () {
-			M3.renderer.render(M3.scene, M3.camera);
-		});
-	
-		window.addEventListener('resize', function () {
-			winWidth = window.innerWidth;
-			winHeight = window.innerHeight;
-			M3.camera.aspect = winWidth / winHeight;
-			M3.camera.updateProjectionMatrix();
 			M3.renderer.setSize(winWidth, winHeight);
-			console.log('r');
-		});
 	
-		/* helper */
-		var axisHelper = new THREE.AxisHelper(100);
-		M3.scene.add(axisHelper);
+			M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 	
-		var size = 400;
-		var step = 10;
+			// main render tick
+			var m3Time = new _time2.default();
 	
-		// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
-		// gridHelperX.rotation.z = Math.PI / 2;
-		// M3.scene.add( gridHelperX );
+			M3.tick = m3Time.addTick(function () {
+				M3.renderer.render(M3.scene, M3.camera);
+			});
 	
-		// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
-		// M3.scene.add( gridHelperY );
+			window.addEventListener('resize', function () {
+				winWidth = window.innerWidth;
+				winHeight = window.innerHeight;
+				M3.camera.aspect = winWidth / winHeight;
+				M3.camera.updateProjectionMatrix();
+				M3.renderer.setSize(winWidth, winHeight);
+				console.log('r');
+			});
 	
-		// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
-		// gridHelperZ.rotation.x = Math.PI / 2;
-		// M3.scene.add( gridHelperZ );
+			/* helper */
+			var axisHelper = new THREE.AxisHelper(100);
+			M3.scene.add(axisHelper);
+	
+			var size = 400;
+			var step = 10;
+	
+			// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+			// gridHelperX.rotation.z = Math.PI / 2;
+			// M3.scene.add( gridHelperX );
+	
+			// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+			// M3.scene.add( gridHelperY );
+	
+			// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+			// gridHelperZ.rotation.x = Math.PI / 2;
+			// M3.scene.add( gridHelperZ );
 	
 	
-		// M3.viewManager.activateView('index');
-		// M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
-		M3.viewManager.activateView('select');
+			// M3.viewManager.activateView('index');
+			// M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
+			M3.viewManager.activateView('select');
+		}
 	})();
 
 /***/ },
@@ -10700,7 +10711,7 @@
 	
 	var _selectTable2 = _interopRequireDefault(_selectTable);
 	
-	var _selectCube = __webpack_require__(12);
+	var _selectCube = __webpack_require__(10);
 	
 	var _selectCube2 = _interopRequireDefault(_selectCube);
 	
@@ -10819,19 +10830,7 @@
 		_createClass(SelectTable, [{
 			key: 'init',
 			value: function init() {
-				this._glowMaterial = new THREE.ShaderMaterial({
-					uniforms: {
-						"c": { type: "f", value: 0.35 },
-						"p": { type: "f", value: 5.1 },
-						glowColor: { type: "c", value: new THREE.Color(0xffffff) },
-						viewVector: { type: "v3", value: this.camera.position }
-					},
-					vertexShader: document.getElementById('glowVertexShader').textContent,
-					fragmentShader: document.getElementById('glowFragmentShader').textContent,
-					side: THREE.FrontSide,
-					blending: THREE.AdditiveBlending,
-					transparent: false
-				});
+				this._glowMaterial = new THREE.GlowMaterial();
 	
 				this._buildBase();
 				this._buildProductLogo(); //set products
@@ -11226,13 +11225,6 @@
 
 /***/ },
 /* 10 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 11 */,
-/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -11300,6 +11292,7 @@
 				var cubeMaterial;
 				var cubeGeom;
 				var cube;
+				var glowCube;
 	
 				for (var i = 0; i < this._GRIDXCOUNT; i++) {
 	
@@ -11328,7 +11321,14 @@
 						cube.position.set((this._cubes[i][j].position.x + Math.random() - 0.5) * this._CUBESIZE, 0, (this._cubes[i][j].position.z + Math.random() - 0.5) * this._CUBESIZE);
 						cube.scale.set(1, 0.01, 1);
 						this._cubes[i][j].cube = cube;
+	
+						glowCube = new THREE.GlowMaterial({ color: new THREE.Color(0xffffff) });
+						glowCube.position.copy(cube.position);
+						glowCube.scale.copy(cube.scale);
+						this._cubes[i][j].glowCube = glowCube;
+	
 						cubeGroup.add(cube);
+						cubeGroup.add(glowCube);
 					}
 				}
 	
@@ -11369,7 +11369,11 @@
 				target.rotation = new THREE.Euler(0, cube.cube.rotation.y + Math.random() * Math.PI * (1 - Math.random()), 0, 'XYZ');
 	
 				dur = Math.abs(target.scale.y - cube.cube.scale.y) / cube.scaleV;
+	
 				cube.tween = that.addTHREEObjTween(cube.cube, target, dur, {
+					onUpdate: function onUpdate() {
+						cube.glowCube.scale.copy(cube.scale).multiplyScalar(1.2);
+					},
 					onComplete: function onComplete() {
 						// console.log(target);
 						that.removeTween(cube.tween);
@@ -11403,6 +11407,12 @@
 	}(_stage2.default);
 	
 	exports.default = SelectCube;
+
+/***/ },
+/* 11 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);

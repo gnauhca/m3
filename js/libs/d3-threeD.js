@@ -2,7 +2,10 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this file,
  * You can obtain one at http://mozilla.org/MPL/2.0/. */
 
-var transformSVGPathExposed;
+// var transformSVGPathExposed;
+// var applySVGTransformExposed;
+window.transformSVGPathExposed = null;
+window.applySVGTransformExposed = null;
 
 function d3threeD(exports) {
 
@@ -11,8 +14,6 @@ function d3threeD(exports) {
 
     const DIGIT_0 = 48, DIGIT_9 = 57, COMMA = 44, SPACE = 32, PERIOD = 46,
         MINUS = 45;
-
-
 
     function transformSVGPath(pathStr) {
 
@@ -335,20 +336,12 @@ function d3threeD(exports) {
     function wrap_setAttributeNS(namespace, name, value) {
     }
 
-
-
-
-
     var extrudeDefaults = {
         amount: 20,
         bevelEnabled: true,
         material: 0,
         extrudeMaterial: 0,
     };
-
-
-
-
 
     function commonSetAttribute(name, value) {
         switch (name) {

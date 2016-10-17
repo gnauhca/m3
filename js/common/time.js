@@ -58,7 +58,7 @@ TIME.handleFrame = (function() {
 	});	
 })();
 
-TIME.tick();
+window.TIME = TIME;
 
 
 /* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */

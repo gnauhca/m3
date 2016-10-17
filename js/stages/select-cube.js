@@ -35,6 +35,7 @@ class SelectCube extends Stage {
 		var cubeMaterial;
 		var cubeGeom;
 		var cube;
+		var glowCube;
 
 		for (let i = 0; i < this._GRIDXCOUNT; i++ ) {
 	
@@ -56,16 +57,16 @@ class SelectCube extends Stage {
 				};
 				// console.log(this._cubes[i][j].position);
 				// 
-				var cubeSize = this._CUBESIZE *  (0.2 + 0.8 * Math.random());
+				var cubeSize = this._CUBESIZE *  (0.2 + 0.5 * Math.random());
 				cubeGeom = new THREE.BoxGeometry(
 								cubeSize, 
 								this._CUBEHEIGHT, 
-								cubeSize
+								cubeSize,2,2,2
 							);
 				cubeMaterial = new THREE.MeshLambertMaterial(
 					{
 						color: 0x888888,
-						//transparent: true,
+						// transparent: true,
 						// opacity: 0.9,
 						// reflectivity: 1,
 						// specular: 0xdddddd,
@@ -80,7 +81,30 @@ class SelectCube extends Stage {
 				);
 				cube.scale.set(1, 0.01, 1);
 				this._cubes[i][j].cube = cube;
+
+				var glowCubeGeom = new THREE.BoxGeometry(
+					cubeSize * 1.4, 
+					this._CUBEHEIGHT  * 1.1, 
+					cubeSize * 1.4, 3, 8, 3
+				);
+				var modifier = new THREE.SubdivisionModifier( 1 );
+				modifier.modify( glowCubeGeom ); 
+				glowCube = new THREE.Mesh(
+					glowCubeGeom,
+					new THREE.GlowMaterial({
+						c: 0.34,
+						p: 2.8,
+						color: new THREE.Color(0xffffff),
+						transparent: true
+					})
+				);
+				
+				glowCube.position.copy(cube.position);
+				glowCube.scale.copy(cube.scale);
+				this._cubes[i][j].glowCube = glowCube;
+
 				cubeGroup.add(cube);
+				cubeGroup.add(glowCube);
 
 
 
@@ -117,11 +141,16 @@ class SelectCube extends Stage {
 		} else {
 			target.scale = new THREE.Vector3(1, cube.scaleMin - 0.01, 1);
 		}
-		target.scale.x = target.scale.z = target.scale.y < 0.7 ? 0.7: target.scale.y;
-		target.rotation = new THREE.Euler( 0, cube.cube.rotation.y + Math.random() * Math.PI * (1 - Math.random()), 0, 'XYZ' );
+		// target.scale.x = target.scale.z = target.scale.y < 0.7 ? 0.7: target.scale.y;
+		// target.rotation = new THREE.Euler( 0, cube.cube.rotation.y + Math.random() * Math.PI * (1 - Math.random()), 0, 'XYZ' );
 
 		dur = Math.abs(target.scale.y - cube.cube.scale.y) / cube.scaleV;
+		
 		cube.tween = that.addTHREEObjTween(cube.cube, target, dur, {
+			onUpdate: function() {
+				cube.glowCube.scale.copy(cube.cube.scale)//.multiplyScalar(1.5);
+				//cube.glowCube.scale.y = cube.cube.scale.y + 0.2;
+			},
 			onComplete: function() {
 				// console.log(target);
 				that.removeTween(cube.tween);
@@ -129,6 +158,8 @@ class SelectCube extends Stage {
 			}
 		});
 		cube.tween.start();
+
+
 	}
 
 	// Normal 方块移动

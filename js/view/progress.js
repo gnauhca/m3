@@ -5,21 +5,21 @@ class ProgressView extends View {
 	constructor() {
 		super();
 
-		this._$progressWrap = $('#progressView');
-		this._$progressVal = $('#progressVal');
-		this._$water = $('.water');
-		this._$waterDivs = this._$water.find('div');
+		this._$progressWrap = document.querySelector('#progressView');
+		this._$progressVal = document.querySelector('#progressVal');
+		this._$water = document.querySelector('.water');
+		this._$waterDivs = this._$water.querySelectorAll('div');
 		this.setProgress(0);
 	}
 
 	activate() { 
-		this._$progressWrap.show();
+		this._$progressWrap.style.display = 'block';
 	}
 
 	inactivate() {
 		setTimeout(function() {
-			this._$progressWrap.hide();
-		}, 1000);
+			this._$progressWrap.style.display = 'none';
+		}.bind(this), 1000);
 	}
 
 	setProgress(percent) {
@@ -32,11 +32,13 @@ class ProgressView extends View {
 			return initColor[i] + (colorVal - initColor[i]) * percent|0;
 		});
 
-		this._$waterDivs.css('backgroundColor', 'rgba(' + currentColor.join(',') + ',' + opacity + ')');
+		this._$waterDivs.forEach(function($waterDiv) {
+			$waterDiv.style.backgroundColor = 'rgba(' + currentColor.join(',') + ',' + opacity + ')';
+		});
 
-		this._$progressVal.html( (percent*100 | 0) + '%');
+		this._$progressVal.innerHTML = (percent*100 | 0) + '%';
 		percent *= 0.999;
-		this._$water.css('transform', 'scaleY(' + percent.toFixed(2) + ')');
+		this._$water.style.transform = 'scaleY(' + percent.toFixed(2) + ')';
 	}
 }
 

@@ -23,19 +23,7 @@ class SelectTable extends Stage {
 
 	// this.objects
 	init() {
-		this._glowMaterial = new THREE.ShaderMaterial({
-		    uniforms: {
-		        "c": { type: "f", value: 0.35 },
-		        "p": { type: "f", value: 5.1},
-		        glowColor: { type: "c", value: new THREE.Color(0xffffff) },
-		        viewVector: { type: "v3", value: this.camera.position }
-		    },
-		    vertexShader: document.getElementById('glowVertexShader').textContent,
-		    fragmentShader: document.getElementById('glowFragmentShader').textContent,
-		    side: THREE.FrontSide,
-		    blending: THREE.AdditiveBlending,
-		    transparent: false
-		});
+		this._glowMaterial = new THREE.GlowMaterial();
 
 		this._buildBase();
 		this._buildProductLogo(); //set products
@@ -45,7 +33,6 @@ class SelectTable extends Stage {
 
         this.isInit = true;
 	}
-
 
 	entry() {
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));

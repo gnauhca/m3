@@ -103,19 +103,18 @@ varying float intensity;
 void main() 
 {
 	vec3 glow = glowColor * intensity;
-    gl_FragColor = vec4( glow, 1.0 );
+    gl_FragColor = vec4( glow, 0.3 );
 }
 </script>
 <!-- ----------------------------------------------------------- -->
 
 
 <script type='text/javascript' src='./js/libs/dat.gui.js'></script>
-<script type="text/javascript" src="./js/libs/tween.js"></script>
+<!-- <script type="text/javascript" src="./js/libs/tween.js"></script>
 <script type="text/javascript" src="./js/libs/three.js"></script>
 <script type="text/javascript" src="./js/libs/d3-threeD.js"></script>
 <script type="text/javascript" src="./js/libs/TrackballControls.js"></script>
-<script type="text/javascript" src="./js/libs/OrbitControls.js"></script>
-<script type="text/javascript" src="./js/common/utils.js"></script>
-<script type="text/javascript" src="./build/index.js"></script>
+<script type="text/javascript" src="./js/libs/OrbitControls.js"></script> -->
+<script type="text/javascript" src="./build/main.js"></script>
 </body>
 </html>
