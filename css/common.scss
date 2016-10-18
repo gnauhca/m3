@@ -131,11 +131,11 @@ $box-width : 100px;
 }
 @keyframes waterbox {
     0% {
-        transform:  rotateY(40deg) rotateX(-20deg);
+        transform:  rotateY(-40deg) rotateX(-20deg);
     }
 
     100% {
-        transform:  rotateY(-40deg) rotateX(-60deg);
+        transform:  rotateY(-0deg) rotateX(-30deg);
     }
 }
 

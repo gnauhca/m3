@@ -30,7 +30,6 @@ class SelectTable extends Stage {
 
 		this._controls = new THREE.OrbitControls(this.camera, M3.renderer.domElement);
 
-
         this.isInit = true;
 	}
 
@@ -40,10 +39,32 @@ class SelectTable extends Stage {
 		this.camera.position.copy(this._CAMERACROOD);
 		this.camera.lookAt(this._BASECROOD);
 
+
+		// this.addTHREEObjTween(mesh.material, {color: new THREE.Color(0x0cbbef), emissive: new THREE.Color(0xcccccc)}, 3000).start();
+
+		this.addTHREEObjTween(this.objects.glowSvgMesh.material, {
+			uniforms_p_value: 0.05,
+			uniforms_glowColor_value: 0xffffff
+		}, 4000).start();
+
+
+
+		var glowTable = function() {
+			var uniforms_p_value = this.objects.tableGlow.material.uniforms.p.value === 1.5 ? 5.7 : 1.5;
+			let tableGlowTween = this.addTHREEObjTween(this.objects.tableGlow.material, {
+				uniforms_p_value: uniforms_p_value,
+			}, 4000, {
+				onComplete() { glowTable()}
+			}).start();			
+		}.bind(this);
+
+		glowTable();
+
+		// glow vertor
 		this._t = this.addTick(function(delta) {
 			this._controls.update(delta);
 			
-			var glowMesh;
+			let glowMesh;
 
 			M3.scene.traverse(function(object) {
 				if (object.material && object.material instanceof THREE.ShaderMaterial) {
@@ -78,9 +99,7 @@ class SelectTable extends Stage {
 				}
 			});
 		}
-
 	}
-
 
 	selectProduct(productNames) {
 		this._products.forEach(function(_product) {
@@ -137,10 +156,10 @@ class SelectTable extends Stage {
 		this.objects.tableTop = tableTop;
 		this.objects.tableBottom = tableBottom;
 
-
-		var tableGlowGemo = new THREE.CylinderGeometry(95.1, 95, 2, 100, 10);
-		var tableGlow = new THREE.Mesh(tableGlowGemo, this._glowMaterial);
-		tableGlow.position.set(0, 15, 0);
+		var tableGlowMaterial = new THREE.GlowMaterial({c: 0.12, p: 6, color: new THREE.Color(0x0cbbef)});
+		var tableGlowGemo = new THREE.CylinderGeometry(100, 99.5, 2, 100, 10);
+		var tableGlow = new THREE.Mesh(tableGlowGemo, tableGlowMaterial);
+		tableGlow.position.set(0, 31, 0);
 
 		this.objects.tableTop = tableTop;
 		this.objects.tableBottom = tableBottom;
@@ -168,7 +187,8 @@ class SelectTable extends Stage {
         // this.objects.svgLogo = svgMesh;
 
 
-        var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), this._glowMaterial);
+        var glowMaterial = new THREE.GlowMaterial({c: 0.12, p: 5, color: 0x0cbbef});
+        var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), glowMaterial);
 		glowSvgMesh.position.copy(svgMesh.position);
 		glowSvgMesh.scale.multiplyScalar(1.1);
 		this.objects.glowSvgMesh = glowSvgMesh;
@@ -181,8 +201,8 @@ class SelectTable extends Stage {
 		var planeWidth = planeGridCount * gridWidth;
 		var planeHeight = planeGridCount * gridWidth;
 		var phaneGeom = new THREE.PlaneGeometry(planeWidth, planeHeight, planeGridCount, planeGridCount);
-		// var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
-		var material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
+		var material = new THREE.MeshPhongMaterial( {color: 0x3a5c67, side: THREE.DoubleSide} );
+		// var material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( phaneGeom, material );
 		plane.rotation.x = Math.PI * 0.5;
 		this.objects.plane = plane;
@@ -190,7 +210,7 @@ class SelectTable extends Stage {
 
 		// GRID 
 		var gridGroup = new THREE.Group();
-		// var gridMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.DoubleSide});
+		var gridMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.DoubleSide});
 		var gridMaterial = this._glowMaterial.clone();
 		var gridMesh;
 
@@ -293,25 +313,13 @@ class SelectTable extends Stage {
 
 			// group.add(glowMesh);
 			group.add(mesh);
-
-
-			if (i === 0) {
-				// mesh.material.color.set(0xffffff);
-				// mesh.material.emissive.set(0xeeeeee);
-
-				this.addTHREEObjTween(mesh.material, {color: new THREE.Color(0x0cbbef), emissive: new THREE.Color(0xcccccc)}, 3000).start();
-
-				this.addTHREEObjTween(this.objects.glowSvgMesh.material, {
-					uniforms_c_value: 0.46,
-					uniforms_p_value: 0.05,
-					// uniforms_glowColor_value: new THREE.Color(0x59c0de)
-				}, 4000).start();
-
-			}
-
 		}.bind(this));
 
 		this.objects.products = group;
+	}
+
+	_travelCamera(angel) {
+
 	}
 
 }

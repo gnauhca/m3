@@ -99,11 +99,12 @@ void main()
 <!-- fragment shader a.k.a. pixel shader -->
 <script id="glowFragmentShader" type="x-shader/x-vertex"> 
 uniform vec3 glowColor;
+uniform float o;
 varying float intensity;
 void main() 
 {
 	vec3 glow = glowColor * intensity;
-    gl_FragColor = vec4( glow, 0.3 );
+    gl_FragColor = vec4( glow, o );
 }
 </script>
 <!-- ----------------------------------------------------------- -->

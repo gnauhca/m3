@@ -229,6 +229,7 @@ THREE.GlowMaterial = (function() {
 	var defaults = {
 		c: 0.35,
 		p: 5,
+		o: 1,
 		color: new THREE.Color,
 		v: new THREE.Vector3,
 		transparent: true,
@@ -239,10 +240,13 @@ THREE.GlowMaterial = (function() {
 
 	return function(options) {
 		options = $.extend({}, defaults, options);
+		options.color = new THREE.Color(options.color);
+
 		return new THREE.ShaderMaterial({
 		    uniforms: {
 		        "c": { type: "f", value: options.c },
 		        "p": { type: "f", value: options.p },
+		        "o": { type: "f", value: options.o },
 		        glowColor: { type: "c", value: options.color },
 		        viewVector: { type: "v3", value: options.v }
 		    },
@@ -257,7 +261,7 @@ THREE.GlowMaterial = (function() {
 
 })();
 
-
+THREE.Traval
 
 
 

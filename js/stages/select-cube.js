@@ -94,6 +94,7 @@ class SelectCube extends Stage {
 					new THREE.GlowMaterial({
 						c: 0.34,
 						p: 2.8,
+						o: 0.3,
 						color: new THREE.Color(0xffffff),
 						transparent: true
 					})

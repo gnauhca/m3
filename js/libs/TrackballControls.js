@@ -34,6 +34,13 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	this.keys = [ 65 /*A*/, 83 /*S*/, 68 /*D*/ ];
 
+
+	// travel
+	this.distance = (new THREE.Vector3).copy(this.object.position).sub(this.target).length;
+	this.maxOffsetZ = this.distance * 0.2;
+	this.travelSpeed = 10000; // 10 second for 360 degree
+
+
 	// internals
 
 	this.target = new THREE.Vector3();
@@ -280,6 +287,26 @@ THREE.TrackballControls = function ( object, domElement ) {
 
 	}());
 
+	function getXZAngel(v1, v2) {
+		var sub = (new THREE.Vector3).copy(v2).sub(v1);
+		var angel = Math.atan(sub.z/sub.x);
+
+		if (sub.z < 0) {
+			angel += Math.PI * 2;
+		} else if (sub.x < 0) {
+			angel += Math.PI;
+		}
+		return angel;
+	}
+
+	this.travelCamera = function() {
+		var nextAngel;
+
+		nextAngel = getXZAngel(this.object.position, this.target);
+
+	}
+
+
 	this.checkDistances = function () {
 
 		if ( !_this.noZoom || !_this.noPan ) {
@@ -335,8 +362,13 @@ THREE.TrackballControls = function ( object, domElement ) {
 			lastPosition.copy( _this.object.position );
 
 		}
-
+		if (_state === STATE.NONE && _this.travel) {
+			// travel camera
+			_this.travelCamera();
+		}
 	};
+
+
 
 	this.reset = function () {
 

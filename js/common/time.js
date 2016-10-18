@@ -135,8 +135,13 @@ class Time {
 			}
 		}
 
+
 		for (let key in target) {
 			let destKey = key;
+
+			if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
+				target[key] = new THREE.Color(target[key]);
+			}
 			if (typeof target[key] === 'object') {
 				for (let cKey in target[key]) {
 					destKey = key;
@@ -173,11 +178,16 @@ class Time {
 					keyArr.forEach(function(key) { subObj = subObj[key]; });
 					subObj[last] = current[currentKey];
 				}
-				tweenObj.onUpdate && tweenObj.onUpdate();
+				tweenObj.onUpdate && tweenObj.onUpdate.call(this);
 			})
 			.onComplete(function() {
-				that.removeTween(tween);
-				tweenObj.onComplete && tweenObj.onComplete();
+				var completeRemove = true;
+				if (tweenObj.onComplete) {
+					if (tweenObj.onComplete() === false)
+					completeRemove = false;
+				}
+
+				completeRemove && that.removeTween(tween);
 			});
 
 		this.tweens.push(tween);
