@@ -12,7 +12,7 @@ M3.viewManager = new ViewManager();
 // ...
 
 
-var loader = new Loader();
+/*var loader = new Loader();
 var progressView = M3.viewManager.getView('progress');
 progressView.activate();
 loader.load({url: './build/presets.js', size: 100}, function(percent) {
@@ -20,9 +20,9 @@ loader.load({url: './build/presets.js', size: 100}, function(percent) {
 }).then(function() {
 	progressView.inactivate();
 	appInit();
-});
+});*/
 
-
+appInit();
 
 function appInit() {
 	window.TIME.start();
@@ -55,13 +55,17 @@ function appInit() {
 		M3.camera.aspect = winWidth / winHeight;
 		M3.camera.updateProjectionMatrix();
 		M3.renderer.setSize(winWidth, winHeight);
-		console.log('r');
 	});
 
 
 	/* helper */
 	var axisHelper = new THREE.AxisHelper( 100 );
 	M3.scene.add( axisHelper );
+
+
+	/* fog */
+	var fog = new THREE.Fog(0xffffff, 0, 2000);
+	M3.scene.fog = fog;
 
 	var size = 400;
 	var step = 10;

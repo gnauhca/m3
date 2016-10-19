@@ -28,16 +28,19 @@ class SelectTable extends Stage {
 		this._buildBase();
 		this._buildProductLogo(); //set products
 
-		this._controls = new THREE.OrbitControls(this.camera, M3.renderer.domElement);
+
 
         this.isInit = true;
 	}
 
 	entry() {
+
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
 
 		this.camera.position.copy(this._CAMERACROOD);
 		this.camera.lookAt(this._BASECROOD);
+		this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+		this._controls.staticMoving = true;
 
 
 		// this.addTHREEObjTween(mesh.material, {color: new THREE.Color(0x0cbbef), emissive: new THREE.Color(0xcccccc)}, 3000).start();
@@ -205,12 +208,13 @@ class SelectTable extends Stage {
 		// var material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
 		var plane = new THREE.Mesh( phaneGeom, material );
 		plane.rotation.x = Math.PI * 0.5;
+		plane.position.y -= 1;
 		this.objects.plane = plane;
 
 
 		// GRID 
 		var gridGroup = new THREE.Group();
-		var gridMaterial = new THREE.MeshPhongMaterial({color: 0xffffff, side: THREE.DoubleSide});
+		var gridMaterial = new THREE.MeshPhongMaterial({color: 0xdddddd, side: THREE.DoubleSide});
 		var gridMaterial = this._glowMaterial.clone();
 		var gridMesh;
 
@@ -317,11 +321,6 @@ class SelectTable extends Stage {
 
 		this.objects.products = group;
 	}
-
-	_travelCamera(angel) {
-
-	}
-
 }
 
 export default SelectTable;

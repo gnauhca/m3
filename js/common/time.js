@@ -2,7 +2,8 @@
 var TIME = {
 
 	// 所有时间body对象
-	bodys : []
+	bodys : [],
+	delta: 16
 }
 
 stop = false;
@@ -18,14 +19,24 @@ TIME.removeBody = function(timeBody) {
 	}
 }
 
-TIME.tick = function() {
-	TIME.handleFrame();
+TIME.tick = (function() {
+	var now = (new Date()).getTime();
+	var last = now;
+	var delta;
+	return function() {
+		delta = now - last;
+		delta = delta > 500 ? 30 : (delta < 16? 16 : delta);
+		TIME.delta = delta;
+		last = now;
 
-	if (!stop) {
-		requestAnimationFrame(TIME.tick);
-		//setTimeout(TIME.tick, 20);
-	}
-}
+		TIME.handleFrame(delta);
+		if (!stop) {
+			requestAnimationFrame(TIME.tick);
+			// setTimeout(TIME.tick, 1000);
+		}		
+	}	
+})();
+
 
 TIME.start = function() {
 	stop = false;
@@ -36,27 +47,18 @@ TIME.stop = function() {
 	stop = true;
 }
 
-TIME.handleFrame = (function() { 
-	var now = (new Date()).getTime();
-	var last = now;
-	var delta;
-	return (function() { 
+TIME.handleFrame = function(delta) { 
 
-		delta = now - last;
-		delta = delta > 500 ? 30 : (delta < 16? 16 : delta);
+	TIME.bodys.forEach(function(body) {
+		if (!body.isStop) {
+			body.ticks.forEach(function(tick) {
+				tick.fn && tick.fn(delta); 
+			});
+		}
+	});
 
-		//console.log(TIME.bodys);
-		TIME.bodys.forEach(function(body) {
-			if (!body.isStop) {
-				body.ticks.forEach(function(tick) {
-					tick.fn && tick.fn(delta); 
-				});
-			}
-		});
-
-		TWEEN.update();
-	});	
-})();
+	TWEEN.update();
+}
 
 window.TIME = TIME;
 

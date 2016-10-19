@@ -11952,15 +11952,16 @@
 	
 		this.keys = [65 /*A*/, 83 /*S*/, 68 /*D*/];
 	
-		// travel
-		this.distance = new THREE.Vector3().copy(this.object.position).sub(this.target).length;
-		this.maxOffsetZ = this.distance * 0.2;
-		this.travelSpeed = 10000; // 10 second for 360 degree
-	
-	
 		// internals
 	
 		this.target = new THREE.Vector3();
+	
+		// travel
+		this.travel = true;
+		this.travelDistance = new THREE.Vector3().copy(this.object.position).sub(this.target).length();
+		this.travelSpeed = 50000; //  second for 360 degree
+		this.travelHeight = 200;
+		this.travelHeightOffset = this.travelHeight * 0.7;
 	
 		var EPS = 0.000001;
 	
@@ -12163,21 +12164,53 @@
 		}();
 	
 		function getXZAngel(v1, v2) {
-			var sub = new THREE.Vector3().copy(v2).sub(v1);
+			var sub = new THREE.Vector3().subVectors(v1, v2);
 			var angel = Math.atan(sub.z / sub.x);
 	
-			if (sub.z < 0) {
-				angel += Math.PI * 2;
-			} else if (sub.x < 0) {
+			if (sub.x < 0) {
 				angel += Math.PI;
+			} else if (sub.z < 0) {
+				angel += Math.PI * 2;
 			}
 			return angel;
 		}
 	
-		this.travelCamera = function () {
+		this.travelCamera = function (delta) {
+			var resetSpeed = 0.01;
 			var nextAngel;
+			var nextVec = new THREE.Vector3();
+			var subVec = new THREE.Vector3();
 	
-			nextAngel = getXZAngel(this.object.position, this.target);
+			var up = new THREE.Vector3(0, 1, 0);
+			var upSubVec = new THREE.Vector3();
+	
+			var len = new THREE.Vector3().subVectors(this.object.position, this.target.clone().setY(this.object.position.y)).length();
+			var cosAngel, sinAngel;
+			var x, y, z;
+	
+			nextAngel = getXZAngel(this.object.position, this.target) + Math.PI * 2 * (delta / this.travelSpeed);
+			cosAngel = Math.cos(nextAngel);
+			sinAngel = Math.sin(nextAngel);
+	
+			x = cosAngel * this.travelDistance;
+			z = sinAngel * this.travelDistance;
+			y = this.travelHeight + this.travelHeightOffset * Math.cos(nextAngel);
+			nextVec.set(x, y, z);
+	
+			// console.log((nextAngel * 180 / Math.PI) | 0, nextVec.x|0,  nextVec.z|0);
+			this.object.position.setX(cosAngel * len);
+			this.object.position.setZ(sinAngel * len);
+	
+			subVec.subVectors(nextVec, this.object.position).setLength(subVec.length() * resetSpeed);
+			// console.log(subVec);
+			this.object.position.add(subVec);
+	
+			upSubVec.subVectors(up, this.object.up).setLength(upSubVec.length() * resetSpeed);
+			this.object.up.add(upSubVec);
+			// this.object.position.copy(nextVec);
+			this.object.lookAt(_this.target);
+			_eye.copy(_this.object.position).sub(_this.target);
+			// console.log(this.object.position);
 		};
 	
 		this.checkDistances = function () {
@@ -12196,8 +12229,8 @@
 			}
 		};
 	
-		this.update = function () {
-	
+		this.update = function (delta) {
+			delta = delta || 16;
 			_eye.subVectors(_this.object.position, _this.target);
 	
 			if (!_this.noRotate) {
@@ -12226,10 +12259,9 @@
 				_this.dispatchEvent(changeEvent);
 	
 				lastPosition.copy(_this.object.position);
-			}
-			if (_state === STATE.NONE && _this.travel) {
+			} else if (_state === STATE.NONE && _this.travel) {
 				// travel camera
-				_this.travelCamera();
+				_this.travelCamera(delta);
 			}
 		};
 	

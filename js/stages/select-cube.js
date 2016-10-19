@@ -65,7 +65,7 @@ class SelectCube extends Stage {
 							);
 				cubeMaterial = new THREE.MeshLambertMaterial(
 					{
-						color: 0x888888,
+						color: 0xffffff,
 						// transparent: true,
 						// opacity: 0.9,
 						// reflectivity: 1,

@@ -70,15 +70,17 @@
 		// ...
 	
 	
-		var loader = new _loader2.default();
-		var progressView = M3.viewManager.getView('progress');
-		progressView.activate();
-		loader.load({ url: './build/presets.js', size: 100 }, function (percent) {
-			progressView.setProgress(percent);
-		}).then(function () {
-			progressView.inactivate();
-			appInit();
-		});
+		/*var loader = new Loader();
+	 var progressView = M3.viewManager.getView('progress');
+	 progressView.activate();
+	 loader.load({url: './build/presets.js', size: 100}, function(percent) {
+	 	progressView.setProgress(percent);
+	 }).then(function() {
+	 	progressView.inactivate();
+	 	appInit();
+	 });*/
+	
+		appInit();
 	
 		function appInit() {
 			window.TIME.start();
@@ -109,12 +111,15 @@
 				M3.camera.aspect = winWidth / winHeight;
 				M3.camera.updateProjectionMatrix();
 				M3.renderer.setSize(winWidth, winHeight);
-				console.log('r');
 			});
 	
 			/* helper */
 			var axisHelper = new THREE.AxisHelper(100);
 			M3.scene.add(axisHelper);
+	
+			/* fog */
+			var fog = new THREE.Fog(0xffffff, 0, 2000);
+			M3.scene.fog = fog;
 	
 			var size = 400;
 			var step = 10;
@@ -412,7 +417,8 @@
 	var TIME = {
 	
 		// 所有时间body对象
-		bodys: []
+		bodys: [],
+		delta: 16
 	};
 	
 	stop = false;
@@ -429,13 +435,22 @@
 	};
 	
 	TIME.tick = function () {
-		TIME.handleFrame();
+		var now = new Date().getTime();
+		var last = now;
+		var delta;
+		return function () {
+			delta = now - last;
+			delta = delta > 500 ? 30 : delta < 16 ? 16 : delta;
+			TIME.delta = delta;
+			last = now;
 	
-		if (!stop) {
-			requestAnimationFrame(TIME.tick);
-			//setTimeout(TIME.tick, 20);
-		}
-	};
+			TIME.handleFrame(delta);
+			if (!stop) {
+				requestAnimationFrame(TIME.tick);
+				// setTimeout(TIME.tick, 1000);
+			}
+		};
+	}();
 	
 	TIME.start = function () {
 		stop = false;
@@ -446,27 +461,18 @@
 		stop = true;
 	};
 	
-	TIME.handleFrame = function () {
-		var now = new Date().getTime();
-		var last = now;
-		var delta;
-		return function () {
+	TIME.handleFrame = function (delta) {
 	
-			delta = now - last;
-			delta = delta > 500 ? 30 : delta < 16 ? 16 : delta;
+		TIME.bodys.forEach(function (body) {
+			if (!body.isStop) {
+				body.ticks.forEach(function (tick) {
+					tick.fn && tick.fn(delta);
+				});
+			}
+		});
 	
-			//console.log(TIME.bodys);
-			TIME.bodys.forEach(function (body) {
-				if (!body.isStop) {
-					body.ticks.forEach(function (tick) {
-						tick.fn && tick.fn(delta);
-					});
-				}
-			});
-	
-			TWEEN.update();
-		};
-	}();
+		TWEEN.update();
+	};
 	
 	window.TIME = TIME;
 	
@@ -688,6 +694,10 @@
 	
 	var _selectCube2 = _interopRequireDefault(_selectCube);
 	
+	var _selectStars = __webpack_require__(21);
+	
+	var _selectStars2 = _interopRequireDefault(_selectStars);
+	
 	var _selectConf = __webpack_require__(8);
 	
 	var _selectConf2 = _interopRequireDefault(_selectConf);
@@ -706,13 +716,17 @@
 		function SelectView() {
 			_classCallCheck(this, SelectView);
 	
+			// this._selectStage = new SelectStage();
+			// this._selectCubeStage = new SelectCube();
+	
 			var _this = _possibleConstructorReturn(this, (SelectView.__proto__ || Object.getPrototypeOf(SelectView)).call(this));
 	
-			_this._selectStage = new _selectTable2.default();
-			_this._selectCubeStage = new _selectCube2.default();
+			_this._selectStarsStage = new SelectStar();
+	
 			_this._products = _selectConf2.default.products;
 			_this.init();
-			_this.stages.push(_this._selectStage); // super
+	
+			// this.stages.push(this._selectStage); // super
 			return _this;
 		}
 	
@@ -723,16 +737,20 @@
 			key: 'activate',
 			value: function activate() {
 				// stage init
-				if (!this._selectStage.isInit) {
-					this._selectStage.init();
-				}
-				if (!this._selectCubeStage.isInit) {
-					this._selectCubeStage.init();
+				/*if (!this._selectStage.isInit) {
+	   	this._selectStage.init();
+	   }
+	   if (!this._selectCubeStage.isInit) {
+	   	this._selectCubeStage.init();
+	   }*/
+				if (!this._selectStarsStage.isInit) {
+					this._selectStarsStage.init();
 				}
 	
 				// select animation
-				this._selectStage.entry();
-				this._selectCubeStage.entry();
+				// this._selectStage.entry()
+	
+				this._selectStarsStage.entry();
 			}
 		}, {
 			key: 'inactivate',
@@ -808,19 +826,21 @@
 				this._buildBase();
 				this._buildProductLogo(); //set products
 	
-				this._controls = new THREE.OrbitControls(this.camera, M3.renderer.domElement);
 	
 				this.isInit = true;
 			}
 		}, {
 			key: 'entry',
 			value: function entry() {
+	
 				Object.keys(this.objects).forEach(function (o) {
 					M3.scene.add(this.objects[o]);
 				}.bind(this));
 	
 				this.camera.position.copy(this._CAMERACROOD);
 				this.camera.lookAt(this._BASECROOD);
+				this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+				this._controls.staticMoving = true;
 	
 				// this.addTHREEObjTween(mesh.material, {color: new THREE.Color(0x0cbbef), emissive: new THREE.Color(0xcccccc)}, 3000).start();
 	
@@ -983,11 +1003,12 @@
 				// var material = new THREE.MeshBasicMaterial( {color: 0x333333, side: THREE.DoubleSide} );
 				var plane = new THREE.Mesh(phaneGeom, material);
 				plane.rotation.x = Math.PI * 0.5;
+				plane.position.y -= 1;
 				this.objects.plane = plane;
 	
 				// GRID 
 				var gridGroup = new THREE.Group();
-				var gridMaterial = new THREE.MeshPhongMaterial({ color: 0xffffff, side: THREE.DoubleSide });
+				var gridMaterial = new THREE.MeshPhongMaterial({ color: 0xdddddd, side: THREE.DoubleSide });
 				var gridMaterial = this._glowMaterial.clone();
 				var gridMesh;
 	
@@ -1087,9 +1108,6 @@
 	
 				this.objects.products = group;
 			}
-		}, {
-			key: '_travelCamera',
-			value: function _travelCamera(angel) {}
 		}]);
 	
 		return SelectTable;
@@ -1301,7 +1319,7 @@
 						var cubeSize = this._CUBESIZE * (0.2 + 0.5 * Math.random());
 						cubeGeom = new THREE.BoxGeometry(cubeSize, this._CUBEHEIGHT, cubeSize, 2, 2, 2);
 						cubeMaterial = new THREE.MeshLambertMaterial({
-							color: 0x888888
+							color: 0xffffff
 						});
 						cube = new THREE.Mesh(cubeGeom, cubeMaterial);
 						cube.position.set((this._cubes[i][j].position.x + Math.random() - 0.5) * this._CUBESIZE, 0, (this._cubes[i][j].position.z + Math.random() - 0.5) * this._CUBESIZE);
@@ -1643,6 +1661,121 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 12 */,
+/* 13 */,
+/* 14 */,
+/* 15 */,
+/* 16 */,
+/* 17 */,
+/* 18 */,
+/* 19 */,
+/* 20 */,
+/* 21 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _time = __webpack_require__(!(function webpackMissingModule() { var e = new Error("Cannot find module \"./time.js\""); e.code = 'MODULE_NOT_FOUND'; throw e; }()));
+	
+	var _time2 = _interopRequireDefault(_time);
+	
+	var _stage = __webpack_require__(7);
+	
+	var _stage2 = _interopRequireDefault(_stage);
+	
+	var _selectConf = __webpack_require__(8);
+	
+	var _selectConf2 = _interopRequireDefault(_selectConf);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var StarPoint = function (_Time) {
+		_inherits(StarPoint, _Time);
+	
+		function StarPoint() {
+			_classCallCheck(this, StarPoint);
+	
+			return _possibleConstructorReturn(this, (StarPoint.__proto__ || Object.getPrototypeOf(StarPoint)).apply(this, arguments));
+		}
+	
+		return StarPoint;
+	}(_time2.default);
+	
+	var Line = function (_Time2) {
+		_inherits(Line, _Time2);
+	
+		function Line() {
+			_classCallCheck(this, Line);
+	
+			return _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).apply(this, arguments));
+		}
+	
+		return Line;
+	}(_time2.default);
+	
+	var SelectStars = function (_Stage) {
+		_inherits(SelectStars, _Stage);
+	
+		function SelectStars() {
+			_classCallCheck(this, SelectStars);
+	
+			var _this3 = _possibleConstructorReturn(this, (SelectStars.__proto__ || Object.getPrototypeOf(SelectStars)).call(this));
+	
+			_this3.init = false;
+	
+			_this3._gridSize = 10;
+			_this3._starCount = 50;
+			_this3._range = 10; // 边长
+	
+			_this3.stars;
+	
+			return _this3;
+		}
+	
+		_createClass(SelectStars, [{
+			key: 'init',
+			value: function init() {
+				this._build();
+			}
+		}, {
+			key: '_build',
+			value: function _build() {
+				var startCrood;
+				var isValidCrood = false;
+	
+				while (this.stars.length < this._starCount) {
+	
+					startCrood = new THREE.Vector3(this._range * this._gridSize * Math.random(), this._range * this._gridSize * Math.random(), this._range * this._gridSize * Math.random());
+	
+					isValidCrood = this.stars.every(function (star) {
+						return new THREE.Vector3().subVectors(startCrood, star.mesh.position).length() > this._gridSize * 2;
+					});
+	
+					if (isValidCrood) {
+						this.stars.push(new Star());
+					}
+				}
+			}
+		}]);
+	
+		return SelectStars;
+	}(_stage2.default);
+	
+	exports.default = SelectStars;
 
 /***/ }
 /******/ ]);
