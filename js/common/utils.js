@@ -219,7 +219,8 @@ THREE.THREEUtil = {
 		lookAt.applyEuler(euler);
 		lookAt.add(mesh.position);
 		return lookAt;
-	}
+	},
+
 }
 
 
@@ -261,7 +262,28 @@ THREE.GlowMaterial = (function() {
 
 })();
 
-THREE.Traval
+THREE.SVGGemetry = function(svgString, options) {
+	var shape = transformSVGPathExposed(svgString);
+	var defaultOptions = {
+		amount: 5,
+		bevelThickness: 0,
+		bevelSize: 0,
+		bevelSegments: 12,
+		bevelEnabled: false,
+		curveSegments: 80,
+		steps: 1
+	};
+	var svgGemo;
+
+	try {
+		options = $.extend({}, defaultOptions, options);
+		svgGemo = new THREE.ExtrudeGeometry(shape, options)
+		svgGemo.center();	
+		svgGemo.rotateX(Math.PI);
+	} catch(e) {}
+	return svgGemo;
+}
+
 
 
 

@@ -12,7 +12,7 @@ class SelectView extends View {
 		// this._selectStage = new SelectStage();
 		// this._selectCubeStage = new SelectCube();
 		
-		this._selectStarsStage = new SelectStar();
+		this._selectStarsStage = new SelectStars();
 
 		this._products = selectCfg.products;
 		this.init();

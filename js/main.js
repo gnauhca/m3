@@ -64,11 +64,17 @@ function appInit() {
 
 
 	/* fog */
-	var fog = new THREE.Fog(0xffffff, 0, 2000);
-	M3.scene.fog = fog;
+	var fog = new THREE.Fog(0x000000, 0, 2000);
+	// M3.scene.fog = fog;
 
 	var size = 400;
 	var step = 10;
+
+ 	var spotLight = new THREE.SpotLight(0xffffff);
+ 	spotLight.intensity = 0.8;
+ 	spotLight.position.set(-300, 500, 200);
+ 	spotLight.lookAt(new THREE.Vector3); 
+	M3.scene.add(spotLight);
 
 	// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	// gridHelperX.rotation.z = Math.PI / 2;
