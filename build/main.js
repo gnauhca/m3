@@ -54,14 +54,14 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _loader = __webpack_require__(11);
+	var _loader = __webpack_require__(15);
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	(function () {
-		__webpack_require__(12); //return;
+		__webpack_require__(17); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
@@ -130,21 +130,21 @@
 			spotLight.lookAt(new THREE.Vector3());
 			M3.scene.add(spotLight);
 	
-			// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
-			// gridHelperX.rotation.z = Math.PI / 2;
-			// M3.scene.add( gridHelperX );
+			/* grid helper */
+			var gridHelperX = new THREE.GridHelper(size, step, 0xff0000);
+			gridHelperX.rotation.z = Math.PI / 2;
+			M3.scene.add(gridHelperX);
 	
-			// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
-			// M3.scene.add( gridHelperY );
+			var gridHelperY = new THREE.GridHelper(size, step, 0x00ff00);
+			M3.scene.add(gridHelperY);
 	
-			// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
-			// gridHelperZ.rotation.x = Math.PI / 2;
-			// M3.scene.add( gridHelperZ );
-	
+			var gridHelperZ = new THREE.GridHelper(size, step, 0x0000ff);
+			gridHelperZ.rotation.x = Math.PI / 2;
+			M3.scene.add(gridHelperZ);
 	
 			// M3.viewManager.activateView('index');
-			// M3.viewManager.activateView('display', {mobiles: ['pro5'/*, 'pro6', 'mx5', 'mx6'*/]});
-			M3.viewManager.activateView('select');
+			M3.viewManager.activateView('display', { mobiles: ['pro5', 'pro6' /*, 'mx5', 'mx6'*/] });
+			// M3.viewManager.activateView('select');	
 		}
 	})();
 
@@ -170,16 +170,19 @@
 	
 	var _select2 = _interopRequireDefault(_select);
 	
+	var _display = __webpack_require__(11);
+	
+	var _display2 = _interopRequireDefault(_display);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 	
-	// import Display from './display.js';
-	
 	var _viewConstructors = {
 					'progress': _progress2.default,
 					// 'index': Index,
-					'select': _select2.default
+					'select': _select2.default,
+					'display': _display2.default
 	};
 	
 	var _views = {};
@@ -1483,14 +1486,17 @@
 			key: 'init',
 			value: function init() {
 				// create mesh
-				var gemo = new THREE.SphereGeometry(10, 7, 7);
+				var gemo = new THREE.SphereGeometry(10, 10, 10);
 				gemo = new THREE.TetrahedronGeometry(10, 0);
 				if (Math.random() > 0.5) {
 					gemo = new THREE.BoxGeometry(10, 10, 10);
 				}
-				var material = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
-				// var material = new THREE.MeshLambertMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-				var mesh = new THREE.Mesh(gemo, material);
+				var material1 = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
+				var material2 = new THREE.MeshPhongMaterial({ color: 0xabcdef, transparent: true, opacity: 0.7 });
+				var mulMaterial = new THREE.MultiMaterial([material1, material2]);
+				var mesh = new THREE.Mesh(gemo, mulMaterial);
+	
+				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
 	
@@ -1749,6 +1755,932 @@
 
 /***/ },
 /* 11 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _view = __webpack_require__(3);
+	
+	var _view2 = _interopRequireDefault(_view);
+	
+	var _displayMobile = __webpack_require__(12);
+	
+	var _displayMobile2 = _interopRequireDefault(_displayMobile);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	// import DisplayContainerStage from '../stages/display-container.js';
+	
+	var Display = function (_View) {
+		_inherits(Display, _View);
+	
+		function Display() {
+			_classCallCheck(this, Display);
+	
+			var _this = _possibleConstructorReturn(this, (Display.__proto__ || Object.getPrototypeOf(Display)).call(this));
+	
+			_this._lockTick;
+			// this._containerStage; 
+			_this._progressView;
+	
+			_this.name = 'display';
+			_this.isInit = false;
+			_this.active = false;
+	
+			// stages
+			_this._mobileStages = {}; // {pro6: xx, mx6: xx} for cache
+			_this._currentMobileStages = [];
+			_this.stages = [];
+	
+			// UI
+			_this._$domWrap = $('#displayView');
+			_this._$domManager = $('.display-manager');
+	
+			_this._$windowWrap = $('#displayWindowWrap');
+	
+			_this._windowDoms = [];
+			_this._currentWindowDoms = [];
+	
+			_this._progressView = M3.viewManager.getView('progress');
+			// this._containerStage = new DisplayContainerStage();
+			// this.stages.push(this._containerStage);
+			return _this;
+		}
+	
+		// data : {mobile: [pro5, mx6 ...]}
+	
+	
+		_createClass(Display, [{
+			key: 'activate',
+			value: function activate(data) {
+				// check self init
+				if (!this.isInit) {
+					this.init();
+					// this._containerStage.init();
+				}
+	
+				if (data) {
+					var mobiles = $.extend(true, [], data.mobiles);
+					this._currentMobileStages = [];
+					mobiles.forEach(function (name, i) {
+						if (!this._mobileStages[name]) {
+							var mobileStage = new _displayMobile2.default(name);
+							this._mobileStages[name] = mobileStage;
+							this._currentMobileStages.push(mobileStage);
+						}
+					}.bind(this));
+	
+					// this._isload 如果检查到需要加载，会启动加载，并在加载完成之后调用回调
+					if (!this._isLoad.bind(this)(this.activate.bind(this))) return;
+				}
+	
+				// all loaded 
+				//this._containerStage.entry();// containerStage
+	
+				var sizePos = calculateSubWindowSize(this._currentMobileStages.length);
+				var x = 0;
+				var entryCount = 0;
+	
+				this._currentMobileStages.forEach(function (mobileStage, i, all) {
+					var meshPos = new THREE.Vector3(x + (i - all.length / 2) * 100, 0, 0);
+					mobileStage.entry(meshPos, sizePos[i]).then(function () {
+						entryCount++;
+						if (entryCount === all.length) {
+							// todo entry animate done
+						}
+					});
+					that.stages.push(mobileStage);
+				});
+				this._createWindowUI();this._resizeWindows();
+	
+				// UI
+				this._$domWrap.removeClass('none');
+	
+				this.active = true;
+			}
+		}, {
+			key: 'inActivate',
+			value: function inActivate() {
+				Object.keys(this.scene).forEach(function (o) {
+					M3.scene.remove(that.scene[o]);
+				});
+				this.removeTick(sphereTick);
+	
+				this._$domWrap.addClass('none');
+				this.activeWindows.forEach(function (activeWindow) {
+					setTimeout(function () {
+						activeWindow.inActivate();
+					}, 0);
+				});
+				this.activeWindows.length = 0;
+	
+				// this._containerStage.leave();
+				this.stages = [];
+				this.active = false;
+			}
+		}, {
+			key: 'resize',
+			value: function resize() {
+				this._resizeWindows();
+			}
+		}, {
+			key: 'init',
+			value: function init() {
+				var that = this;
+				var $lockBtn = this._$domManager.find('.lock-btn');
+				var $unlockBtn = this._$domManager.find('.unlock-btn');
+				var $backBtn = this._$domManager.find('.back-btn');
+	
+				that.isInit = true;
+	
+				this._$domManager.on('click', '.setting-btn', function () {
+					that._$domManager.addClass('show');
+				});
+	
+				this._$domManager.on('click', '.lock-btn', function () {
+					$lockBtn.addClass('none');
+					$unlockBtn.removeClass('none');
+					that._$domManager.removeClass('show');
+					that.lock();
+				});
+	
+				this._$domManager.on('click', '.unlock-btn', function () {
+					$unlockBtn.addClass('none');
+					$lockBtn.removeClass('none');
+					that._$domManager.removeClass('show');
+					that._unlock();
+				});
+	
+				this._$domManager.on('click', '.back-btn', function () {
+					that.inActivate();
+					that.activateView('product-preview');
+					that._$domManager.removeClass('show');
+				});
+	
+				// windows
+				this._$domWrap.on('click', '.reset-btn', function () {
+					var index = $(this).parents('.display-window').index();
+					that.resetWindow(index);
+				});
+	
+				this._$domWrap.on('click', '.close-btn', function () {
+					var index = $(this).parents('.display-window').index();
+					that._closeWindow(index);
+				});
+	
+				this._$domWrap.on('click', '.color', function () {
+					var index = $(this).parents('.display-window').index();
+					var color = $(this).data('color');
+					that._currentMobileStages[index].changeColor(color);
+					$(this).addClass('selected').silbings().removeClass('selected');
+				});
+			}
+		}, {
+			key: '_isLoad',
+			value: function _isLoad(callback) {
+				var unloadedCount = 0;
+				var loaded = true;
+				var loadingInfos = {};
+	
+				function loading() {
+					var totalSize = 0;
+					var loadedSize = 0;
+					var progress;
+					var loadingInfo;
+	
+					for (var name in loadingInfos) {
+						loadingInfo = loadingInfos[name];
+						totalSize += loadingInfo.size;
+						loadedSize += loadingInfo.progress * loadingInfo.size;
+					}
+	
+					progress = loadedSize / totalSize;
+					this._showProgress(progress);
+					if (unloadedCount === 0) {
+						// loaded 
+						callback();this._progressView.inactivate();
+					}
+				}
+	
+				for (var name in this._mobileStages) {
+					// loading
+					if (!this._mobileStages[name].isInit) {
+						loaded = false;
+						unloadedCount++;
+						loadingInfos[name] = {
+							size: this._mobileStages[name].size,
+							progress: 0
+						};
+						(function (_name) {
+							this._mobileStages[_name].init(function (progress) {
+								loadingInfos[_name].progress = progress;
+								loading();
+							}).then(function () {
+								unloadedCount--;
+								loadingInfos[_name].progress = 1;
+								loading();
+							}).catch(function (e) {
+								console.error(e.stack);
+							});
+						}).bind(this)(name);
+					}
+				}
+				if (!loaded) {
+					this._progressView.activate();
+				}
+	
+				return loaded;
+			}
+		}, {
+			key: '_showProgress',
+			value: function _showProgress(progress) {
+				//console.log('display.js loading: ' + progress);
+				this._progressView.setProgress(progress);
+			}
+		}, {
+			key: '_createWindowUI',
+			value: function _createWindowUI() {
+				var windowTemplate = '<div class="display-window">' + '<div class="window-control">' + '<i class="btn reset-btn icon ion-ios-reload"></i>' + '<i class="btn close-btn icon ion-ios-close-empty"></i>' + '</div>' + '<div class="colors-control"></div>' + '</div>';
+				var colorTemplate = '<i class="color @color" data-color="@color"></i>';
+				var colorHTML = '';
+	
+				this._$windowWrap.html('');
+				this._currentWindowDoms = [];
+				this._currentMobileStages.forEach(function (mobileStage, i) {
+					if (!this._windowDoms[i]) {
+						this._windowDoms[i] = $(windowTemplate);
+					}
+					this._currentWindowDoms[i] = this._windowDoms[i];
+					this._$windowWrap.append(this._currentWindowDoms[i]);
+	
+					colorHTML = '';
+					mobileStage.getColors().forEach(function (color) {
+						colorHTML += colorTemplate.replace(/\@color/g, color);
+					});
+					this._currentWindowDoms[i].find('.colors-control').empty().html(colorHTML);
+				});
+			}
+	
+			// 模型恢复初始状态
+	
+		}, {
+			key: 'resetWindow',
+			value: function resetWindow(index) {
+				if (this._lockTick) {
+					this._currentMobileStages[0].reset();
+				} else {
+					this._currentMobileStages[index].reset();
+				}
+			}
+		}, {
+			key: '_closeWindow',
+			value: function _closeWindow(index) {
+				this._currentMobileStages[index].remove();
+				this._currentMobileStages.splice(index, 1);
+	
+				// ui remove
+				this._currentWindowDoms[index].remove();
+				this._currentWindowDoms.splice(index, 1);
+				this._resizeWindows();
+			}
+		}, {
+			key: '_resizeWindows',
+			value: function _resizeWindows() {
+				var sizePos = calculateSubWindowSize(this._currentMobileStages.length);
+	
+				// stage resize
+				this._currentMobileStages.forEach(function (mobileStage, i) {
+					mobileStage.resizeWindow(sizePos[i]);
+				});
+	
+				// ui resize
+				sizePos = $.extend(true, [], sizePos);
+				sizePos.forEach(function (item) {
+					for (var pos in item) {
+						item[pos] *= 100;item[pos] += '%';
+					}
+				});
+	
+				this._currentWindowDoms.forEach(function ($windowDom, i) {
+					$windowDom.animate(sizePos[i], 1000);
+				});
+			}
+		}, {
+			key: '_lock',
+			value: function _lock() {
+				this._currentMobileStages.forEach(function (mobileStage, i) {
+					mobileStage.lock(i === 0);
+				});
+	
+				this._lockTick = that.addTick(function () {
+					var sizeInfo = this._currentMobileStages[0].getSize();
+					this._currentMobileStages.forEach(function (mobileStage, i) {
+						if (i > 0) mobileStage.setSize(sizeInfo);
+					});
+				});
+			}
+		}, {
+			key: '_unlock',
+			value: function _unlock() {
+				this._currentMobileStages.forEach(function (mobileStage, i) {
+					mobileStage.unlock();
+				});
+				that.removeTick(this._lockTick);this._lockTick = null;
+			}
+		}]);
+	
+		return Display;
+	}(_view2.default);
+	
+	exports.default = Display;
+
+/***/ },
+/* 12 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _get = function get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } };
+	
+	var _stage = __webpack_require__(7);
+	
+	var _stage2 = _interopRequireDefault(_stage);
+	
+	var _mobile = __webpack_require__(13);
+	
+	var _mobile2 = _interopRequireDefault(_mobile);
+	
+	var _m3Trackballcontrol = __webpack_require__(16);
+	
+	var _m3Trackballcontrol2 = _interopRequireDefault(_m3Trackballcontrol);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var DisplayMobile = function (_Stage) {
+		_inherits(DisplayMobile, _Stage);
+	
+		function DisplayMobile(mobileName) {
+			_classCallCheck(this, DisplayMobile);
+	
+			var _this = _possibleConstructorReturn(this, (DisplayMobile.__proto__ || Object.getPrototypeOf(DisplayMobile)).call(this));
+	
+			_this._windowSize; // for px calculate
+			_this._winSizePX; // for render 
+	
+			// 3D 资源
+			_this._camera;
+			_this._mobile;
+	
+			_this.name; // pro5?
+			_this.size;
+			_this.isInit = false;
+	
+			_this.trackball;
+			_this.objects = {};
+			_this.target;
+	
+			// 模型位置，旋转等信息
+			_this.objectSizes = {
+				model: { position: null, rotation: null },
+				camera: { position: null, lookAt: null }
+			};
+	
+			// 状态
+			_this.state;
+	
+			_this.color;
+	
+			_this.locked = false;
+			_this.active = false;
+	
+			_this.name = mobileName;
+			_this._mobile = new _mobile2.default(_this.name);
+			_this.size = _this._mobile.size;
+			return _this;
+		}
+	
+		_createClass(DisplayMobile, [{
+			key: 'load',
+			value: function load(onProgress) {
+				return this._mobile.load(onProgress);
+			}
+		}, {
+			key: 'init',
+			value: function init(onProgress) {
+				return this.load(onProgress).then(function () {
+					return new Promise(function (resolve, reject) {
+						// init
+						that.objects.mesh = this._mobile.mesh;
+						this._setupScene();
+						that.isInit = true;
+						resolve();
+					});
+				}).catch(function (e) {
+					console.log(e.stack);
+				});;
+			}
+		}, {
+			key: 'entry',
+			value: function entry(meshPos, windowSize) {
+				this._windowSize = windowSize;
+				// 3d
+				this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
+	
+				this.objects.mesh.position.copy(this.target);
+				// this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+				this._camera.up.copy(M3.camera.up);
+				this._camera.position.copy(M3.camera.position);
+				this._camera.position.z += 40;
+				this._camera.lookAt(THREE.THREEUtil.getLookAt(M3.camera));
+	
+				// light
+				this.objects.spotLight.position.copy(this.target);
+				this.objects.spotLight.position.y += 200;
+				this.objects.spotLight.position.x += 300;
+				this.objects.spotLight.position.z += 100;
+				this.objects.spotLight.lookAt(this.target);
+	
+				// initial size info
+				this.objectSizes = { mesh: {}, camera: {} };
+				this.objectSizes.mesh.position = this.objects.mesh.position.clone();
+				this.objectSizes.mesh.rotation = this.objects.mesh.rotation.clone();
+	
+				this.objectSizes.camera.position = this.objects.mesh.position.clone();
+				this.objectSizes.camera.position.z += 50;
+				this.objectSizes.camera.lookAt = this.objects.mesh.position.clone();
+	
+				// 添加到场景
+				Object.keys(this.objects).forEach(function (o) {
+					M3.scene.add(this.objects[o]);
+				}.bind(this));
+	
+				this.resize();
+	
+				this._changeColor();
+				that.addTick(this._render.bind(this));
+	
+				return this._playEntryAnimation();
+			}
+	
+			// 窗口关闭
+	
+		}, {
+			key: 'leave',
+			value: function leave() {
+	
+				// 移除模型
+				console.log(Object.keys(this.objects));
+				Object.keys(this.objects).forEach(function (o) {
+					M3.scene.remove(that.objects[o]);
+				});
+				// render();
+				this.$domElem.remove();
+				this.getView('display-manager').removeWindow(this);
+				this.removeTween();
+				this.removeTick();
+				this.active = false;
+			}
+	
+			// 窗口重置
+	
+		}, {
+			key: 'resize',
+			value: function resize() {
+				var winWidth = window.innerWidth;
+				var winHeight = window.innerHeight;
+	
+				this._winSizePX = {};
+				this._winSizePX['left'] = parseInt(winWidth * this._windowSize['left']);
+				this._winSizePX['width'] = parseInt(winWidth * this._windowSize['width']);
+				this._winSizePX['top'] = parseInt(winHeight * this._windowSize['top']);
+				this._winSizePX['height'] = parseInt(winHeight * this._windowSize['height']);
+	
+				this._winSizePX['bottom'] = winHeight - this._winSizePX['height'] - this._winSizePX['top'];
+	
+				this._camera.aspect = this._winSizePX['width'] / this._winSizePX['height'];
+				this._camera.updateProjectionMatrix();
+	
+				this.trackball.handleResize(this._winSizePX);
+			}
+		}, {
+			key: 'resizeWindow',
+			value: function resizeWindow(windowSize) {
+				var initSize = this._windowSize;
+				var finalSize = windowSize;
+	
+				that.setState('animate');
+				var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1000).onUpdate(function () {
+					this._windowSize = this;
+					that.resize();
+				}).onComplete(function () {
+					that.removeTween(resizeTween);
+					that.setState('handle');
+				}).start();
+			}
+		}, {
+			key: 'setState',
+			value: function setState(state) {
+				this.state = state;
+				if (state === 'handle') {
+					this.trackball.init(this._camera, this.objects.mesh);
+					this.resize();
+					!this.locked && this.trackball && (this.trackball.enabled = true);
+				} else {
+					!this.locked && this.trackball && (this.trackball.enabled = false);
+				}
+			}
+	
+			// 获取模型旋转信息，相机相对信息，用于设置其他 displayWindow 使表现一致；
+	
+		}, {
+			key: 'getSize',
+			value: function getSize() {
+				var size = {};
+	
+				size.modelRotation = this.objects.mesh.rotation.clone();
+				size.cameraRotation = this._camera.rotation.clone();
+				size.cameraUp = this._camera.up.clone();
+				size.eye = new THREE.Vector3().subVectors(this._camera.position, this.objects.mesh.position);
+	
+				return size;
+			}
+		}, {
+			key: 'setSize',
+			value: function setSize(size) {
+				this.objects.mesh.rotation.copy(size.modelRotation);
+				// this._camera.rotation.copy(size.cameraRotation);
+				// this._camera.up = size.cameraUp;
+				this._camera.position.addVectors(this.objects.mesh.position, size.eye);
+				this._camera.lookAt(this.objects.mesh);
+			}
+		}, {
+			key: 'lock',
+			value: function lock(isMain) {
+				this.locked = true;
+				if (isMain) {
+					this.trackball.enabled = true;
+					this.trackball.fullScreen = true;
+				} else {
+					this.trackball.enabled = false;
+				}
+				this.reset();
+			}
+		}, {
+			key: 'unlock',
+			value: function unlock() {
+				this.locked = false;
+	
+				this.trackball.enabled = true;
+				this.trackball.fullScreen = false;
+				this.reset();
+			}
+		}, {
+			key: 'getColors',
+			value: function getColors() {
+				if (this._mobile) {
+					return this._mobile.getColors();
+				}
+			}
+	
+			/*
+	   * 从scene 中移除模型
+	   */
+	
+		}, {
+			key: 'remove',
+			value: function remove() {
+				_get(DisplayMobile.prototype.__proto__ || Object.getPrototypeOf(DisplayMobile.prototype), 'remove', this).call(this);
+				this.removeTick();
+			}
+	
+			// model，trackball 重置
+	
+		}, {
+			key: 'reset',
+			value: function reset() {
+				//console.log(this.objectSizes.mesh.position);
+				this.setState('animate');
+	
+				var initModelRotation = this.objectSizes.mesh.rotation;
+				var initCameraPosition = this.objectSizes.camera.position;
+				var initCameraLookAtPosition = this.objectSizes.camera.position;
+				var cameraLookAt = new THREE.Vector3(0, 0, -1);
+	
+				cameraLookAt.applyEuler(this._camera.rotation, this._camera.eulerOrder);
+				cameraLookAt.add(this._camera.position);
+	
+				this.addTHREEObjTween(this.objects.mesh, {
+					rotation: initModelRotation
+				}, 1000).start();
+	
+				this.addTHREEObjTween(this._camera, {
+					position: initCameraPosition,
+					lookAt: initCameraLookAtPosition
+				}, 1000, {
+					onComplete: function () {
+						this.setState('handle');
+					}.bind(this)
+				}).start();
+			}
+		}, {
+			key: '_setupScene',
+			value: function _setupScene() {
+	
+				// 3D 相关资源创建
+				this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
+				this.objects.spotLight.intensity = 1;
+				this._camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+	
+				this.trackball = new _m3Trackballcontrol2.default(this._camera);
+				this.trackball.enabled = false;
+			}
+		}, {
+			key: '_changeColor',
+			value: function _changeColor(color) {
+				this._mobile.changeColor(color);
+			}
+	
+			/* 动画 */
+	
+		}, {
+			key: '_playEntryAnimation',
+			value: function _playEntryAnimation() {
+				var that = this;
+				return new Promise(function (resolve, reject) {
+					that.setState('animate');
+	
+					var initModelRotation = that.objectSizes.mesh.rotation;
+					var initCameraPosition = that.objectSizes.camera.position;
+	
+					that.objects.mesh.rotation.copy(initModelRotation);
+					that.objects.mesh.rotation.x -= Math.PI * 0.5;
+					that.objects.mesh.rotation.z += Math.PI * 1.2;
+					that.addTHREEObjTween(that.objects.mesh, {
+						rotation: initModelRotation
+					}, 2000).start();
+	
+					that.addTHREEObjTween(this._camera, {
+						position: initCameraPosition
+					}, 2000, {
+						onComplete: function onComplete() {
+							that.setState('handle');
+							resolve();
+						}
+					}).start();
+				});
+			}
+		}, {
+			key: '_render',
+			value: function _render() {
+	
+				M3.renderer.setViewport(this._winSizePX['left'], this._winSizePX['bottom'], this._winSizePX['width'], this._winSizePX['height']);
+				M3.renderer.setScissor(this._winSizePX['left'], this._winSizePX['bottom'], this._winSizePX['width'], this._winSizePX['height']);
+				M3.renderer.setScissorTest(true);
+				this._camera.aspect = this._winSizePX['width'] / this._winSizePX['height'];
+				this._camera.updateProjectionMatrix();
+				M3.renderer.render(M3.scene, this._camera);
+				that.trackball.update();
+			}
+		}]);
+	
+		return DisplayMobile;
+	}(_stage2.default);
+	
+	exports.default = DisplayMobile;
+
+/***/ },
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	/* WEBPACK VAR INJECTION */(function(CONFIG) {'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _time = __webpack_require__(4);
+	
+	var _time2 = _interopRequireDefault(_time);
+	
+	var _loader = __webpack_require__(15);
+	
+	var _loader2 = _interopRequireDefault(_loader);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // Dependencies CONFIG.mobiles
+	
+	var loader = new _loader2.default();
+	var mobileEnvMap;
+	var JSONLoader = new THREE.JSONLoader();
+	
+	var Mobile = function (_Time) {
+		_inherits(Mobile, _Time);
+	
+		function Mobile(mobileName) {
+			_classCallCheck(this, Mobile);
+	
+			var _this = _possibleConstructorReturn(this, (Mobile.__proto__ || Object.getPrototypeOf(Mobile)).call(this));
+	
+			_this.mesh; // group
+			_this.size; // 资源大小
+	
+			_this._modelConfigs;
+	
+			_this._materials;
+			_this._colors = [];
+			_this._currentColor;
+			_this._uuidMaterialNameMap = {};
+			_this._texturePath = './assets/texture/';
+			CONFIG.mobiles.forEach(function (mobile) {
+				if (mobile.name === mobileName) {
+					this._modelConfigs = mobile;
+				}
+			});
+			_this.size = loader.calculateSize(_this._modelConfigs);
+			return _this;
+		}
+	
+		_createClass(Mobile, [{
+			key: 'getColors',
+			value: function getColors() {
+				return this._colors;
+			}
+		}, {
+			key: 'changeColor',
+			value: function changeColor(color) {
+				if (this._currentColor === color) return;
+				if (this._colors.indexOf(color) < 0) {
+					console.log('No this color');
+					return;
+				}
+	
+				this.mesh.children.forEach(function (child) {
+					var materialName = this._uuidMaterialNameMap[uuid];
+	
+					this._materials[color].forEach(function (material) {
+						if (material.name.replace(/\d*$/, '') === materialName.replace(/\d*$/, '')) {
+							child.material = material;
+							child.material.needsUpdate = true;
+						}
+					});
+				});
+			}
+		}, {
+			key: 'load',
+			value: function load(onProgress) {
+				var materials;
+				var group = new THREE.Group();
+				var loadPromise = loader.load(this._modelConfigs, onProgress);
+	
+				return loadPromise.then(function (modelRes) {
+					return new Promise(function (resolve) {
+						this._materials = modelRes.materials;
+						for (var color in this._materials) {
+							this._colors.push(color);
+							this._currentColor = this._colors[0];
+							this._materials[color] = this._JSONLoaderParse(this._materials[color]).materials;
+						}
+	
+						modelRes.models.forEach(function (modelJson) {
+							var mParse = this._JSONLoaderParse(modelJson);
+							var geometry = mParse.geometry;
+							var material = mParse.materials[0];
+							var model;
+	
+							if (material.name.indexOf('metal') >= 0) {
+								var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
+								texture.repeat.set(50, 50);
+								texture.wrapS = THREE.RepeatWrapping;
+								texture.wrapT = THREE.RepeatWrapping;
+	
+								material = new THREE.MeshPhongMaterial({
+									map: texture,
+									bumpMap: texture,
+									bumpScale: 0.1
+									// aoMapIntensity: 2
+								});
+							}
+	
+							material.side = THREE.DoubleSide;
+							material.transparent = material.opacity === 1 ? false : true;
+							model = new THREE.Mesh(geometry, material);
+	
+							this._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+							group.add(model);
+						});
+						that.mesh = group;
+						resolve();
+					});
+				}).catch(function (e) {
+					console.error(e.stack);
+				});
+			}
+		}, {
+			key: '_JSONLoaderParse',
+			value: function _JSONLoaderParse(json) {
+	
+				if (typeof json === 'string') {
+					json = JSON.parse(json);
+				}
+				// change path
+				json.materials.forEach(function (material) {
+					if (material.mapDiffuse) {
+						material.mapDiffuse = this._texturePath + material.mapDiffuse;
+					}
+				});
+				return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
+			}
+		}]);
+	
+		return Mobile;
+	}(_time2.default);
+	
+	exports.default = Mobile;
+	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
+
+/***/ },
+/* 14 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	var CONFIG = {};
+	
+	// test 
+	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
+	var _products = [];
+	
+	// select
+	var select = { name: 'pro5', size: [0, 0] }; //or random whatever;
+	
+	
+	// mobile load
+	var mobile = {
+		'name': 'pro5',
+		'models': [{ url: './assets/pro5/metal.json', size: 200 }, { url: './assets/pro5/metal_reflect.json', size: 200 }, { url: './assets/pro5/glass.json', size: 129 }, { url: './assets/pro5/plastics.json', size: 54 }, { url: './assets/pro5/map.json', size: 3 }, { url: './assets/pro5/plane.json', size: 8 }],
+	
+		materials: {
+			'black': { url: './assets/pro5/black.json', size: 6 },
+			'red': { url: './assets/pro5/black.json', size: 6 }
+		},
+	
+		map: [
+			// {url: './assets/pro5/pro5uv.png', size: 75000},
+		]
+	};
+	
+	CONFIG.mobiles = [];
+	
+	CONFIG.selects = [];
+	
+	products.forEach(function (productName) {
+		var m = $.extend({}, mobile);
+	
+		m.name = productName;
+		CONFIG.mobiles.push(m);
+	
+		var s = $.extend({}, mobile);
+	
+		s.name = productName;
+		s.size = [Math.random() * 10 | 0, Math.random() * 10 | 0];
+		CONFIG.mobiles.push(s);
+	});
+	
+	module.exports = CONFIG;
+
+/***/ },
+/* 15 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -1981,7 +2913,480 @@
 	exports.default = Loader;
 
 /***/ },
-/* 12 */
+/* 16 */
+/***/ function(module, exports) {
+
+	'use strict';
+	
+	/**
+	 * @author Eberhard Graether / http://egraether.com/
+	 * @author Mark Lundin 	/ http://mark-lundin.com
+	 */
+	
+	var TrackballControls = function TrackballControls() {
+	
+		var _this = this;
+		var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
+	
+		this.domElement = document;
+	
+		// API
+	
+		this.enabled = true;
+	
+		this.screen = { left: 0, top: 0, width: 0, height: 0 };
+		this.fullScreen = false;
+	
+		this.rotateSpeed = 1.0;
+		this.zoomSpeed = 1.2;
+		this.panSpeed = 0.3;
+	
+		this.noRotate = false;
+		this.noZoom = false;
+		this.noPan = false;
+		this.noRoll = false;
+	
+		this.staticMoving = false;
+		this.dynamicDampingFactor = 0.2;
+	
+		this.minDistance = 0;
+		this.maxDistance = Infinity;
+	
+		// internals
+		this.targetMesh;
+		this.target = new THREE.Vector3();
+		this.target0 = this.target.clone();
+		this.position0; //this.camera.position.clone();
+		this.up0; //= this.camera.up.clone();
+	
+		var EPS = 0.000001;
+	
+		var lastPosition = new THREE.Vector3();
+	
+		var _state = STATE.NONE,
+		    _prevState = STATE.NONE,
+		    _eye = new THREE.Vector3(),
+		    _rotation,
+		    _zoomStart = new THREE.Vector2(),
+		    _zoomEnd = new THREE.Vector2(),
+		    _touchZoomDistanceStart = 0,
+		    _touchZoomDistanceEnd = 0,
+		    _panStart = new THREE.Vector2(),
+		    _panEnd = new THREE.Vector2();
+	
+		// events
+	
+		var changeEvent = { type: 'change' };
+		var startEvent = { type: 'start' };
+		var endEvent = { type: 'end' };
+	
+		// methods
+	
+		this.constructor = function (camera, targetMesh) {
+			initEvent();
+		};
+	
+		this.init = function (camera, targetMesh) {
+	
+			this.camera = camera;
+			this.cameraUp = camera.up.clone();
+			this.targetMesh = targetMesh;
+	
+			_rotation = new THREE.Quaternion();
+			_rotation.setFromEuler(targetMesh.rotation.clone());
+			// for reset 
+			this.target = this.targetMesh.position.clone();
+			this.target0 = this.target.clone();
+			this.position0 = this.camera.position.clone();
+			this.up0 = this.camera.up.clone();
+		};
+	
+		this.changeTargetMesh = function (targetMesh) {
+			this.targetMesh = targetMesh;
+			this.target = this.targetMesh.position.clone();
+		};
+	
+		this.handleResize = function (winSize) {
+			var maxDisBase = 80;
+			var minDisBase = 10;
+	
+			this.screen.left = winSize.left;
+			this.screen.top = winSize.top;
+			this.screen.width = winSize.width;
+			this.screen.height = winSize.height;
+	
+			this.maxDistance = maxDisBase;
+			this.minDistance = minDisBase;
+		};
+	
+		this.handleEvent = function (event) {
+	
+			if (typeof this[event.type] == 'function') {
+	
+				this[event.type](event);
+			}
+		};
+	
+		var getMouseOnScreen = function () {
+	
+			var vector = new THREE.Vector2();
+	
+			return function (pageX, pageY) {
+	
+				vector.set((pageX - _this.screen.left) / _this.screen.width, (pageY - _this.screen.top) / _this.screen.height);
+	
+				return vector;
+			};
+		}();
+	
+		var getMouseProjectionOnBall = function getMouseProjectionOnBall(offsetX, offsetY) {
+	
+			var radio = 0.5;
+			var deltaRotationQuaternion = new THREE.Quaternion().setFromEuler(new THREE.Euler(offsetY * (Math.PI / 180) * radio, offsetX * (Math.PI / 180) * radio, 0, 'XYZ'));
+	
+			_this.targetMesh.quaternion.multiplyQuaternions(deltaRotationQuaternion, _this.targetMesh.quaternion);
+		};
+	
+		this.rotateTarget = function () {
+	
+			//this.targetMesh.rotation.setFromQuaternion(_rotation, 'XYZ'); 
+		};
+	
+		this.zoomCamera = function () {
+	
+			if (_state === STATE.TOUCH_ZOOM_PAN) {
+	
+				var factor = _touchZoomDistanceStart / _touchZoomDistanceEnd;
+				_touchZoomDistanceStart = _touchZoomDistanceEnd;
+				_eye.multiplyScalar(factor);
+			} else {
+	
+				var factor = 1.0 + (_zoomEnd.y - _zoomStart.y) * _this.zoomSpeed;
+	
+				if (factor !== 1.0 && factor > 0.0) {
+	
+					_eye.multiplyScalar(factor);
+	
+					if (_this.staticMoving) {
+	
+						_zoomStart.copy(_zoomEnd);
+					} else {
+	
+						_zoomStart.y += (_zoomEnd.y - _zoomStart.y) * this.dynamicDampingFactor;
+					}
+				}
+			}
+		};
+	
+		this.panCamera = function () {
+	
+			var mouseChange = new THREE.Vector2(),
+			    cameraUp = new THREE.Vector3(),
+			    pan = new THREE.Vector3();
+	
+			return function () {
+	
+				mouseChange.copy(_panEnd).sub(_panStart);
+	
+				if (mouseChange.lengthSq()) {
+	
+					mouseChange.multiplyScalar(_eye.length() * _this.panSpeed);
+	
+					pan.copy(_eye).cross(_this.camera.up).setLength(mouseChange.x);
+					pan.add(cameraUp.copy(_this.camera.up).setLength(mouseChange.y));
+	
+					_this.camera.position.add(pan);
+					_this.target.add(pan);
+	
+					if (_this.staticMoving) {
+	
+						_panStart.copy(_panEnd);
+					} else {
+	
+						_panStart.add(mouseChange.subVectors(_panEnd, _panStart).multiplyScalar(_this.dynamicDampingFactor));
+					}
+				}
+			};
+		}();
+	
+		this.checkDistances = function () {
+	
+			if (!_this.noZoom || !_this.noPan) {
+	
+				if (_eye.lengthSq() > _this.maxDistance * _this.maxDistance) {
+	
+					_this.camera.position.addVectors(_this.target, _eye.setLength(_this.maxDistance));
+				}
+	
+				if (_eye.lengthSq() < _this.minDistance * _this.minDistance) {
+	
+					_this.camera.position.addVectors(_this.target, _eye.setLength(_this.minDistance));
+				}
+			}
+		};
+	
+		this.update = function () {
+			if (!this.enabled) return;
+	
+			_eye.subVectors(_this.camera.position, _this.target);
+	
+			if (!_this.noRotate) {
+	
+				_this.rotateTarget();
+			}
+	
+			if (!_this.noZoom) {
+	
+				_this.zoomCamera();
+			}
+	
+			if (!_this.noPan) {
+	
+				_this.panCamera();
+			}
+	
+			_this.camera.position.addVectors(_this.target, _eye);
+	
+			_this.checkDistances();
+	
+			_this.camera.lookAt(_this.target);
+	
+			if (lastPosition.distanceToSquared(_this.camera.position) > EPS) {
+	
+				//_this.dispatchEvent( changeEvent );
+	
+				lastPosition.copy(_this.camera.position);
+			}
+		};
+	
+		this.resize = function () {
+	
+			_state = STATE.NONE;
+			_prevState = STATE.NONE;
+	
+			_this.target.copy(_this.target0);
+			_this.camera.position.copy(_this.position0);
+			_this.camera.up.copy(_this.up0);
+	
+			_eye.subVectors(_this.camera.position, _this.target);
+	
+			_this.camera.lookAt(_this.target);
+	
+			_this.dispatchEvent(changeEvent);
+	
+			lastPosition.copy(_this.camera.position);
+		};
+	
+		// event handle
+	
+		var mousePreX = 0;
+		var mousePreY = 0;
+	
+		function isInScreen(x, y) {
+			if (x > _this.screen.left && x < _this.screen.left + _this.screen.width && y > _this.screen.top && y < _this.screen.top + _this.screen.height || _this.fullScreen) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+	
+		function mousedown(event) {
+	
+			if (_this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			if (_state === STATE.NONE) {
+				_state = event.button;
+			}
+	
+			if (_state === STATE.ROTATE && !_this.noRotate) {
+				mousePreX = event.pageX;
+				mousePreY = event.pageY;
+			} else if (_state === STATE.ZOOM && !_this.noZoom) {
+	
+				_zoomStart.copy(getMouseOnScreen(event.pageX, event.pageY));
+				_zoomEnd.copy(_zoomStart);
+			} else if (_state === STATE.PAN && !_this.noPan) {
+	
+				_panStart.copy(getMouseOnScreen(event.pageX, event.pageY));
+				_panEnd.copy(_panStart);
+			}
+	
+			document.addEventListener('mousemove', mousemove, false);
+			document.addEventListener('mouseup', mouseup, false);
+	
+			//_this.dispatchEvent( startEvent );
+		}
+	
+		// event handle
+		function mousemove(event) {
+	
+			if (_this.enabled === false) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			if (_state === STATE.ROTATE && !_this.noRotate) {
+	
+				getMouseProjectionOnBall(event.pageX - mousePreX, event.pageY - mousePreY);
+			} else if (_state === STATE.ZOOM && !_this.noZoom) {
+	
+				_zoomEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
+			} else if (_state === STATE.PAN && !_this.noPan) {
+	
+				_panEnd.copy(getMouseOnScreen(event.pageX, event.pageY));
+			}
+			mousePreX = event.pageX;
+			mousePreY = event.pageY;
+		}
+	
+		function mouseup(event) {
+	
+			if (_this.enabled === false) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			_state = STATE.NONE;
+	
+			document.removeEventListener('mousemove', mousemove);
+			document.removeEventListener('mouseup', mouseup);
+			//_this.dispatchEvent( endEvent );
+		}
+	
+		function mousewheel(event) {
+	
+			if (_this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			var delta = 0;
+	
+			if (event.wheelDelta) {
+				// WebKit / Opera / Explorer 9
+	
+				delta = event.wheelDelta / 40;
+			} else if (event.detail) {
+				// Firefox
+	
+				delta = -event.detail / 3;
+			}
+	
+			_zoomStart.y += delta * 0.01;
+			//_this.dispatchEvent( startEvent );
+			//_this.dispatchEvent( endEvent );
+		}
+	
+		function touchstart(event) {
+	
+			if (_this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
+	
+			switch (event.touches.length) {
+	
+				case 1:
+					mousePreX = event.touches[0].pageX;
+					mousePreY = event.touches[0].pageY;
+					break;
+	
+				case 2:
+					_state = STATE.TOUCH_ZOOM_PAN;
+					var dx = event.touches[0].pageX - event.touches[1].pageX;
+					var dy = event.touches[0].pageY - event.touches[1].pageY;
+					_touchZoomDistanceEnd = _touchZoomDistanceStart = Math.sqrt(dx * dx + dy * dy);
+	
+					var x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+					var y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+					_panStart.copy(getMouseOnScreen(x, y));
+					_panEnd.copy(_panStart);
+					break;
+	
+				default:
+					_state = STATE.NONE;
+	
+			}
+			//_this.dispatchEvent( startEvent );
+		}
+	
+		function touchmove(event) {
+	
+			if (_this.enabled === false) return;
+	
+			event.preventDefault();
+			event.stopPropagation();
+	
+			switch (event.touches.length) {
+	
+				case 1:
+					getMouseProjectionOnBall(event.touches[0].pageX - mousePreX, event.touches[0].pageY - mousePreY);
+					break;
+	
+				case 2:
+					var dx = event.touches[0].pageX - event.touches[1].pageX;
+					var dy = event.touches[0].pageY - event.touches[1].pageY;
+					_touchZoomDistanceEnd = Math.sqrt(dx * dx + dy * dy);
+	
+					var x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+					var y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+					_panEnd.copy(getMouseOnScreen(x, y));
+					break;
+	
+				default:
+					_state = STATE.NONE;
+	
+			}
+			mousePreX = event.touches[0].pageX;
+			mousePreY = event.touches[0].pageY;
+		}
+	
+		function touchend(event) {
+	
+			if (_this.enabled === false) return;
+	
+			switch (event.touches.length) {
+	
+				case 1:
+					_rotateEnd.copy(getMouseProjectionOnBall(event.touches[0].pageX, event.touches[0].pageY));
+					_rotateStart.copy(_rotateEnd);
+					break;
+	
+				case 2:
+					_touchZoomDistanceStart = _touchZoomDistanceEnd = 0;
+	
+					var x = (event.touches[0].pageX + event.touches[1].pageX) / 2;
+					var y = (event.touches[0].pageY + event.touches[1].pageY) / 2;
+					_panEnd.copy(getMouseOnScreen(x, y));
+					_panStart.copy(_panEnd);
+					break;
+	
+			}
+	
+			_state = STATE.NONE;
+			//_this.dispatchEvent( endEvent );
+		}
+	
+		function initEvent() {
+			_this.domElement.addEventListener('contextmenu', function (event) {
+				event.preventDefault();
+			}, false);
+	
+			_this.domElement.addEventListener('mousedown', mousedown, false);
+	
+			_this.domElement.addEventListener('mousewheel', mousewheel, false);
+			_this.domElement.addEventListener('DOMMouseScroll', mousewheel, false); // firefox
+	
+			_this.domElement.addEventListener('touchstart', touchstart, false);
+			_this.domElement.addEventListener('touchend', touchend, false);
+			_this.domElement.addEventListener('touchmove', touchmove, false);
+		}
+	};
+	
+	module.exports = TrackballControls;
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

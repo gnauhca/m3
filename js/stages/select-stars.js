@@ -14,14 +14,18 @@ class Star extends Time {
 
 	init() {
 		// create mesh
-		var gemo = new THREE.SphereGeometry(10, 7, 7);
+		var gemo = new THREE.SphereGeometry(10, 10, 10);
 		gemo = new THREE.TetrahedronGeometry(10, 0);
 		if (Math.random() > 0.5) {
 			gemo = new THREE.BoxGeometry(10, 10, 10);
 		}
-		var material = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true});
-		// var material = new THREE.MeshLambertMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-		var mesh = new THREE.Mesh(gemo, material);
+		var material1 = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true});
+		var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
+		var mulMaterial = new THREE.MultiMaterial([material1, material2]);
+		var mesh = new THREE.Mesh(gemo, mulMaterial);
+		
+		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
+
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
 

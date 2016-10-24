@@ -1,52 +1,51 @@
 // Dependencies CONFIG.mobiles
 
-var Time = require('time.js');
-var Loader = require('loader.js');
+import Time from 'time.js';
+import Loader from 'loader.js';
 var loader = new Loader();
 var mobileEnvMap;
+var JSONLoader = new THREE.JSONLoader();
 
 
 
-var Mobile = Time.extend(function() {
-	var that = this;
+class Mobile extends Time {
 
-	this.mesh; // group
-	this.size; // 资源大小
-
-	var _modelConfigs;
-
-	var _materials;
-	var _colors = [];
-	var _currentColor;
-	var _uuidMaterialNameMap = {};
-	var _texturePath = './assets/texture/';
-	var JSONLoader = new THREE.JSONLoader();
-
-	this.constructor = function(mobileName) { 
+	constructor(mobileName) { 
 		super();
+
+		this.mesh; // group
+		this.size; // 资源大小
+
+		this._modelConfigs;
+
+		this._materials;
+		this._colors = [];
+		this._currentColor;
+		this._uuidMaterialNameMap = {};
+		this._texturePath = './assets/texture/';
 		CONFIG.mobiles.forEach(function(mobile) {
 			if (mobile.name === mobileName) {
-				_modelConfigs = mobile;
+				this._modelConfigs = mobile;
 			}
 		});
-		this.size = loader.calculateSize(_modelConfigs);
+		this.size = loader.calculateSize(this._modelConfigs);
 	}
 
-	this.getColors = function() {
-		return _colors;
+	getColors() {
+		return this._colors;
 	}
 
-	this.changeColor = function(color) {
-		if (_currentColor === color) return;
-		if (_colors.indexOf(color) < 0) {
+	changeColor(color) {
+		if (this._currentColor === color) return;
+		if (this._colors.indexOf(color) < 0) {
 			console.log('No this color');
 			return;
 		}
 
 		this.mesh.children.forEach(function(child) {
-			var materialName = _uuidMaterialNameMap[uuid];
+			var materialName = this._uuidMaterialNameMap[uuid];
 
-			_materials[color].forEach(function(material) {
+			this._materials[color].forEach(function(material) {
 				if (material.name.replace(/\d*$/, '') === materialName.replace(/\d*$/, '')) {
 					child.material = material;
 					child.material.needsUpdate = true;
@@ -55,22 +54,22 @@ var Mobile = Time.extend(function() {
 		});
 	}
 
-	this.load = function(onProgress) {
+	load(onProgress) {
 		var materials;
 		var group = new THREE.Group();
-		var loadPromise = loader.load(_modelConfigs, onProgress);
+		var loadPromise = loader.load(this._modelConfigs, onProgress);
 
 		return loadPromise.then(function(modelRes) {
 			return new Promise(function(resolve) {
-				_materials = modelRes.materials;
-				for (var color in _materials) {
-					_colors.push(color);
-					_currentColor = _colors[0];
-					_materials[color] = JSONLoaderParse(_materials[color]).materials;
+				this._materials = modelRes.materials;
+				for (var color in this._materials) {
+					this._colors.push(color);
+					this._currentColor = this._colors[0];
+					this._materials[color] = this._JSONLoaderParse(this._materials[color]).materials;
 				}
 
 				modelRes.models.forEach(function(modelJson) {
-					var mParse = JSONLoaderParse(modelJson);
+					var mParse = this._JSONLoaderParse(modelJson);
 					var geometry = mParse.geometry;
 					var material = mParse.materials[0];
 					var model;
@@ -94,7 +93,7 @@ var Mobile = Time.extend(function() {
 					material.transparent = (material.opacity === 1?false:true);
 					model = new THREE.Mesh(geometry, material);
 
-					_uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+					this._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
 					group.add(model);
 				});
 				that.mesh = group;
@@ -103,7 +102,7 @@ var Mobile = Time.extend(function() {
 		}).catch(function(e) { console.error(e.stack); });
 	}
 
-	function JSONLoaderParse(json) {
+	_JSONLoaderParse(json) {
 
 		if (typeof json === 'string') {
 			json = JSON.parse(json);
@@ -111,11 +110,11 @@ var Mobile = Time.extend(function() {
 		// change path
 		json.materials.forEach(function(material) {
 			if (material.mapDiffuse) {
-				material.mapDiffuse = _texturePath + material.mapDiffuse;
+				material.mapDiffuse = this._texturePath + material.mapDiffuse;
 			}
 		});
 		return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
 	}
-});
+}
 
-module.exports = Mobile;
+export default Mobile;

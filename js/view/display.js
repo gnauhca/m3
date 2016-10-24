@@ -1,69 +1,68 @@
-var View = require('./view.js');
-var DisplayContainerStage = require('../stages/display-container.js');
-var MobileStage = require('../stages/display-mobile.js');
+import View from './view.js';
+import MobileStage from '../stages/display-mobile.js';
+// import DisplayContainerStage from '../stages/display-container.js';
 
-var Display = View.extend(function() {
-	var that = this;
-	var _lockTick;
-	var _containerStage; 
-	var _progressView;
-
-	this.name = 'display';
-	this.isInit = false;
-	this.active = false;
-
-	// stages
-	var _mobileStages = {}; // {pro6: xx, mx6: xx} for cache
-	var _currentMobileStages = []; 
-	this.stages = [];
-
-	// UI
-	var _$domWrap = $('#displayView');
-	var _$domManager = $('.display-manager');
-
-	var _$windowWrap = $('#displayWindowWrap');
-
-	var _windowDoms = [];
-	var _currentWindowDoms = [];
-
-	this.constructor = function() {
-		_progressView = M3.viewManager.getView('progress');
-		_containerStage = new DisplayContainerStage();
-		this.stages.push(_containerStage);
+class Display extends View {
+	constructor() {
 		super();
+		this._lockTick;
+		// this._containerStage; 
+		this._progressView;
+
+		this.name = 'display';
+		this.isInit = false;
+		this.active = false;
+
+		// stages
+		this._mobileStages = {}; // {pro6: xx, mx6: xx} for cache
+		this._currentMobileStages = []; 
+		this.stages = [];
+
+		// UI
+		this._$domWrap = $('#displayView');
+		this._$domManager = $('.display-manager');
+
+		this._$windowWrap = $('#displayWindowWrap');
+
+		this._windowDoms = [];
+		this._currentWindowDoms = [];
+
+		this._progressView = M3.viewManager.getView('progress');
+		// this._containerStage = new DisplayContainerStage();
+		// this.stages.push(this._containerStage);
 	}
 
 	// data : {mobile: [pro5, mx6 ...]}
-	this.activate = function(data) {
+	activate(data) {
 		// check self init
 		if (!this.isInit) {
-			init();
-			_containerStage.init();
+			this.init();
+			// this._containerStage.init();
 		}
 
 		if (data) {
 			var mobiles = $.extend(true, [], data.mobiles);
-			_currentMobileStages = [];
+			this._currentMobileStages = [];
 			mobiles.forEach(function(name, i) {
-				if (!_mobileStages[name]) {
+				if (!this._mobileStages[name]) {
 					var mobileStage = new MobileStage(name);
-					_mobileStages[name] = mobileStage;
-					_currentMobileStages.push(mobileStage);
+					this._mobileStages[name] = mobileStage;
+					this._currentMobileStages.push(mobileStage);
 				}
 			}.bind(this));
 
-			// isload 如果检查到需要加载，会启动加载，并在加载完成之后调用回调
-			if (!isLoad.bind(this)(this.activate.bind(this))) return;	
+			// this._isload 如果检查到需要加载，会启动加载，并在加载完成之后调用回调
+			if (!this._isLoad.bind(this)(this.activate.bind(this))) return;	
 		}
 
 		// all loaded 
-		//_containerStage.entry();// containerStage
+		//this._containerStage.entry();// containerStage
 
-		var sizePos = calculateSubWindowSize(_currentMobileStages.length);
+		var sizePos = calculateSubWindowSize(this._currentMobileStages.length);
 		var x = 0;
 		var entryCount = 0;
 
-		_currentMobileStages.forEach(function(mobileStage, i, all) {
+		this._currentMobileStages.forEach(function(mobileStage, i, all) {
 			var meshPos = new THREE.Vector3(x + (i - (all.length/2)) * 100, 0, 0);
 			mobileStage.entry(meshPos, sizePos[i]).then(function() {
 				entryCount++;
@@ -73,85 +72,85 @@ var Display = View.extend(function() {
 			});
 			that.stages.push(mobileStage);
 		});
-		createWindowUI();resizeWindows();
+		this._createWindowUI();this._resizeWindows();
 
 		// UI
-		_$domWrap.removeClass('none');
-		this.stages.push(_containerStage);
+		this._$domWrap.removeClass('none');
 
 		this.active = true;
 	}
 
-	this.inActivate = function() {
+	inActivate() {
 		Object.keys(this.scene).forEach(function(o) { M3.scene.remove(that.scene[o]);});
 		this.removeTick(sphereTick);
 
-		_$domWrap.addClass('none');
+		this._$domWrap.addClass('none');
 		this.activeWindows.forEach(function(activeWindow) {
 			setTimeout(function() {activeWindow.inActivate();}, 0);
 		});
 		this.activeWindows.length = 0;
 
-		_containerStage.leave();
+		// this._containerStage.leave();
 		this.stages = [];
 		this.active = false;
 	}
 
-	this.resize = function() {
-		resizeWindows();
+	resize() {
+		this._resizeWindows();
 	}
 
-	function init() {
-		var $lockBtn = _$domManager.find('.lock-btn');
-		var $unlockBtn = _$domManager.find('.unlock-btn');
-		var $backBtn = _$domManager.find('.back-btn');
+	init() {
+		var that = this;
+		var $lockBtn = this._$domManager.find('.lock-btn');
+		var $unlockBtn = this._$domManager.find('.unlock-btn');
+		var $backBtn = this._$domManager.find('.back-btn');
 
 		that.isInit = true;
 
-		_$domManager.on('click', '.setting-btn', function() {
-			_$domManager.addClass('show');
+		this._$domManager.on('click', '.setting-btn', function() {
+			that._$domManager.addClass('show');
 		});
 
-		_$domManager.on('click', '.lock-btn', function() {
+		this._$domManager.on('click', '.lock-btn', function() {
 			$lockBtn.addClass('none')
 			$unlockBtn.removeClass('none');
-			_$domManager.removeClass('show');
-			lock();
+			that._$domManager.removeClass('show');
+			that.lock();
 		});
 
-		_$domManager.on('click', '.unlock-btn', function() {
+		this._$domManager.on('click', '.unlock-btn', function() {
 			$unlockBtn.addClass('none')
 			$lockBtn.removeClass('none');
-			_$domManager.removeClass('show');
-			unlock();
+			that._$domManager.removeClass('show');
+			that._unlock();
 		});
 
-		_$domManager.on('click', '.back-btn', function() {
+		this._$domManager.on('click', '.back-btn', function() {
 			that.inActivate();
 			that.activateView('product-preview');
-			_$domManager.removeClass('show');
+			that._$domManager.removeClass('show');
 		});
 
 		// windows
-		_$domWrap.on('click', '.reset-btn', function() {
+		this._$domWrap.on('click', '.reset-btn', function() {
 			var index = $(this).parents('.display-window').index();
-			resetWindow(index);
+			that.resetWindow(index);
 		});
 
-		_$domWrap.on('click', '.close-btn', function() { 
+		this._$domWrap.on('click', '.close-btn', function() { 
 			var index = $(this).parents('.display-window').index();
-			closeWindow(index);
+			that._closeWindow(index);
 		});
 
-		_$domWrap.on('click', '.color', function() {
+		this._$domWrap.on('click', '.color', function() {
 			var index = $(this).parents('.display-window').index();
 			var color = $(this).data('color');
-			_currentMobileStages[index].changeColor(color);
+			that._currentMobileStages[index].changeColor(color);
 			$(this).addClass('selected').silbings().removeClass('selected');
 		});
-	}/**/
+	}
 
-	function isLoad(callback) {
+	_isLoad(callback) {
 		var unloadedCount = 0;
 		var loaded = true;
 		var loadingInfos = {};
@@ -162,31 +161,31 @@ var Display = View.extend(function() {
 			var progress;
 			var loadingInfo;
 
-			for (var name in loadingInfos) {
+			for (let name in loadingInfos) {
 				loadingInfo = loadingInfos[name];
 				totalSize += loadingInfo.size;
 				loadedSize += loadingInfo.progress * loadingInfo.size;
 			}
 
 			progress = loadedSize/totalSize;
-			showProgress(progress);
+			this._showProgress(progress);
 			if (unloadedCount === 0) {
 				// loaded 
-				callback(); _progressView.inactivate();
+				callback(); this._progressView.inactivate();
 			}
 		}
 
-		for (var name in _mobileStages) {
+		for (let name in this._mobileStages) {
 			// loading
-			if (!_mobileStages[name].isInit) {
+			if (!this._mobileStages[name].isInit) {
 				loaded = false;
 				unloadedCount++;
 				loadingInfos[name] = {
-					size: _mobileStages[name].size,
+					size: this._mobileStages[name].size,
 					progress: 0
 				};
 				(function(_name) { 
-					_mobileStages[_name].init(function(progress) {
+					this._mobileStages[_name].init(function(progress) {
 						loadingInfos[_name].progress = progress;
 						loading();
 					}).then(function() {
@@ -197,17 +196,17 @@ var Display = View.extend(function() {
 				}.bind(this))(name);
 			}
 		}
-		if (!loaded) { _progressView.activate(); }
+		if (!loaded) { this._progressView.activate(); }
 
 		return loaded;
 	}
 
-	function showProgress(progress) {
+	_showProgress(progress) {
 		//console.log('display.js loading: ' + progress);
-		_progressView.setProgress(progress);
+		this._progressView.setProgress(progress);
 	} 
 
-	function createWindowUI() {
+	_createWindowUI() {
 		var windowTemplate = 
 			'<div class="display-window">' + 
 				'<div class="window-control">' + 
@@ -219,85 +218,85 @@ var Display = View.extend(function() {
 		var colorTemplate = '<i class="color @color" data-color="@color"></i>';
 		var colorHTML = '';
 
-		_$windowWrap.html('');
-		_currentWindowDoms = [];
-		_currentMobileStages.forEach(function(mobileStage, i) {
-			if (!_windowDoms[i]) {
-				_windowDoms[i] = $(windowTemplate);
+		this._$windowWrap.html('');
+		this._currentWindowDoms = [];
+		this._currentMobileStages.forEach(function(mobileStage, i) {
+			if (!this._windowDoms[i]) {
+				this._windowDoms[i] = $(windowTemplate);
 			}
-			_currentWindowDoms[i] = _windowDoms[i];
-			_$windowWrap.append(_currentWindowDoms[i]);
+			this._currentWindowDoms[i] = this._windowDoms[i];
+			this._$windowWrap.append(this._currentWindowDoms[i]);
 
 			colorHTML = '';
 			mobileStage.getColors().forEach(function(color) {
 				colorHTML += colorTemplate.replace(/\@color/g, color);
 			});
-			_currentWindowDoms[i].find('.colors-control').empty().html(colorHTML);
+			this._currentWindowDoms[i].find('.colors-control').empty().html(colorHTML);
 		});
 	}
 
 	// 模型恢复初始状态
-	function resetWindow(index) {
-		if (_lockTick) {
-			_currentMobileStages[0].reset();
+	resetWindow(index) {
+		if (this._lockTick) {
+			this._currentMobileStages[0].reset();
 		} else {
-			_currentMobileStages[index].reset();
+			this._currentMobileStages[index].reset();
 		}
 	}
 
-	function closeWindow(index) { 
-		_currentMobileStages[index].remove();
-		_currentMobileStages.splice(index, 1);
+	_closeWindow(index) { 
+		this._currentMobileStages[index].remove();
+		this._currentMobileStages.splice(index, 1);
 
 		// ui remove
-		_currentWindowDoms[index].remove();
-		_currentWindowDoms.splice(index, 1);
-		resizeWindows();
+		this._currentWindowDoms[index].remove();
+		this._currentWindowDoms.splice(index, 1);
+		this._resizeWindows();
 	}
 
-	function resizeWindows() {
-		var sizePos = calculateSubWindowSize(_currentMobileStages.length);
+	_resizeWindows() {
+		var sizePos = calculateSubWindowSize(this._currentMobileStages.length);
 
 		// stage resize
-		_currentMobileStages.forEach(function(mobileStage, i) {
+		this._currentMobileStages.forEach(function(mobileStage, i) {
 			mobileStage.resizeWindow(sizePos[i]);
 		});
 
 		// ui resize
 		sizePos = $.extend(true, [], sizePos);
 		sizePos.forEach(function(item) {
-			for (var pos in item) {
+			for (let pos in item) {
 				item[pos] *= 100; item[pos] += '%'; 
 			}
 		});
 
-		_currentWindowDoms.forEach(function($windowDom, i) { 
+		this._currentWindowDoms.forEach(function($windowDom, i) { 
 			$windowDom.animate(sizePos[i], 1000); 
 		});
 	}
 
-	function lock() {
-		_currentMobileStages.forEach(function(mobileStage, i) {
+	_lock() {
+		this._currentMobileStages.forEach(function(mobileStage, i) {
 			mobileStage.lock(i === 0);
 		});
 
-		_lockTick = that.addTick(function() {
-			var sizeInfo = _currentMobileStages[0].getSize();
-			_currentMobileStages.forEach(function(mobileStage, i) {
+		this._lockTick = that.addTick(function() {
+			var sizeInfo = this._currentMobileStages[0].getSize();
+			this._currentMobileStages.forEach(function(mobileStage, i) {
 				if (i > 0) mobileStage.setSize(sizeInfo);
 			});
 		});
 	}
 
-	function unlock() {
-		_currentMobileStages.forEach(function(mobileStage, i) {
+	_unlock() {
+		this._currentMobileStages.forEach(function(mobileStage, i) {
 			mobileStage.unlock();
 		});
-		that.removeTick(_lockTick); _lockTick = null;
+		that.removeTick(this._lockTick); this._lockTick = null;
 	}
 
 
-});
+}
 
-module.exports = Display;
+export default Display;
 

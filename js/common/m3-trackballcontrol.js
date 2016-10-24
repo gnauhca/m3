@@ -3,7 +3,7 @@
  * @author Mark Lundin 	/ http://mark-lundin.com
  */
 
-TrackballControls = Class.extend(function () {
+var TrackballControls = function () {
 
 	var _this = this;
 	var STATE = { NONE: -1, ROTATE: 0, ZOOM: 1, PAN: 2, TOUCH_ROTATE: 3, TOUCH_ZOOM_PAN: 4 };
@@ -517,7 +517,7 @@ TrackballControls = Class.extend(function () {
 		_this.domElement.addEventListener( 'touchend', touchend, false );
 		_this.domElement.addEventListener( 'touchmove', touchmove, false );		
 	}
-});
+}
 
 
 module.exports = TrackballControls;
