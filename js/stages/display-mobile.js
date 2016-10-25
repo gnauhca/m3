@@ -45,11 +45,12 @@ class DisplayMobile extends Stage {
 	}
 
 	init(onProgress) {
+		var that = this;
 		return this.load(onProgress).then(function() {
 			return new Promise(function(resolve, reject) {
 				// init
-				that.objects.mesh = this._mobile.mesh;
-				this._setupScene();
+				that.objects.mesh = that._mobile.mesh;
+				that._setupScene();
 				that.isInit = true;
 				resolve();
 			});
@@ -90,7 +91,7 @@ class DisplayMobile extends Stage {
 		this.resize();
 
 		this._changeColor();
-		that.addTick(this._render.bind(this));
+		this.addTick(this._render.bind(this));
 
 		return this._playEntryAnimation();
 	}
@@ -129,12 +130,13 @@ class DisplayMobile extends Stage {
 	}
 
 	resizeWindow(windowSize) {
+		var that = this;
 		var initSize = this._windowSize;
 		var finalSize = windowSize;
 
-		that.setState('animate');
+		this.setState('animate');
 		var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1000).onUpdate(function() {
-			this._windowSize = this;
+			that._windowSize = this;
 			that.resize();
 		}).onComplete(function() {
 			that.removeTween(resizeTween);
@@ -242,7 +244,7 @@ class DisplayMobile extends Stage {
 
 
         this.trackball = new TrackballControls(this._camera);
-        this.trackball.enabled = false;
+        // this.trackball.enabled = false;
 	}
 
 	_changeColor(color) {
@@ -265,7 +267,7 @@ class DisplayMobile extends Stage {
 				rotation: initModelRotation
 			}, 2000).start();
 
-			that.addTHREEObjTween(this._camera, {
+			that.addTHREEObjTween(that._camera, {
 				position: initCameraPosition
 			}, 2000, {
 				onComplete: function() {
@@ -284,7 +286,7 @@ class DisplayMobile extends Stage {
 		this._camera.aspect = this._winSizePX['width'] / this._winSizePX['height'];
 		this._camera.updateProjectionMatrix();
 		M3.renderer.render( M3.scene, this._camera );	
-		that.trackball.update();		
+		this.trackball.update();		
 	}
 }
 

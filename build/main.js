@@ -54,14 +54,16 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _loader = __webpack_require__(15);
+	var _loader = __webpack_require__(14);
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
+	__webpack_require__(18);
+	
 	(function () {
-		__webpack_require__(17); //return;
+		__webpack_require__(19); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
@@ -131,16 +133,16 @@
 			M3.scene.add(spotLight);
 	
 			/* grid helper */
-			var gridHelperX = new THREE.GridHelper(size, step, 0xff0000);
-			gridHelperX.rotation.z = Math.PI / 2;
-			M3.scene.add(gridHelperX);
-	
-			var gridHelperY = new THREE.GridHelper(size, step, 0x00ff00);
-			M3.scene.add(gridHelperY);
-	
-			var gridHelperZ = new THREE.GridHelper(size, step, 0x0000ff);
-			gridHelperZ.rotation.x = Math.PI / 2;
-			M3.scene.add(gridHelperZ);
+			/*	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+	  	gridHelperX.rotation.z = Math.PI / 2;
+	  	M3.scene.add( gridHelperX );
+	  
+	  	var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+	  	M3.scene.add( gridHelperY );
+	  
+	  	var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+	  	gridHelperZ.rotation.x = Math.PI / 2;
+	  	M3.scene.add( gridHelperZ );*/
 	
 			// M3.viewManager.activateView('index');
 			M3.viewManager.activateView('display', { mobiles: ['pro5', 'pro6' /*, 'mx5', 'mx6'*/] });
@@ -1825,6 +1827,7 @@
 		_createClass(Display, [{
 			key: 'activate',
 			value: function activate(data) {
+				var that = this;
 				// check self init
 				if (!this.isInit) {
 					this.init();
@@ -1950,6 +1953,7 @@
 		}, {
 			key: '_isLoad',
 			value: function _isLoad(callback) {
+				var that = this;
 				var unloadedCount = 0;
 				var loaded = true;
 				var loadingInfos = {};
@@ -1967,10 +1971,10 @@
 					}
 	
 					progress = loadedSize / totalSize;
-					this._showProgress(progress);
+					that._showProgress(progress);
 					if (unloadedCount === 0) {
 						// loaded 
-						callback();this._progressView.inactivate();
+						callback();that._progressView.inactivate();
 					}
 				}
 	
@@ -1984,7 +1988,7 @@
 							progress: 0
 						};
 						(function (_name) {
-							this._mobileStages[_name].init(function (progress) {
+							that._mobileStages[_name].init(function (progress) {
 								loadingInfos[_name].progress = progress;
 								loading();
 							}).then(function () {
@@ -1994,7 +1998,7 @@
 							}).catch(function (e) {
 								console.error(e.stack);
 							});
-						}).bind(this)(name);
+						})(name);
 					}
 				}
 				if (!loaded) {
@@ -2030,7 +2034,7 @@
 						colorHTML += colorTemplate.replace(/\@color/g, color);
 					});
 					this._currentWindowDoms[i].find('.colors-control').empty().html(colorHTML);
-				});
+				}.bind(this));
 			}
 	
 			// 模型恢复初始状态
@@ -2128,7 +2132,7 @@
 	
 	var _mobile2 = _interopRequireDefault(_mobile);
 	
-	var _m3Trackballcontrol = __webpack_require__(16);
+	var _m3Trackballcontrol = __webpack_require__(17);
 	
 	var _m3Trackballcontrol2 = _interopRequireDefault(_m3Trackballcontrol);
 	
@@ -2191,11 +2195,12 @@
 		}, {
 			key: 'init',
 			value: function init(onProgress) {
+				var that = this;
 				return this.load(onProgress).then(function () {
 					return new Promise(function (resolve, reject) {
 						// init
-						that.objects.mesh = this._mobile.mesh;
-						this._setupScene();
+						that.objects.mesh = that._mobile.mesh;
+						that._setupScene();
 						that.isInit = true;
 						resolve();
 					});
@@ -2241,7 +2246,7 @@
 				this.resize();
 	
 				this._changeColor();
-				that.addTick(this._render.bind(this));
+				this.addTick(this._render.bind(this));
 	
 				return this._playEntryAnimation();
 			}
@@ -2289,12 +2294,13 @@
 		}, {
 			key: 'resizeWindow',
 			value: function resizeWindow(windowSize) {
+				var that = this;
 				var initSize = this._windowSize;
 				var finalSize = windowSize;
 	
-				that.setState('animate');
+				this.setState('animate');
 				var resizeTween = new TWEEN.Tween(initSize).easing(TWEEN.Easing.Cubic.InOut).to(finalSize, 1000).onUpdate(function () {
-					this._windowSize = this;
+					that._windowSize = this;
 					that.resize();
 				}).onComplete(function () {
 					that.removeTween(resizeTween);
@@ -2416,7 +2422,7 @@
 				this._camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
 				this.trackball = new _m3Trackballcontrol2.default(this._camera);
-				this.trackball.enabled = false;
+				// this.trackball.enabled = false;
 			}
 		}, {
 			key: '_changeColor',
@@ -2443,7 +2449,7 @@
 						rotation: initModelRotation
 					}, 2000).start();
 	
-					that.addTHREEObjTween(this._camera, {
+					that.addTHREEObjTween(that._camera, {
 						position: initCameraPosition
 					}, 2000, {
 						onComplete: function onComplete() {
@@ -2463,7 +2469,7 @@
 				this._camera.aspect = this._winSizePX['width'] / this._winSizePX['height'];
 				this._camera.updateProjectionMatrix();
 				M3.renderer.render(M3.scene, this._camera);
-				that.trackball.update();
+				this.trackball.update();
 			}
 		}]);
 	
@@ -2476,7 +2482,7 @@
 /* 13 */
 /***/ function(module, exports, __webpack_require__) {
 
-	/* WEBPACK VAR INJECTION */(function(CONFIG) {'use strict';
+	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
@@ -2488,9 +2494,13 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _loader = __webpack_require__(15);
+	var _loader = __webpack_require__(14);
 	
 	var _loader2 = _interopRequireDefault(_loader);
+	
+	var _mobileConf = __webpack_require__(15);
+	
+	var _mobileConf2 = _interopRequireDefault(_mobileConf);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -2499,6 +2509,7 @@
 	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
 	
 	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; } // Dependencies CONFIG.mobiles
+	
 	
 	var loader = new _loader2.default();
 	var mobileEnvMap;
@@ -2515,19 +2526,19 @@
 			_this.mesh; // group
 			_this.size; // 资源大小
 	
-			_this._modelConfigs;
-	
+			_this.config;
 			_this._materials;
 			_this._colors = [];
 			_this._currentColor;
 			_this._uuidMaterialNameMap = {};
 			_this._texturePath = './assets/texture/';
-			CONFIG.mobiles.forEach(function (mobile) {
+	
+			_mobileConf2.default.forEach(function (mobile) {
 				if (mobile.name === mobileName) {
-					this._modelConfigs = mobile;
+					this.config = mobile;
 				}
-			});
-			_this.size = loader.calculateSize(_this._modelConfigs);
+			}.bind(_this));
+			_this.size = loader.calculateSize(_this.config);
 			return _this;
 		}
 	
@@ -2559,46 +2570,48 @@
 		}, {
 			key: 'load',
 			value: function load(onProgress) {
+				var that = this;
+				var models;
 				var materials;
 				var group = new THREE.Group();
-				var loadPromise = loader.load(this._modelConfigs, onProgress);
+				var loadPromise = loader.load(this.config, onProgress);
 	
 				return loadPromise.then(function (modelRes) {
+					models = JSON.parse(modelRes.mobile.models);
 					return new Promise(function (resolve) {
-						this._materials = modelRes.materials;
-						for (var color in this._materials) {
-							this._colors.push(color);
-							this._currentColor = this._colors[0];
-							this._materials[color] = this._JSONLoaderParse(this._materials[color]).materials;
+						that._materials = models.materials;
+						for (var color in that._materials) {
+							that._colors.push(color);
+							that._currentColor = that._colors[0];
+							that._materials[color] = that._JSONLoaderParse(that._materials[color]).materials;
 						}
+						for (var modelName in models.models) {
 	
-						modelRes.models.forEach(function (modelJson) {
-							var mParse = this._JSONLoaderParse(modelJson);
+							var mParse = that._JSONLoaderParse(models.models[modelName]);
 							var geometry = mParse.geometry;
 							var material = mParse.materials[0];
 							var model;
 	
-							if (material.name.indexOf('metal') >= 0) {
-								var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
-								texture.repeat.set(50, 50);
-								texture.wrapS = THREE.RepeatWrapping;
-								texture.wrapT = THREE.RepeatWrapping;
-	
-								material = new THREE.MeshPhongMaterial({
-									map: texture,
-									bumpMap: texture,
-									bumpScale: 0.1
-									// aoMapIntensity: 2
-								});
-							}
+							/*if (material.name.indexOf('metal') >= 0) {
+	      	var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
+	      	texture.repeat.set(50,50);
+	              		texture.wrapS = THREE.RepeatWrapping;
+	              		texture.wrapT = THREE.RepeatWrapping;
+	      		material = new THREE.MeshPhongMaterial({
+	      		map: texture,
+	      		bumpMap: texture,
+	      		bumpScale: 0.1
+	      		// aoMapIntensity: 2
+	      	});
+	      	}*/
 	
 							material.side = THREE.DoubleSide;
 							material.transparent = material.opacity === 1 ? false : true;
 							model = new THREE.Mesh(geometry, material);
 	
-							this._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+							that._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
 							group.add(model);
-						});
+						}
 						that.mesh = group;
 						resolve();
 					});
@@ -2614,11 +2627,13 @@
 					json = JSON.parse(json);
 				}
 				// change path
-				json.materials.forEach(function (material) {
-					if (material.mapDiffuse) {
-						material.mapDiffuse = this._texturePath + material.mapDiffuse;
-					}
-				});
+				if (json.materials && typeof json.materials !== 'string') {
+					json.materials.forEach(function (material) {
+						if (material.mapDiffuse) {
+							material.mapDiffuse = '';
+						}
+					});
+				}
 				return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
 			}
 		}]);
@@ -2627,60 +2642,9 @@
 	}(_time2.default);
 	
 	exports.default = Mobile;
-	/* WEBPACK VAR INJECTION */}.call(exports, __webpack_require__(14)))
 
 /***/ },
 /* 14 */
-/***/ function(module, exports) {
-
-	'use strict';
-	
-	var CONFIG = {};
-	
-	// test 
-	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
-	var _products = [];
-	
-	// select
-	var select = { name: 'pro5', size: [0, 0] }; //or random whatever;
-	
-	
-	// mobile load
-	var mobile = {
-		'name': 'pro5',
-		'models': [{ url: './assets/pro5/metal.json', size: 200 }, { url: './assets/pro5/metal_reflect.json', size: 200 }, { url: './assets/pro5/glass.json', size: 129 }, { url: './assets/pro5/plastics.json', size: 54 }, { url: './assets/pro5/map.json', size: 3 }, { url: './assets/pro5/plane.json', size: 8 }],
-	
-		materials: {
-			'black': { url: './assets/pro5/black.json', size: 6 },
-			'red': { url: './assets/pro5/black.json', size: 6 }
-		},
-	
-		map: [
-			// {url: './assets/pro5/pro5uv.png', size: 75000},
-		]
-	};
-	
-	CONFIG.mobiles = [];
-	
-	CONFIG.selects = [];
-	
-	products.forEach(function (productName) {
-		var m = $.extend({}, mobile);
-	
-		m.name = productName;
-		CONFIG.mobiles.push(m);
-	
-		var s = $.extend({}, mobile);
-	
-		s.name = productName;
-		s.size = [Math.random() * 10 | 0, Math.random() * 10 | 0];
-		CONFIG.mobiles.push(s);
-	});
-	
-	module.exports = CONFIG;
-
-/***/ },
-/* 15 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2813,7 +2777,7 @@
 						urls.push({
 							'url': params.url,
 							'size': params.size || sizeDefault[type] || 1,
-							'type': that._getLoaderType(type)
+							'type': params.type || that._getLoaderType(type)
 						});
 					}
 					return urls;
@@ -2862,19 +2826,29 @@
 	var loadMethod = {
 	
 		// 下载图片
-		'img': function img(url, onLoad, onProgress) {
+		'img': function img(url, onload, onProgress) {
 			var imgLoader = new THREE.ImageLoader();
 			imgLoader.load(url, function () {
-				onLoad(url);
+				onload(url);
 			}, function (xhr) {
 				return onProgress(xhr.loaded / xhr.total);
 			});
 		},
 	
-		// 下载 dae 模型
-		'json': function json(url, onLoad, onProgress) {
+		// 下载 模型
+		'json': function json(url, onload, onProgress) {
 			var xhrLoader = new THREE.XHRLoader();
-			xhrLoader.load(url, onLoad, function (xhr) {
+			xhrLoader.load(url, onload, function (xhr) {
+				return onProgress(xhr.loaded / xhr.total);
+			});
+		},
+	
+		// model 
+		'model': function model(url, onload, onProgress) {
+			var xhrLoader = new THREE.XHRLoader();
+			xhrLoader.load(url, function (str) {
+				onload(str.replace(/module\.exports\s*=\s*/, ''));
+			}, function (xhr) {
 				return onProgress(xhr.loaded / xhr.total);
 			});
 		},
@@ -2913,7 +2887,44 @@
 	exports.default = Loader;
 
 /***/ },
+/* 15 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+		value: true
+	});
+	// 模型是 webpack Chunk，需要知道webpack 处理之后的路径
+	var buildPath = './build/';
+	
+	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
+	
+	var mobile = {
+		'models': { url: buildPath + __webpack_require__(18), size: 300, 'type': 'model' },
+	
+		// 贴图，file-loader 获取路径
+		'map': {
+			'default': { url: __webpack_require__(16), size: 3000 }
+		}
+	};
+	
+	var mobiles = [];
+	
+	products.forEach(function (productName) {
+		mobiles.push({ "name": productName, mobile: mobile });
+	});
+	
+	exports.default = mobiles;
+
+/***/ },
 /* 16 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5uv.png";
+
+/***/ },
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3386,7 +3397,13 @@
 	module.exports = TrackballControls;
 
 /***/ },
-/* 17 */
+/* 18 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5.js";
+
+/***/ },
+/* 19 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

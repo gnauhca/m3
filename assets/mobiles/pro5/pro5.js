@@ -1,5 +1,5 @@
 module.exports = {
-	model: {
+	models: {
 		glass: require('./models/glass.json'),
 		metal: require('./models/metal.json'),
 		metal_reflect: require('./models/metal_reflect.json'),

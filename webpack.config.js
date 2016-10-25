@@ -16,8 +16,8 @@ function getModelEntrys() {
     });
     return entrys;
 }
-
-var entrys = getModelEntrys();
+var entrys = {};
+// var entrys = getModelEntrys();
 entrys.main = './js/main.js';
 entrys.presets = './js/presets.js';
 
@@ -30,7 +30,7 @@ module.exports = {
     },
     resolve: {
         root: process.cwd(),
-        modulesDirectories: ['node_modules', './js/common', './js/config']
+        modulesDirectories: ['./', 'node_modules', './js/common', './js/config']
     },
 
     devtool: 'source-map',
@@ -41,6 +41,7 @@ module.exports = {
             { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] },
 
             { test: /assets.*?\.json$/, loaders: ['json'] },
+            { test: /assets.*?\.js$/, loaders: ['file?name=[path][name].[ext]','tojson'] },
             {
                 test: /js.*?\.js$/,
                 exclude: /node_modules/,

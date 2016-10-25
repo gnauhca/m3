@@ -104,7 +104,7 @@ class Loader {
 				urls.push({
 					'url': params.url,
 					'size': (params.size || sizeDefault[type] || 1),
-					'type': that._getLoaderType(type)
+					'type': params.type || that._getLoaderType(type)
 				});
 			}
 			return urls;
@@ -146,19 +146,29 @@ class Loader {
 var loadMethod = {
 
 	// 下载图片
-	'img': function(url, onLoad, onProgress) {
+	'img': function(url, onload, onProgress) {
 		var imgLoader = new THREE.ImageLoader();
 		imgLoader.load(url, function() {
-			onLoad(url);
+			onload(url);
 		}, function(xhr) {
 			return onProgress(xhr.loaded / xhr.total);
 		});
 	},
 
-	// 下载 dae 模型
-	'json': function(url, onLoad, onProgress) {
+	// 下载 模型
+	'json': function(url, onload, onProgress) {
 		var xhrLoader = new THREE.XHRLoader();
-		xhrLoader.load(url, onLoad, function(xhr) {
+		xhrLoader.load(url, onload, function(xhr) {
+			return onProgress(xhr.loaded / xhr.total);
+		});
+	},
+
+	// model 
+	'model': function(url, onload, onProgress) {
+		var xhrLoader = new THREE.XHRLoader();
+		xhrLoader.load(url, function(str) {
+			onload(str.replace(/module\.exports\s*=\s*/, ''));
+		}, function(xhr) {
 			return onProgress(xhr.loaded / xhr.total);
 		});
 	},

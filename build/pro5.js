@@ -45,7 +45,8 @@
 /***/ 0:
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = {
+	window.models = window.models || {};
+	window.models.pro5 = {
 		model: {
 			glass: __webpack_require__(27),
 			metal: __webpack_require__(28),

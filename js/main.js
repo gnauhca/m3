@@ -2,6 +2,8 @@ import ViewManager from './view/view-manager.js';
 import Time from 'time.js';
 import Loader from 'loader.js';
 
+require('../assets/mobiles/pro5/pro5.js');
+
 (function() { 
 require('../css/common.scss');//return;
 
@@ -77,7 +79,7 @@ function appInit() {
 	M3.scene.add(spotLight);
 
 	/* grid helper */
-	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+/*	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	gridHelperX.rotation.z = Math.PI / 2;
 	M3.scene.add( gridHelperX );
 
@@ -86,7 +88,7 @@ function appInit() {
 
 	var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
 	gridHelperZ.rotation.x = Math.PI / 2;
-	M3.scene.add( gridHelperZ );
+	M3.scene.add( gridHelperZ );*/
 
 
 

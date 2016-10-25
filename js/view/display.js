@@ -34,6 +34,7 @@ class Display extends View {
 
 	// data : {mobile: [pro5, mx6 ...]}
 	activate(data) {
+		var that = this;
 		// check self init
 		if (!this.isInit) {
 			this.init();
@@ -151,6 +152,7 @@ class Display extends View {
 	}
 
 	_isLoad(callback) {
+		var that = this;
 		var unloadedCount = 0;
 		var loaded = true;
 		var loadingInfos = {};
@@ -168,10 +170,10 @@ class Display extends View {
 			}
 
 			progress = loadedSize/totalSize;
-			this._showProgress(progress);
+			that._showProgress(progress);
 			if (unloadedCount === 0) {
 				// loaded 
-				callback(); this._progressView.inactivate();
+				callback(); that._progressView.inactivate();
 			}
 		}
 
@@ -185,7 +187,7 @@ class Display extends View {
 					progress: 0
 				};
 				(function(_name) { 
-					this._mobileStages[_name].init(function(progress) {
+					that._mobileStages[_name].init(function(progress) {
 						loadingInfos[_name].progress = progress;
 						loading();
 					}).then(function() {
@@ -193,7 +195,7 @@ class Display extends View {
 						loadingInfos[_name].progress = 1;
 						loading();
 					}).catch(function(e) { console.error(e.stack); });
-				}.bind(this))(name);
+				})(name);
 			}
 		}
 		if (!loaded) { this._progressView.activate(); }
@@ -232,7 +234,7 @@ class Display extends View {
 				colorHTML += colorTemplate.replace(/\@color/g, color);
 			});
 			this._currentWindowDoms[i].find('.colors-control').empty().html(colorHTML);
-		});
+		}.bind(this));
 	}
 
 	// 模型恢复初始状态

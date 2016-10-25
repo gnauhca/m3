@@ -1,7 +1,8 @@
 // Dependencies CONFIG.mobiles
-
 import Time from 'time.js';
 import Loader from 'loader.js';
+import MobileConfigs from 'mobile-conf.js';
+
 var loader = new Loader();
 var mobileEnvMap;
 var JSONLoader = new THREE.JSONLoader();
@@ -16,19 +17,19 @@ class Mobile extends Time {
 		this.mesh; // group
 		this.size; // 资源大小
 
-		this._modelConfigs;
-
+		this.config;
 		this._materials;
 		this._colors = [];
 		this._currentColor;
 		this._uuidMaterialNameMap = {};
 		this._texturePath = './assets/texture/';
-		CONFIG.mobiles.forEach(function(mobile) {
+
+		MobileConfigs.forEach(function(mobile) {
 			if (mobile.name === mobileName) {
-				this._modelConfigs = mobile;
+				this.config = mobile;
 			}
-		});
-		this.size = loader.calculateSize(this._modelConfigs);
+		}.bind(this));
+		this.size = loader.calculateSize(this.config);
 	}
 
 	getColors() {
@@ -55,26 +56,29 @@ class Mobile extends Time {
 	}
 
 	load(onProgress) {
+		var that = this;
+		var models;
 		var materials;
 		var group = new THREE.Group();
-		var loadPromise = loader.load(this._modelConfigs, onProgress);
+		var loadPromise = loader.load(this.config, onProgress);
 
 		return loadPromise.then(function(modelRes) {
+			models = JSON.parse(modelRes.mobile.models);
 			return new Promise(function(resolve) {
-				this._materials = modelRes.materials;
-				for (var color in this._materials) {
-					this._colors.push(color);
-					this._currentColor = this._colors[0];
-					this._materials[color] = this._JSONLoaderParse(this._materials[color]).materials;
+				that._materials = models.materials;
+				for (var color in that._materials) {
+					that._colors.push(color);
+					that._currentColor = that._colors[0];
+					that._materials[color] = that._JSONLoaderParse(that._materials[color]).materials;
 				}
+				for (let modelName in models.models) {
 
-				modelRes.models.forEach(function(modelJson) {
-					var mParse = this._JSONLoaderParse(modelJson);
+					var mParse = that._JSONLoaderParse(models.models[modelName]);
 					var geometry = mParse.geometry;
 					var material = mParse.materials[0];
 					var model;
 
-					if (material.name.indexOf('metal') >= 0) {
+					/*if (material.name.indexOf('metal') >= 0) {
 						var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
 						texture.repeat.set(50,50);
 	            		texture.wrapS = THREE.RepeatWrapping;
@@ -87,15 +91,15 @@ class Mobile extends Time {
 							// aoMapIntensity: 2
 						});
 
-					}
+					}*/
 
 					material.side = THREE.DoubleSide;
 					material.transparent = (material.opacity === 1?false:true);
 					model = new THREE.Mesh(geometry, material);
 
-					this._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
+					that._uuidMaterialNameMap[model.uuid] = mParse.materials[0].name;
 					group.add(model);
-				});
+				}
 				that.mesh = group;
 				resolve();
 			});
@@ -104,15 +108,17 @@ class Mobile extends Time {
 
 	_JSONLoaderParse(json) {
 
-		if (typeof json === 'string') {
+		if(typeof json === 'string') {
 			json = JSON.parse(json);
 		}
 		// change path
-		json.materials.forEach(function(material) {
-			if (material.mapDiffuse) {
-				material.mapDiffuse = this._texturePath + material.mapDiffuse;
-			}
-		});
+		if (json.materials && typeof json.materials !== 'string') {
+			json.materials.forEach(function(material) {
+				if (material.mapDiffuse) {
+					material.mapDiffuse = '';
+				}
+			});
+		}
 		return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
 	}
 }
