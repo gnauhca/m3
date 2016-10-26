@@ -93,8 +93,8 @@ function appInit() {
 
 
 	// M3.viewManager.activateView('index');
-	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-	// M3.viewManager.activateView('select');	
+	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
+	M3.viewManager.activateView('select');	
 }
 
 

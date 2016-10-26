@@ -288,6 +288,7 @@ $box-width : 100px;
     box-sizing: border-box;
     position: absolute;
     outline: 1px solid rgba(0, 0, 0, 0.2);
+    transition: all 1s;
 
     .window-control {
         margin: 0 auto;

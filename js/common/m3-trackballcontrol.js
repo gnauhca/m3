@@ -23,7 +23,7 @@ var TrackballControls = function () {
 
 	this.noRotate = false;
 	this.noZoom = false;
-	this.noPan = false;
+	this.noPan = true;
 	this.noRoll = false;
 
 	this.staticMoving = false;
@@ -72,9 +72,7 @@ var TrackballControls = function () {
 
 	// methods
 	
-	this.constructor = function(camera, targetMesh) {
-		initEvent();
-	}
+	initEvent();
 
 	this.init = function(camera, targetMesh) {
 
@@ -99,7 +97,6 @@ var TrackballControls = function () {
 	this.handleResize = function (winSize) {
 		var maxDisBase = 80;
 		var minDisBase = 10;
-
 
 		this.screen.left = winSize.left;
 		this.screen.top = winSize.top;
@@ -132,7 +129,6 @@ var TrackballControls = function () {
 			);
 
 			return vector;
-
 		};
 
 	}() );
@@ -244,7 +240,7 @@ var TrackballControls = function () {
 
 	};
 
-	this.update = function () {
+	this.update = function () { 
 		if (!this.enabled) return;  
 
 		_eye.subVectors( _this.camera.position, _this.target );
@@ -317,7 +313,7 @@ var TrackballControls = function () {
 		}
 	}
 
-	function mousedown( event ) { 
+	function mousedown( event ) {  
 
 		if ( _this.enabled === false || !isInScreen(event.pageX, event.pageY)) return;
 

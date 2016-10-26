@@ -126,42 +126,44 @@ class Time {
 		var separater = '_';
 
 		function setInit(key) {
-			if (key.indexOf('lookAt') === -1) {
-				let keyArr = key.split('_');
-				let subObj = threeObj;
+			let keyArr = key.split('_');
+			let subObj = threeObj;
 
-				keyArr.forEach(function(subKey) { subObj = subObj[subKey]; });
-				init[key] = subObj;
-			} else {
-				init[key] = dest[key]; // lookAt
-			}
+			keyArr.forEach(function(subKey) { subObj = subObj[subKey]; });
+			init[key] = subObj;
 		}
-
 
 		for (let key in target) {
 			let destKey = key;
 
-			if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-				target[key] = new THREE.Color(target[key]);
-			}
-			if (typeof target[key] === 'object') {
-				for (let cKey in target[key]) {
-					destKey = key;
-					if (attrs.indexOf(cKey) !== -1) {
-						destKey += '_' + cKey;
-						dest[destKey] = target[key][cKey];
-						setInit(destKey);
-					}
-				}
+			if (key === 'lookAt') {
+				let initLookAt = THREE.THREEUtil.getLookAt(threeObj);
+				['x','y','z'].forEach(function(lookAtKey) {
+					init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
+					dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
+				});
 			} else {
-				dest[destKey] = target[key];
-				setInit(destKey);
+				if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
+					target[key] = new THREE.Color(target[key]);
+				}
+				if (typeof target[key] === 'object') {
+					for (let cKey in target[key]) {
+						destKey = key;
+						if (attrs.indexOf(cKey) !== -1) {
+							destKey += '_' + cKey;
+							dest[destKey] = target[key][cKey];
+							setInit(destKey);
+						}
+					}
+				} else {
+					dest[destKey] = target[key];
+					setInit(destKey);
+				}
 			}
 		}
 
 
 		// console.log(init,dest);
-
 		var tween;
 		tweenObj = tweenObj || {};
 		tween = new TWEEN.Tween(init)
@@ -170,15 +172,19 @@ class Time {
 			.onUpdate(function() {
 				let current = this;
 				for (let currentKey in current) {
-					if (currentKey.indexOf('lookAt') !== -1) {
-						let lookAt = current[currentKey];
-						threeObj.lookAt(new THREE.Vector3(lookAt.x, lookAt.y, lookAt.z));
+					if (currentKey.indexOf('lookAt') === -1) {
+						let keyArr = currentKey.split('_');
+						let last = keyArr.pop();
+						let subObj = threeObj;
+						keyArr.forEach(function(key) { subObj = subObj[key]; });
+						subObj[last] = current[currentKey];
 					}
-					let keyArr = currentKey.split('_');
-					let last = keyArr.pop();
-					let subObj = threeObj;
-					keyArr.forEach(function(key) { subObj = subObj[key]; });
-					subObj[last] = current[currentKey];
+				}
+
+				if (current.lookAt_x) {
+					threeObj.lookAt(
+						new THREE.Vector3(current.lookAt_x, current.lookAt_y, current.lookAt_z)
+					);
 				}
 				tweenObj.onUpdate && tweenObj.onUpdate.call(this);
 			})

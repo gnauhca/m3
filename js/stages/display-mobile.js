@@ -216,15 +216,11 @@ class DisplayMobile extends Stage {
 		var initModelRotation = this.objectSizes.mesh.rotation;
 		var initCameraPosition = this.objectSizes.camera.position;
 		var initCameraLookAtPosition = this.objectSizes.camera.position;
-		var cameraLookAt = new THREE.Vector3(0, 0, -1);
-        
-		cameraLookAt.applyEuler(this._camera.rotation, this._camera.eulerOrder);
-        cameraLookAt.add(this._camera.position);
 
 		this.addTHREEObjTween(this.objects.mesh, {
         	rotation: initModelRotation
         }, 1000).start();
-
+		
 		this.addTHREEObjTween(this._camera, {
         	position: initCameraPosition,
         	lookAt: initCameraLookAtPosition

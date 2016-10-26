@@ -116,7 +116,7 @@ class Display extends View {
 			$lockBtn.addClass('none')
 			$unlockBtn.removeClass('none');
 			that._$domManager.removeClass('show');
-			that.lock();
+			that._lock();
 		});
 
 		this._$domManager.on('click', '.unlock-btn', function() {
@@ -273,7 +273,7 @@ class Display extends View {
 		});
 
 		this._currentWindowDoms.forEach(function($windowDom, i) { 
-			$windowDom.animate(sizePos[i], 1000); 
+			$windowDom.css(sizePos[i]); 
 		});
 	}
 
@@ -282,12 +282,12 @@ class Display extends View {
 			mobileStage.lock(i === 0);
 		});
 
-		this._lockTick = that.addTick(function() {
+		this._lockTick = this.addTick(function() {
 			var sizeInfo = this._currentMobileStages[0].getSize();
 			this._currentMobileStages.forEach(function(mobileStage, i) {
 				if (i > 0) mobileStage.setSize(sizeInfo);
 			});
-		});
+		}.bind(this));
 	}
 
 	_unlock() {

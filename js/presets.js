@@ -8,3 +8,4 @@ require('./libs/SubdivisionModifier.js');
 require('./libs/TrackballControls.js');
 require('./libs/OrbitControls.js');
 require('./common/utils.js');
+require('./common/three-common.js');

@@ -78,6 +78,9 @@ class Mobile extends Time {
 					var material = mParse.materials[0];
 					var model;
 
+					if (material.name.match('glass')) {
+						
+					}
 					/*if (material.name.indexOf('metal') >= 0) {
 						var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
 						texture.repeat.set(50,50);

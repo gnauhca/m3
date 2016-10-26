@@ -60,7 +60,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(18);
+	__webpack_require__(16);
 	
 	(function () {
 		__webpack_require__(19); //return;
@@ -145,8 +145,8 @@
 	  	M3.scene.add( gridHelperZ );*/
 	
 			// M3.viewManager.activateView('index');
-			M3.viewManager.activateView('display', { mobiles: ['pro5', 'pro6' /*, 'mx5', 'mx6'*/] });
-			// M3.viewManager.activateView('select');	
+			// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
+			M3.viewManager.activateView('select');
 		}
 	})();
 
@@ -565,66 +565,68 @@
 				var separater = '_';
 	
 				function setInit(key) {
-					if (key.indexOf('lookAt') === -1) {
-						(function () {
-							var keyArr = key.split('_');
-							var subObj = threeObj;
+					var keyArr = key.split('_');
+					var subObj = threeObj;
 	
-							keyArr.forEach(function (subKey) {
-								subObj = subObj[subKey];
-							});
-							init[key] = subObj;
-						})();
-					} else {
-						init[key] = dest[key]; // lookAt
-					}
+					keyArr.forEach(function (subKey) {
+						subObj = subObj[subKey];
+					});
+					init[key] = subObj;
 				}
 	
 				for (var key in target) {
 					var destKey = key;
 	
-					if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-						target[key] = new THREE.Color(target[key]);
-					}
-					if (_typeof(target[key]) === 'object') {
-						for (var cKey in target[key]) {
-							destKey = key;
-							if (attrs.indexOf(cKey) !== -1) {
-								destKey += '_' + cKey;
-								dest[destKey] = target[key][cKey];
-								setInit(destKey);
-							}
-						}
+					if (key === 'lookAt') {
+						(function () {
+							var initLookAt = THREE.THREEUtil.getLookAt(threeObj);
+							['x', 'y', 'z'].forEach(function (lookAtKey) {
+								init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
+								dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
+							});
+						})();
 					} else {
-						dest[destKey] = target[key];
-						setInit(destKey);
+						if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
+							target[key] = new THREE.Color(target[key]);
+						}
+						if (_typeof(target[key]) === 'object') {
+							for (var cKey in target[key]) {
+								destKey = key;
+								if (attrs.indexOf(cKey) !== -1) {
+									destKey += '_' + cKey;
+									dest[destKey] = target[key][cKey];
+									setInit(destKey);
+								}
+							}
+						} else {
+							dest[destKey] = target[key];
+							setInit(destKey);
+						}
 					}
 				}
 	
 				// console.log(init,dest);
-	
 				var tween;
 				tweenObj = tweenObj || {};
 				tween = new TWEEN.Tween(init);
 				tween.to(dest, dur).easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut).onUpdate(function () {
 					var current = this;
-	
-					var _loop = function _loop(currentKey) {
-						if (currentKey.indexOf('lookAt') !== -1) {
-							var lookAt = current[currentKey];
-							threeObj.lookAt(new THREE.Vector3(lookAt.x, lookAt.y, lookAt.z));
-						}
-						var keyArr = currentKey.split('_');
-						var last = keyArr.pop();
-						var subObj = threeObj;
-						keyArr.forEach(function (key) {
-							subObj = subObj[key];
-						});
-						subObj[last] = current[currentKey];
-					};
-	
 					for (var currentKey in current) {
-						_loop(currentKey);
+						if (currentKey.indexOf('lookAt') === -1) {
+							(function () {
+								var keyArr = currentKey.split('_');
+								var last = keyArr.pop();
+								var subObj = threeObj;
+								keyArr.forEach(function (key) {
+									subObj = subObj[key];
+								});
+								subObj[last] = current[currentKey];
+							})();
+						}
+					}
+	
+					if (current.lookAt_x) {
+						threeObj.lookAt(new THREE.Vector3(current.lookAt_x, current.lookAt_y, current.lookAt_z));
 					}
 					tweenObj.onUpdate && tweenObj.onUpdate.call(this);
 				}).onComplete(function () {
@@ -1487,22 +1489,7 @@
 		_createClass(Star, [{
 			key: 'init',
 			value: function init() {
-				// create mesh
-				var gemo = new THREE.SphereGeometry(10, 10, 10);
-				gemo = new THREE.TetrahedronGeometry(10, 0);
-				if (Math.random() > 0.5) {
-					gemo = new THREE.BoxGeometry(10, 10, 10);
-				}
-				var material1 = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
-				var material2 = new THREE.MeshPhongMaterial({ color: 0xabcdef, transparent: true, opacity: 0.7 });
-				var mulMaterial = new THREE.MultiMaterial([material1, material2]);
-				var mesh = new THREE.Mesh(gemo, mulMaterial);
-	
-				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
-	
-				mesh.rotation.set(Math.random(), Math.random(), Math.random());
-	
-				this.mesh = mesh;
+				// this.build();
 	
 				this.t = this.addTick(function () {
 					// this.mesh.rotation.x += 0.02;
@@ -1516,6 +1503,28 @@
 					that.moveTo(newCrood, move);
 				}
 				move();
+			}
+		}, {
+			key: 'build',
+			value: function build() {
+				// create mesh
+				var gemo = new THREE.SphereGeometry(10, 10, 10);
+				gemo = new THREE.TetrahedronGeometry(15, 0);
+				if (Math.random() > 0) {
+					gemo = new THREE.BoxGeometry(15, 15, 15);
+				}
+				var material1 = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
+				var material2 = THREE.CustomMaterial.glass.clone();
+				// material1.opacity = 0.2
+				// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
+				var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
+				var mesh = new THREE.Mesh(gemo, mulMaterial);
+	
+				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [/*material1, */material2]);
+	
+				mesh.rotation.set(Math.random(), Math.random(), Math.random());
+	
+				this.mesh = mesh;
 			}
 		}, {
 			key: 'setCrood',
@@ -1559,6 +1568,13 @@
 		_createClass(ProductStar, [{
 			key: 'init',
 			value: function init() {
+				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'init', this).call(this);
+				this.removeTick(this.t);
+			}
+		}, {
+			key: 'build',
+			value: function build() {
+				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'build', this).call(this);
 				var group = new THREE.Group();
 				var svgGemo = new THREE.SVGGemetry(this.svgString, {});
 				var material = new THREE.MeshBasicMaterial({ color: 0x0cbbef });
@@ -1567,11 +1583,9 @@
 				mesh.scale.set(0.1, 0.1, 0.1);
 				this.svgMesh = mesh;
 	
-				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'init', this).call(this);
 				group.add(mesh);
 				group.add(this.mesh);
 				this.mesh = group;
-				this.removeTick(this.t);
 			}
 		}, {
 			key: 'lightUp',
@@ -1601,7 +1615,7 @@
 		_createClass(Line, [{
 			key: 'init',
 			value: function init() {
-				var material = new THREE.MeshBasicMaterial({ color: 0x111111, transparent: true, opacity: 0.2 });
+				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
 				var gemo = new THREE.Geometry();
 				gemo.vertices.push(this.start, this.end);
 				var line = new THREE.Line(gemo, material);
@@ -1637,10 +1651,10 @@
 			_this4._gridSize = 30;
 			_this4._starCount = 60;
 			_this4._rangeX = 20; // 边长
-			_this4._rangeY = 6; // 边长
+			_this4._rangeY = 10; // 边长
 			_this4._rangeZ = 20; // 边长
 	
-			_this4._minDistant = _this4._gridSize * 2; // 两个点之间最小间隔
+			_this4._minDistant = _this4._gridSize * 3; // 两个点之间最小间隔
 			_this4._maxConnectDistant = _this4._gridSize * 4; // 两个点的距离小于多少被连在一起
 	
 			_this4._stars = [];
@@ -1916,7 +1930,7 @@
 					$lockBtn.addClass('none');
 					$unlockBtn.removeClass('none');
 					that._$domManager.removeClass('show');
-					that.lock();
+					that._lock();
 				});
 	
 				this._$domManager.on('click', '.unlock-btn', function () {
@@ -2078,7 +2092,7 @@
 				});
 	
 				this._currentWindowDoms.forEach(function ($windowDom, i) {
-					$windowDom.animate(sizePos[i], 1000);
+					$windowDom.css(sizePos[i]);
 				});
 			}
 		}, {
@@ -2088,12 +2102,12 @@
 					mobileStage.lock(i === 0);
 				});
 	
-				this._lockTick = that.addTick(function () {
+				this._lockTick = this.addTick(function () {
 					var sizeInfo = this._currentMobileStages[0].getSize();
 					this._currentMobileStages.forEach(function (mobileStage, i) {
 						if (i > 0) mobileStage.setSize(sizeInfo);
 					});
-				});
+				}.bind(this));
 			}
 		}, {
 			key: '_unlock',
@@ -2132,7 +2146,7 @@
 	
 	var _mobile2 = _interopRequireDefault(_mobile);
 	
-	var _m3Trackballcontrol = __webpack_require__(17);
+	var _m3Trackballcontrol = __webpack_require__(18);
 	
 	var _m3Trackballcontrol2 = _interopRequireDefault(_m3Trackballcontrol);
 	
@@ -2394,10 +2408,6 @@
 				var initModelRotation = this.objectSizes.mesh.rotation;
 				var initCameraPosition = this.objectSizes.camera.position;
 				var initCameraLookAtPosition = this.objectSizes.camera.position;
-				var cameraLookAt = new THREE.Vector3(0, 0, -1);
-	
-				cameraLookAt.applyEuler(this._camera.rotation, this._camera.eulerOrder);
-				cameraLookAt.add(this._camera.position);
 	
 				this.addTHREEObjTween(this.objects.mesh, {
 					rotation: initModelRotation
@@ -2592,6 +2602,7 @@
 							var material = mParse.materials[0];
 							var model;
 	
+							if (material.name.match('glass')) {}
 							/*if (material.name.indexOf('metal') >= 0) {
 	      	var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
 	      	texture.repeat.set(50,50);
@@ -2901,11 +2912,11 @@
 	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 	
 	var mobile = {
-		'models': { url: buildPath + __webpack_require__(18), size: 300, 'type': 'model' },
+		'models': { url: buildPath + __webpack_require__(16), size: 300, 'type': 'model' },
 	
 		// 贴图，file-loader 获取路径
 		'map': {
-			'default': { url: __webpack_require__(16), size: 3000 }
+			'default': { url: __webpack_require__(17), size: 3000 }
 		}
 	};
 	
@@ -2921,10 +2932,16 @@
 /* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
-	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5uv.png";
+	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5.js";
 
 /***/ },
 /* 17 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5uv.png";
+
+/***/ },
+/* 18 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2954,7 +2971,7 @@
 	
 		this.noRotate = false;
 		this.noZoom = false;
-		this.noPan = false;
+		this.noPan = true;
 		this.noRoll = false;
 	
 		this.staticMoving = false;
@@ -2993,9 +3010,7 @@
 	
 		// methods
 	
-		this.constructor = function (camera, targetMesh) {
-			initEvent();
-		};
+		initEvent();
 	
 		this.init = function (camera, targetMesh) {
 	
@@ -3395,12 +3410,6 @@
 	};
 	
 	module.exports = TrackballControls;
-
-/***/ },
-/* 18 */
-/***/ function(module, exports, __webpack_require__) {
-
-	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5.js";
 
 /***/ },
 /* 19 */

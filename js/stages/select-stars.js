@@ -13,23 +13,7 @@ class Star extends Time {
 	}
 
 	init() {
-		// create mesh
-		var gemo = new THREE.SphereGeometry(10, 10, 10);
-		gemo = new THREE.TetrahedronGeometry(10, 0);
-		if (Math.random() > 0.5) {
-			gemo = new THREE.BoxGeometry(10, 10, 10);
-		}
-		var material1 = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true});
-		var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-		var mulMaterial = new THREE.MultiMaterial([material1, material2]);
-		var mesh = new THREE.Mesh(gemo, mulMaterial);
-		
-		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
-
-
-		mesh.rotation.set(Math.random(), Math.random(), Math.random());
-
-		this.mesh = mesh;
+		// this.build();
 
 		this.t = this.addTick(function() {
 			// this.mesh.rotation.x += 0.02;
@@ -47,6 +31,28 @@ class Star extends Time {
 			that.moveTo(newCrood, move);
 		}
 		move();
+	}
+
+	build() {
+		// create mesh
+		var gemo = new THREE.SphereGeometry(10, 10, 10);
+		gemo = new THREE.TetrahedronGeometry(15, 0);
+		if (Math.random() > 0) {
+			gemo = new THREE.BoxGeometry(15, 15, 15);
+		}
+		var material1 = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true});
+		var material2 = THREE.CustomMaterial.glass.clone();
+		// material1.opacity = 0.2
+		// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
+		var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
+		var mesh = new THREE.Mesh(gemo, mulMaterial);
+		
+		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [/*material1, */material2]);
+
+
+		mesh.rotation.set(Math.random(), Math.random(), Math.random());
+
+		this.mesh = mesh;
 	}
 
 	setCrood(crood) {
@@ -73,6 +79,12 @@ class ProductStar extends Star {
 	}
 
 	init() {
+		super.init();
+		this.removeTick(this.t);
+	}
+
+	build() {
+		super.build();
 		var group = new THREE.Group();
 		var svgGemo = new THREE.SVGGemetry(this.svgString, {});
 		var material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
@@ -81,12 +93,9 @@ class ProductStar extends Star {
 		mesh.scale.set(0.1, 0.1, 0.1 );
 		this.svgMesh = mesh;
 
-
-		super.init();
 		group.add(mesh);
 		group.add(this.mesh);
 		this.mesh = group;
-		this.removeTick(this.t);
 	}
 
 	lightUp() {
@@ -106,7 +115,7 @@ class Line extends Time {
 	}
 
 	init() {
-		var material = new THREE.MeshBasicMaterial({color: 0x111111, transparent: true, opacity: 0.2});
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.2});
 		var gemo = new THREE.Geometry();
 		gemo.vertices.push(
 			this.start,
@@ -135,10 +144,10 @@ class SelectStars extends Stage {
 		this._gridSize = 30;
 		this._starCount = 60;
 		this._rangeX = 20; // 边长
-		this._rangeY = 6; // 边长
+		this._rangeY = 10; // 边长
 		this._rangeZ = 20; // 边长
 		
-		this._minDistant = this._gridSize * 2; // 两个点之间最小间隔
+		this._minDistant = this._gridSize * 3; // 两个点之间最小间隔
 		this._maxConnectDistant = this._gridSize * 4; // 两个点的距离小于多少被连在一起
 
 		this._stars = [];
