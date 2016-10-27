@@ -133,34 +133,45 @@ class Time {
 			init[key] = subObj;
 		}
 
-		for (let key in target) {
-			let destKey = key;
+		if (threeObj instanceof THREE.Vector3 && target instanceof THREE.Vector3) {
+			// 向量
+			['x', 'y', 'z'].forEach(function(pos) {
+				init[pos] = threeObj[pos];
+				dest[pos] = target[pos];
+			});
+		} else {
+			// object3d or material
+			for (let key in target) {
+				let destKey = key;
 
-			if (key === 'lookAt') {
-				let initLookAt = THREE.THREEUtil.getLookAt(threeObj);
-				['x','y','z'].forEach(function(lookAtKey) {
-					init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
-					dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
-				});
-			} else {
-				if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-					target[key] = new THREE.Color(target[key]);
-				}
-				if (typeof target[key] === 'object') {
-					for (let cKey in target[key]) {
-						destKey = key;
-						if (attrs.indexOf(cKey) !== -1) {
-							destKey += '_' + cKey;
-							dest[destKey] = target[key][cKey];
-							setInit(destKey);
-						}
-					}
+				if (key === 'lookAt') {
+					let initLookAt = THREE.THREEUtil.getLookAt(threeObj);
+					['x','y','z'].forEach(function(lookAtKey) {
+						init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
+						dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
+					});
 				} else {
-					dest[destKey] = target[key];
-					setInit(destKey);
+					if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
+						target[key] = new THREE.Color(target[key]);
+					}
+					if (typeof target[key] === 'object') {
+						for (let cKey in target[key]) {
+							destKey = key;
+							if (attrs.indexOf(cKey) !== -1) {
+								destKey += '_' + cKey;
+								dest[destKey] = target[key][cKey];
+								setInit(destKey);
+							}
+						}
+					} else {
+						dest[destKey] = target[key];
+						setInit(destKey);
+					}
 				}
 			}
 		}
+
+
 
 
 		// console.log(init,dest);

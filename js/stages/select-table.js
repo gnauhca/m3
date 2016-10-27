@@ -184,17 +184,17 @@ class SelectTable extends Stage {
         svgGemo.translate(0, -svgGemo.boundingBox.max.y, 0);
         svgGemo.rotateX(Math.PI);
 
-        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true});
+        var svgMaterial = new THREE.MeshPhongMaterial({color: 0x0cbbef, shininess: 100, metal: true, wireframe: true});
         var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
         svgMesh.position.set(0, 0, 150);
-        // this.objects.svgLogo = svgMesh;
+        this.objects.svgLogo = svgMesh;
 
 
         var glowMaterial = new THREE.GlowMaterial({c: 0.12, p: 5, color: 0x0cbbef});
         var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), glowMaterial);
 		glowSvgMesh.position.copy(svgMesh.position);
 		glowSvgMesh.scale.multiplyScalar(1.1);
-		this.objects.glowSvgMesh = glowSvgMesh;
+		// this.objects.glowSvgMesh = glowSvgMesh;
 
 		// PLANE & GRID & cube
 		

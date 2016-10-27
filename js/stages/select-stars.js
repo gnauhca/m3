@@ -10,10 +10,13 @@ class Star extends Time {
 		this.mesh;
 		this.connectStars = []; 
 		this.initCrood = initCrood;
+		this.autoMoveTween;
 	}
 
 	init() {
-		// this.build();
+		this.build();
+		this.mesh.position.set(0, 0, 0);
+		// this.mesh.scale.set(0, 0, 0);
 
 		this.t = this.addTick(function() {
 			// this.mesh.rotation.x += 0.02;
@@ -22,15 +25,6 @@ class Star extends Time {
 		}.bind(this));
 
 		let that = this;
-		function move() {
-			var newCrood = that.initCrood.clone().add(new THREE.Vector3(
-				Math.random() * 20,
-				Math.random() * 20,
-				Math.random() * 20
-			));
-			that.moveTo(newCrood, move);
-		}
-		move();
 	}
 
 	build() {
@@ -61,8 +55,21 @@ class Star extends Time {
 		this.endLines.forEach(function(line) { line.setEnd(crood); });
 	}
 
+
+	autoMove() {
+		function move() {
+			var newCrood = that.initCrood.clone().add(new THREE.Vector3(
+				Math.random() * 20,
+				Math.random() * 20,
+				Math.random() * 20
+			));
+			that.moveTo(newCrood, move);
+		}
+		move();
+	}
+
 	moveTo(crood, callback) {
-		this.addTHREEObjTween(this.mesh, {position: crood}, 2000 + Math.random() * 3000|0, {
+		autoMoveTween = this.addTHREEObjTween(this.mesh, {position: crood}, 2000 + Math.random() * 3000|0, {
 			onUpdate: function() { 
 				this.setCrood(this.mesh.position); 
 			}.bind(this),
@@ -115,7 +122,7 @@ class Line extends Time {
 	}
 
 	init() {
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.2});
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.0});
 		var gemo = new THREE.Geometry();
 		gemo.vertices.push(
 			this.start,
@@ -123,6 +130,19 @@ class Line extends Time {
 		);
 		var line = new THREE.Line(gemo, material);
 		this.mesh = line;
+		this.mesh.visible = false;
+	}
+
+	connect() {
+		var random = Math.random()*2|0;
+		var movePoint = ['start', 'end'][random];
+		var staticPoint = ['start', 'end'][(random+1) % 2];
+		var dest = this[movePoint].clone();
+		
+		this.mesh.visible = true;
+		this[movePoint].copy(this[staticPoint]);
+		this.addTHREEObjTween(this[movePoint], dest, 2000).start();
+		this.addTHREEObjTween(this.mesh.material, {opacity: 0.2}, 2000).start();
 	}
 
 	setStart(crood) {
@@ -254,6 +274,15 @@ class SelectStars extends Stage {
 		this._t = this.addTick(function(delta) {
 			this._controls.update(delta);
 		});
+
+		// particle rise
+	
+		// particle explode & stars fly to initCrood
+
+		// line connect
+
+		// control travel
+
 	}
 }
 

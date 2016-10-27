@@ -60,9 +60,6 @@ function appInit() {
 	});
 
 
-	/* helper */
-	var axisHelper = new THREE.AxisHelper( 100 );
-	M3.scene.add( axisHelper );
 
 
 	/* fog */
@@ -78,6 +75,9 @@ function appInit() {
  	spotLight.lookAt(new THREE.Vector3); 
 	M3.scene.add(spotLight);
 
+	/* helper */
+	var axisHelper = new THREE.AxisHelper( 100 );
+	M3.scene.add( axisHelper );
 	/* grid helper */
 /*	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	gridHelperX.rotation.z = Math.PI / 2;

@@ -115,10 +115,6 @@
 				M3.renderer.setSize(winWidth, winHeight);
 			});
 	
-			/* helper */
-			var axisHelper = new THREE.AxisHelper(100);
-			M3.scene.add(axisHelper);
-	
 			/* fog */
 			var fog = new THREE.Fog(0x000000, 0, 2000);
 			// M3.scene.fog = fog;
@@ -132,6 +128,9 @@
 			spotLight.lookAt(new THREE.Vector3());
 			M3.scene.add(spotLight);
 	
+			/* helper */
+			var axisHelper = new THREE.AxisHelper(100);
+			M3.scene.add(axisHelper);
 			/* grid helper */
 			/*	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	  	gridHelperX.rotation.z = Math.PI / 2;
@@ -574,33 +573,42 @@
 					init[key] = subObj;
 				}
 	
-				for (var key in target) {
-					var destKey = key;
+				if (threeObj instanceof THREE.Vector3 && target instanceof THREE.Vector3) {
+					// 向量
+					['x', 'y', 'z'].forEach(function (pos) {
+						init[pos] = threeObj[pos];
+						dest[pos] = target[pos];
+					});
+				} else {
+					// object3d or material
+					for (var key in target) {
+						var destKey = key;
 	
-					if (key === 'lookAt') {
-						(function () {
-							var initLookAt = THREE.THREEUtil.getLookAt(threeObj);
-							['x', 'y', 'z'].forEach(function (lookAtKey) {
-								init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
-								dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
-							});
-						})();
-					} else {
-						if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-							target[key] = new THREE.Color(target[key]);
-						}
-						if (_typeof(target[key]) === 'object') {
-							for (var cKey in target[key]) {
-								destKey = key;
-								if (attrs.indexOf(cKey) !== -1) {
-									destKey += '_' + cKey;
-									dest[destKey] = target[key][cKey];
-									setInit(destKey);
-								}
-							}
+						if (key === 'lookAt') {
+							(function () {
+								var initLookAt = THREE.THREEUtil.getLookAt(threeObj);
+								['x', 'y', 'z'].forEach(function (lookAtKey) {
+									init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
+									dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
+								});
+							})();
 						} else {
-							dest[destKey] = target[key];
-							setInit(destKey);
+							if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
+								target[key] = new THREE.Color(target[key]);
+							}
+							if (_typeof(target[key]) === 'object') {
+								for (var cKey in target[key]) {
+									destKey = key;
+									if (attrs.indexOf(cKey) !== -1) {
+										destKey += '_' + cKey;
+										dest[destKey] = target[key][cKey];
+										setInit(destKey);
+									}
+								}
+							} else {
+								dest[destKey] = target[key];
+								setInit(destKey);
+							}
 						}
 					}
 				}
@@ -729,7 +737,7 @@
 		function SelectView() {
 			_classCallCheck(this, SelectView);
 	
-			// this._selectStage = new SelectStage();
+			// this._selectTable = new SelectTable();
 			// this._selectCubeStage = new SelectCube();
 	
 			var _this = _possibleConstructorReturn(this, (SelectView.__proto__ || Object.getPrototypeOf(SelectView)).call(this));
@@ -739,7 +747,7 @@
 			_this._products = _selectConf2.default.products;
 			_this.init();
 	
-			// this.stages.push(this._selectStage); // super
+			// this.stages.push(this._selectTable); // super
 			return _this;
 		}
 	
@@ -750,20 +758,23 @@
 			key: 'activate',
 			value: function activate() {
 				// stage init
-				/*if (!this._selectStage.isInit) {
-	   	this._selectStage.init();
-	   }
-	   if (!this._selectCubeStage.isInit) {
-	   	this._selectCubeStage.init();
-	   }*/
+				// if (!this._selectTable.isInit) {
+				// 	this._selectTable.init();
+				// }
+				// this._selectTable.entry()
+	
+				// if (!this._selectCubeStage.isInit) {
+				// 	this._selectCubeStage.init();
+				// }
+				// this._selectCubeStage.entry()
+	
+	
 				if (!this._selectStarsStage.isInit) {
 					this._selectStarsStage.init();
 				}
+				this._selectStarsStage.entry();
 	
 				// select animation
-				// this._selectStage.entry()
-	
-				this._selectStarsStage.entry();
 			}
 		}, {
 			key: 'inactivate',
@@ -992,17 +1003,16 @@
 				svgGemo.translate(0, -svgGemo.boundingBox.max.y, 0);
 				svgGemo.rotateX(Math.PI);
 	
-				var svgMaterial = new THREE.MeshPhongMaterial({ color: 0x0cbbef, shininess: 100, metal: true });
+				var svgMaterial = new THREE.MeshPhongMaterial({ color: 0x0cbbef, shininess: 100, metal: true, wireframe: true });
 				var svgMesh = new THREE.Mesh(svgGemo, svgMaterial);
 				svgMesh.position.set(0, 0, 150);
-				// this.objects.svgLogo = svgMesh;
-	
+				this.objects.svgLogo = svgMesh;
 	
 				var glowMaterial = new THREE.GlowMaterial({ c: 0.12, p: 5, color: 0x0cbbef });
 				var glowSvgMesh = new THREE.Mesh(svgGemo.clone(), glowMaterial);
 				glowSvgMesh.position.copy(svgMesh.position);
 				glowSvgMesh.scale.multiplyScalar(1.1);
-				this.objects.glowSvgMesh = glowSvgMesh;
+				// this.objects.glowSvgMesh = glowSvgMesh;
 	
 				// PLANE & GRID & cube
 	
@@ -1483,13 +1493,16 @@
 			_this.mesh;
 			_this.connectStars = [];
 			_this.initCrood = initCrood;
+			_this.autoMoveTween;
 			return _this;
 		}
 	
 		_createClass(Star, [{
 			key: 'init',
 			value: function init() {
-				// this.build();
+				this.build();
+				this.mesh.position.set(0, 0, 0);
+				// this.mesh.scale.set(0, 0, 0);
 	
 				this.t = this.addTick(function () {
 					// this.mesh.rotation.x += 0.02;
@@ -1498,11 +1511,6 @@
 				}.bind(this));
 	
 				var that = this;
-				function move() {
-					var newCrood = that.initCrood.clone().add(new THREE.Vector3(Math.random() * 20, Math.random() * 20, Math.random() * 20));
-					that.moveTo(newCrood, move);
-				}
-				move();
 			}
 		}, {
 			key: 'build',
@@ -1538,9 +1546,18 @@
 				});
 			}
 		}, {
+			key: 'autoMove',
+			value: function autoMove() {
+				function move() {
+					var newCrood = that.initCrood.clone().add(new THREE.Vector3(Math.random() * 20, Math.random() * 20, Math.random() * 20));
+					that.moveTo(newCrood, move);
+				}
+				move();
+			}
+		}, {
 			key: 'moveTo',
 			value: function moveTo(crood, callback) {
-				this.addTHREEObjTween(this.mesh, { position: crood }, 2000 + Math.random() * 3000 | 0, {
+				autoMoveTween = this.addTHREEObjTween(this.mesh, { position: crood }, 2000 + Math.random() * 3000 | 0, {
 					onUpdate: function () {
 						this.setCrood(this.mesh.position);
 					}.bind(this),
@@ -1615,11 +1632,25 @@
 		_createClass(Line, [{
 			key: 'init',
 			value: function init() {
-				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.2 });
+				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
 				var gemo = new THREE.Geometry();
 				gemo.vertices.push(this.start, this.end);
 				var line = new THREE.Line(gemo, material);
 				this.mesh = line;
+				this.mesh.visible = false;
+			}
+		}, {
+			key: 'connect',
+			value: function connect() {
+				var random = Math.random() * 2 | 0;
+				var movePoint = ['start', 'end'][random];
+				var staticPoint = ['start', 'end'][(random + 1) % 2];
+				var dest = this[movePoint].clone();
+	
+				this.mesh.visible = true;
+				this[movePoint].copy(this[staticPoint]);
+				this.addTHREEObjTween(this[movePoint], dest, 2000).start();
+				this.addTHREEObjTween(this.mesh.material, { opacity: 0.2 }, 2000).start();
 			}
 		}, {
 			key: 'setStart',
@@ -1761,6 +1792,14 @@
 				this._t = this.addTick(function (delta) {
 					this._controls.update(delta);
 				});
+	
+				// particle rise
+	
+				// particle explode & stars fly to initCrood
+	
+				// line connect
+	
+				// control travel
 			}
 		}]);
 	
