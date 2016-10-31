@@ -207,81 +207,39 @@ window.calculateSubWindowSize = (function() {
 	}
 })();
 
+window.getImageData = function(img, minR=0, minG=0, minB=0, minA=0) {
+	var particleDatas = [];
+	var width = img.width;
+	var height = img.height;
 
-THREE.THREEUtil = {
+	// 从canvas 读取颜色信息，创建粒子
+	var cvs = document.createElement('canvas');
+	cvs.width = width;
+	cvs.height = height;
+	var ctx = cvs.getContext('2d');
 
-	getLookAt: function (mesh) {
-		var lookAt = new THREE.Vector3(0, 0, -1);
-		var euler = new THREE.Euler( 0, 0, 0, 'XYZ' )
+	ctx.drawImage(img, 0, 0);	
 
-		euler.copy(mesh.rotation);
+	var pixs = ctx.getImageData(0, 0, width, height).data;
 
-		lookAt.applyEuler(euler);
-		lookAt.add(mesh.position);
-		return lookAt;
-	},
+	for (var i = 0; i < pixs.length; i += 4) {
+		var r = pixs[i],
+			g = pixs[i + 1],
+			b = pixs[i + 2],
+			a = pixs[i + 3];
 
-}
+		if (r > minR && g > minG && b > minB && a > minA) {
+			var x = (i % (4 * width)) / 4 - width/2;
+			var y = -(parseInt(i / (4 * width)) - height/2);
 
-
-// custom material
-
-THREE.GlowMaterial = (function() {
-	var defaults = {
-		c: 0.35,
-		p: 5,
-		o: 1,
-		color: new THREE.Color,
-		v: new THREE.Vector3,
-		transparent: true,
-		side: THREE.FrontSide
-	};	
-	var vertexShaderCode = document.getElementById('glowVertexShader').textContent;
-	var fragmentShaderCode = document.getElementById('glowFragmentShader').textContent;
-
-	return function(options) {
-		options = $.extend({}, defaults, options);
-		options.color = new THREE.Color(options.color);
-
-		return new THREE.ShaderMaterial({
-		    uniforms: {
-		        "c": { type: "f", value: options.c },
-		        "p": { type: "f", value: options.p },
-		        "o": { type: "f", value: options.o },
-		        glowColor: { type: "c", value: options.color },
-		        viewVector: { type: "v3", value: options.v }
-		    },
-		    vertexShader: vertexShaderCode,
-		    fragmentShader: fragmentShaderCode,
-		    side: options.side,
-		    blending: THREE.AdditiveBlending,
-		    transparent: options.transparent
-		});
+			particleDatas.push({
+				'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',
+				//'color': '#abcdef',
+				'size': {'x': x, 'y': y}
+			});
+		}
 	}
-
-
-})();
-
-THREE.SVGGemetry = function(svgString, options) {
-	var shape = transformSVGPathExposed(svgString);
-	var defaultOptions = {
-		amount: 5,
-		bevelThickness: 0,
-		bevelSize: 0,
-		bevelSegments: 12,
-		bevelEnabled: false,
-		curveSegments: 80,
-		steps: 1
-	};
-	var svgGemo;
-
-	try {
-		options = $.extend({}, defaultOptions, options);
-		svgGemo = new THREE.ExtrudeGeometry(shape, options)
-		svgGemo.center();	
-		svgGemo.rotateX(Math.PI);
-	} catch(e) {}
-	return svgGemo;
+	return particleDatas;
 }
 
 

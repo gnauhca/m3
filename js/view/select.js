@@ -38,9 +38,9 @@ class SelectView extends View {
 
 
 		if (!this._selectStarsStage.isInit) {
-			this._selectStarsStage.init();
+			this._selectStarsStage.init().then(()=>this._selectStarsStage.entry());
+			
 		}
-		this._selectStarsStage.entry()
 
 		// select animation
 		

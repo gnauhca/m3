@@ -1,6 +1,7 @@
 import Time from 'time.js';
 import Stage from './stage.js';
 import selectCfg from 'select-conf.js';
+import ExplodeParticle from './explode-particles.js';
 
 class Star extends Time {
 	constructor(initCrood) {
@@ -173,11 +174,12 @@ class SelectStars extends Stage {
 		this._stars = [];
 		this._products;
 
+		this.explodeParticle = new ExplodeParticle();
 	}
 	init() {
 		this._products = $.extend(true, [], selectCfg.products);
-		this._build();
 		this.isInit = true;
+		return this._build();
 	}
 
 	_build() {
@@ -262,28 +264,54 @@ class SelectStars extends Stage {
 			});
 		});
 		this.objects.lineGroup = lineGroup;
+
+		// import build
+		return new Promise(function(resolve) {
+			that.explodeParticle.build().then(function() {
+				that.objects.particleSystem = that.explodeParticle.particleSystem;
+				resolve();
+			}.bind(that));
+		}).catch(e => console.error(e.stack));
+
 	}
 
 	entry() {
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
 		this.camera.position.set(0, 0, 500);
-		this.camera.lookAt(new THREE.Vector3);
 
-		this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
-		this._controls.staticMoving = true;
-		this._t = this.addTick(function(delta) {
-			this._controls.update(delta);
-		});
+
+		// lightUp
+		// this.camera.lookAt(this.objects.particleSystem.position);
+		// console.log(this.explodeParticle.initPos);
+		this.camera.position.set(500, -500, 0);
+		this.addTHREEObjTween(this.camera, {
+			position: new THREE.Vector3(0, -500, 500),
+			lookAt: new THREE.Vector3(0, -500, 0),
+		}, 2000, {
+			onUpdate() {console.log(this);}
+		}).start();
+		this.camera.lookAt(this.explodeParticle.initPos);
+
+		this.explodeParticle.lightUp();
 
 		// particle rise
-	
+
+
 		// particle explode & stars fly to initCrood
 
 		// line connect
 
 		// control travel
 
+		/*this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+		this._controls.staticMoving = true;
+		this._controls.travel = false;
+		this._t = this.addTick(function(delta) {
+			this._controls.update(delta);
+		});*/
 	}
+
+	
 }
 
 export default SelectStars;

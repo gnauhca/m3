@@ -54,16 +54,16 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _loader = __webpack_require__(14);
+	var _loader = __webpack_require__(17);
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(16);
+	__webpack_require__(19);
 	
 	(function () {
-		__webpack_require__(19); //return;
+		__webpack_require__(22); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
@@ -171,7 +171,7 @@
 	
 	var _select2 = _interopRequireDefault(_select);
 	
-	var _display = __webpack_require__(11);
+	var _display = __webpack_require__(14);
 	
 	var _display2 = _interopRequireDefault(_display);
 	
@@ -711,11 +711,11 @@
 	
 	var _selectTable2 = _interopRequireDefault(_selectTable);
 	
-	var _selectCube = __webpack_require__(9);
+	var _selectCube = __webpack_require__(11);
 	
 	var _selectCube2 = _interopRequireDefault(_selectCube);
 	
-	var _selectStars = __webpack_require__(10);
+	var _selectStars = __webpack_require__(12);
 	
 	var _selectStars2 = _interopRequireDefault(_selectStars);
 	
@@ -757,6 +757,8 @@
 		}, {
 			key: 'activate',
 			value: function activate() {
+				var _this2 = this;
+	
 				// stage init
 				// if (!this._selectTable.isInit) {
 				// 	this._selectTable.init();
@@ -770,9 +772,10 @@
 	
 	
 				if (!this._selectStarsStage.isInit) {
-					this._selectStarsStage.init();
+					this._selectStarsStage.init().then(function () {
+						return _this2._selectStarsStage.entry();
+					});
 				}
-				this._selectStarsStage.entry();
 	
 				// select animation
 			}
@@ -1226,32 +1229,46 @@
 
 /***/ },
 /* 8 */
-/***/ function(module, exports) {
+/***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
 	
 	Object.defineProperty(exports, "__esModule", {
 		value: true
 	});
+	var buildPath = './build/';
 	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 	
-	var SVG = {
+	var selectConf = {
 		logo: 'M22.8,41H3c-1.7,0-3,1.4-3,3v15.1h3.6V45.2c0-0.7,0.5-1.2,1.2-1.2h6.3v15.2h3.6V44H21c0.7,0,1.2,0.5,1.2,1.2v13.9h3.5V44C25.8,42.4,24.4,41,22.8,41zM29.6,44v12.1c0,1.7,1.3,3,3,3H48v-2.9H34.3c-0.7,0-1.2-0.5-1.2-1.2v-3.4h14.1v-3H33.1v-3.4c0-0.7,0.5-1.2,1.2-1.2H48V41H32.6C30.9,41,29.6,42.4,29.6,44zM75.3,41H59.4v2.9h13.1L59.9,55.1c-2,1.7-0.7,4,1,4H77v-2.9H63.6L76.2,45C78.3,43.1,77,41,75.3,41zM96.5,41v13.9c0,0.7-0.5,1.2-1.2,1.2l0,0H85.1l0,0c-0.7,0-1.2-0.5-1.2-1.2V41h-3.5v15.1c0,1.7,1.3,3,3,3H97c1.7,0,3-1.3,3-3V41H96.5zM51.8 41L55.5 41L55.5 59.1L51.8 59.1z',
 	
-		products: []
-	
+		products: [],
+		logoImg: buildPath + __webpack_require__(9),
+		particleMap: buildPath + __webpack_require__(10)
 	};
 	
 	var mx6 = 'M0,66.5h1.9l0,0V37.9l15.4,28.6h1.9l15.2-28.6h0.3v28.6h1.9V34.8h-3L18.2,64L3,34.8H0V66.5zM41.4,34.8l12.9,14.1l1.6-1.4L43.6,34.8M73.1,34.8L60.2,48.9l-1.6-1.4l12.2-12.7H73.1zM41.4,66.5l12.9-14.1l1.6,1.4L43.6,66.5M73.1,66.5L60.2,52.4l-1.6,1.4l12.2,12.7H73.1zM88.7,66.5c-4.1,0-6.9-1.1-8.5-3.3c-1.4-2-2-4.8-2-9.2c0-8,1-12.4,3.3-15.1c2.5-2.8,6.7-4,14-4c0.2,0,0.5,0,1.8,0l0,0l0.1,1.3l-1.7,0c-7.8,0.2-15.1,0.4-15.7,11.7l0,0.6l0.7-0.1c2.7-0.3,6.4-0.7,8.8-0.7c6.5,0,10.5,1.5,10.5,9.2c0,3.7-1,6.2-3,7.6C95.2,65.8,92.6,66.5,88.7,66.5z M80,50.3c-0.1,1.8-0.1,3-0.1,4.3c0,5.2,1,10.5,8.7,10.5c7,0,9.7-2.3,9.7-8.3c0-3.2-0.8-5.2-2.6-6.4c-1.5-1-3.6-1.4-7.2-1.4c-1.6,0-4.3,0.2-8.1,0.8L80,49.8L80,50.3z';
 	
 	products.forEach(function (productName) {
-		SVG.products.push({ "name": productName, svgString: mx6 });
+		selectConf.products.push({ "name": productName, svgString: mx6 });
 	});
 	
-	exports.default = SVG;
+	exports.default = selectConf;
 
 /***/ },
 /* 9 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/logo.png";
+
+/***/ },
+/* 10 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/select/particle-map.png";
+
+/***/ },
+/* 11 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1447,7 +1464,7 @@
 	exports.default = SelectCube;
 
 /***/ },
-/* 10 */
+/* 12 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1471,6 +1488,10 @@
 	var _selectConf = __webpack_require__(8);
 	
 	var _selectConf2 = _interopRequireDefault(_selectConf);
+	
+	var _explodeParticles = __webpack_require__(13);
+	
+	var _explodeParticles2 = _interopRequireDefault(_explodeParticles);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
@@ -1691,6 +1712,7 @@
 			_this4._stars = [];
 			_this4._products;
 	
+			_this4.explodeParticle = new _explodeParticles2.default();
 			return _this4;
 		}
 	
@@ -1698,8 +1720,8 @@
 			key: 'init',
 			value: function init() {
 				this._products = $.extend(true, [], _selectConf2.default.products);
-				this._build();
 				this.isInit = true;
+				return this._build();
 			}
 		}, {
 			key: '_build',
@@ -1777,6 +1799,16 @@
 					});
 				});
 				this.objects.lineGroup = lineGroup;
+	
+				// import build
+				return new Promise(function (resolve) {
+					that.explodeParticle.build().then(function () {
+						that.objects.particleSystem = that.explodeParticle.particleSystem;
+						resolve();
+					}.bind(that));
+				}).catch(function (e) {
+					return console.error(e.stack);
+				});
 			}
 		}, {
 			key: 'entry',
@@ -1785,21 +1817,38 @@
 					M3.scene.add(this.objects[o]);
 				}.bind(this));
 				this.camera.position.set(0, 0, 500);
-				this.camera.lookAt(new THREE.Vector3());
 	
-				this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
-				this._controls.staticMoving = true;
-				this._t = this.addTick(function (delta) {
-					this._controls.update(delta);
-				});
+				// lightUp
+				// this.camera.lookAt(this.objects.particleSystem.position);
+				// console.log(this.explodeParticle.initPos);
+				this.camera.position.set(500, -500, 0);
+				this.addTHREEObjTween(this.camera, {
+					position: new THREE.Vector3(0, -500, 500),
+					lookAt: new THREE.Vector3(0, -500, 0)
+				}, 2000, {
+					onUpdate: function onUpdate() {
+						console.log(this);
+					}
+				}).start();
+				this.camera.lookAt(this.explodeParticle.initPos);
+	
+				this.explodeParticle.lightUp();
 	
 				// particle rise
+	
 	
 				// particle explode & stars fly to initCrood
 	
 				// line connect
 	
 				// control travel
+	
+				/*this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+	   this._controls.staticMoving = true;
+	   this._controls.travel = false;
+	   this._t = this.addTick(function(delta) {
+	   	this._controls.update(delta);
+	   });*/
 			}
 		}]);
 	
@@ -1809,7 +1858,128 @@
 	exports.default = SelectStars;
 
 /***/ },
-/* 11 */
+/* 13 */
+/***/ function(module, exports, __webpack_require__) {
+
+	'use strict';
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	
+	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
+	
+	var _time = __webpack_require__(4);
+	
+	var _time2 = _interopRequireDefault(_time);
+	
+	var _selectConf = __webpack_require__(8);
+	
+	var _selectConf2 = _interopRequireDefault(_selectConf);
+	
+	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+	
+	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
+	
+	function _possibleConstructorReturn(self, call) { if (!self) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return call && (typeof call === "object" || typeof call === "function") ? call : self; }
+	
+	function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function, not " + typeof superClass); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+	
+	var ExplodeParticles = function (_Time) {
+	    _inherits(ExplodeParticles, _Time);
+	
+	    function ExplodeParticles() {
+	        _classCallCheck(this, ExplodeParticles);
+	
+	        var _this = _possibleConstructorReturn(this, (ExplodeParticles.__proto__ || Object.getPrototypeOf(ExplodeParticles)).call(this));
+	
+	        _this.particleSystem;
+	        _this.initPos = new THREE.Vector3(0, -500, 0);
+	        _this.finalPos = new THREE.Vector3(0, 0, 0);
+	        return _this;
+	    }
+	
+	    _createClass(ExplodeParticles, [{
+	        key: 'init',
+	        value: function init() {}
+	    }, {
+	        key: 'build',
+	        value: function build() {
+	            var that = this;
+	            var logoImg;
+	            var particleMap;
+	
+	            return new Promise(function (loaded) {
+	                logoImg = new Image();
+	                logoImg.src = _selectConf2.default.logoImg;
+	                logoImg.onload = function () {
+	                    new THREE.TextureLoader().load(_selectConf2.default.particleMap, function (texture) {
+	                        particleMap = texture;
+	                        loaded();
+	                    });
+	                };
+	            }).then(function () {
+	                var imgData = getImageData(logoImg, 0, 0, 0);
+	                var maxR = 300; // 旋转飞起最大半径
+	                var zRandom = 200;
+	                var yOffset = -500;
+	                var geom = new THREE.Geometry();
+	                var material = new THREE.ParticleBasicMaterial({
+	                    map: particleMap,
+	                    size: 10,
+	                    transparent: true,
+	                    opacity: 1,
+	
+	                    sizeAttenuation: true,
+	                    color: 0xffffff,
+	                    blending: THREE.AdditiveBlending
+	                });
+	
+	                imgData.forEach(function (pixel) {
+	                    var v3 = new THREE.Vector3(pixel.size.x, pixel.size.y + yOffset, (Math.random() - 0.5) * 2 * zRandom);
+	                    v3.ix = v3.x;v3.iy = v3.y;v3.iz = v3.z;
+	                    geom.vertices.push(v3);
+	                });
+	                that.particleSystem = new THREE.ParticleSystem(geom, material);
+	                // M3.scene.add(that.particleSystem);
+	                // console.log(that.particleSystem);
+	            }).catch(function (e) {
+	                return console.error(e.stack);
+	            });
+	            //M3.scene.add(that.particleSystem);
+	        }
+	    }, {
+	        key: 'lightUp',
+	        value: function lightUp() {
+	            var that = this;
+	            var tween = new TWEEN.Tween({ z: 1 }).to({ z: 0.2 }, 2000);
+	
+	            tween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
+	                var z = this.z;
+	                that.particleSystem.geometry.verticesNeedUpdate = true;
+	
+	                // console.log(z);
+	                that.particleSystem.geometry.vertices.forEach(function (v3) {
+	                    v3.z = v3.iz * z;
+	                }.bind(this));
+	            }).start();
+	            this.addTween(tween);
+	        }
+	    }, {
+	        key: 'rise',
+	        value: function rise() {}
+	    }, {
+	        key: 'explode',
+	        value: function explode() {}
+	    }]);
+	
+	    return ExplodeParticles;
+	}(_time2.default);
+	
+	exports.default = ExplodeParticles;
+
+/***/ },
+/* 14 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -1824,7 +1994,7 @@
 	
 	var _view2 = _interopRequireDefault(_view);
 	
-	var _displayMobile = __webpack_require__(12);
+	var _displayMobile = __webpack_require__(15);
 	
 	var _displayMobile2 = _interopRequireDefault(_displayMobile);
 	
@@ -2164,7 +2334,7 @@
 	exports.default = Display;
 
 /***/ },
-/* 12 */
+/* 15 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2181,11 +2351,11 @@
 	
 	var _stage2 = _interopRequireDefault(_stage);
 	
-	var _mobile = __webpack_require__(13);
+	var _mobile = __webpack_require__(16);
 	
 	var _mobile2 = _interopRequireDefault(_mobile);
 	
-	var _m3Trackballcontrol = __webpack_require__(18);
+	var _m3Trackballcontrol = __webpack_require__(21);
 	
 	var _m3Trackballcontrol2 = _interopRequireDefault(_m3Trackballcontrol);
 	
@@ -2528,7 +2698,7 @@
 	exports.default = DisplayMobile;
 
 /***/ },
-/* 13 */
+/* 16 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2543,11 +2713,11 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _loader = __webpack_require__(14);
+	var _loader = __webpack_require__(17);
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
-	var _mobileConf = __webpack_require__(15);
+	var _mobileConf = __webpack_require__(18);
 	
 	var _mobileConf2 = _interopRequireDefault(_mobileConf);
 	
@@ -2694,7 +2864,7 @@
 	exports.default = Mobile;
 
 /***/ },
-/* 14 */
+/* 17 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -2937,7 +3107,7 @@
 	exports.default = Loader;
 
 /***/ },
-/* 15 */
+/* 18 */
 /***/ function(module, exports, __webpack_require__) {
 
 	'use strict';
@@ -2951,11 +3121,11 @@
 	var products = ['pro6', 'pro5', 'mx5', 'mx6', 'meilan3s', 'meilan3', 'meilannote3'];
 	
 	var mobile = {
-		'models': { url: buildPath + __webpack_require__(16), size: 300, 'type': 'model' },
+		'models': { url: buildPath + __webpack_require__(19), size: 300, 'type': 'model' },
 	
 		// 贴图，file-loader 获取路径
 		'map': {
-			'default': { url: __webpack_require__(17), size: 3000 }
+			'default': { url: __webpack_require__(20), size: 3000 }
 		}
 	};
 	
@@ -2968,19 +3138,19 @@
 	exports.default = mobiles;
 
 /***/ },
-/* 16 */
+/* 19 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5.js";
 
 /***/ },
-/* 17 */
+/* 20 */
 /***/ function(module, exports, __webpack_require__) {
 
 	module.exports = __webpack_require__.p + "assets/mobiles/pro5/pro5uv.png";
 
 /***/ },
-/* 18 */
+/* 21 */
 /***/ function(module, exports) {
 
 	'use strict';
@@ -3451,7 +3621,7 @@
 	module.exports = TrackballControls;
 
 /***/ },
-/* 19 */
+/* 22 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

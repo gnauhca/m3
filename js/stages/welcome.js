@@ -121,7 +121,7 @@ var Welcome = Stage.extend(function() {
 
 		    if (b > 50) {
 		        var x = (i % (4 * width)) / 4 - width/2;
-		        var y = -(parseInt(i / (4 * width)) - height/2);
+		        var y = -((i / (4 * width) | 0) - height/2);
 
 		        particleDatas.push({
 		        	'color': 'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')',

@@ -40,7 +40,7 @@ THREE.TrackballControls = function ( object, domElement ) {
 	this.target = new THREE.Vector3();
 
 	// travel
-	this.travel = true;
+	this.travel = false;
 	this.travelDistance = (new THREE.Vector3).copy(this.object.position).sub(this.target).length();
 	this.travelSpeed = 50000; //  second for 360 degree
 	this.travelHeight = 200;
