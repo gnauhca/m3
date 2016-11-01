@@ -1782,6 +1782,7 @@
 					starGroup.add(star.mesh);
 				});
 				this.objects.starGroup = starGroup;
+				this.objects.starGroup.scale.set(0.0001, 0.0001, 0.0001);
 	
 				// line
 				var line = void 0;
@@ -1813,31 +1814,25 @@
 		}, {
 			key: 'entry',
 			value: function entry() {
+				var that = this;
 				Object.keys(this.objects).forEach(function (o) {
 					M3.scene.add(this.objects[o]);
 				}.bind(this));
-				this.camera.position.set(0, 0, 500);
 	
 				// lightUp
 				// this.camera.lookAt(this.objects.particleSystem.position);
 				// console.log(this.explodeParticle.initPos);
-				this.camera.position.set(500, -500, 0);
-				this.addTHREEObjTween(this.camera, {
-					position: new THREE.Vector3(0, -500, 500),
-					lookAt: new THREE.Vector3(0, -500, 0)
-				}, 2000, {
-					onUpdate: function onUpdate() {
-						console.log(this);
-					}
-				}).start();
-				this.camera.lookAt(this.explodeParticle.initPos);
-	
-				this.explodeParticle.lightUp();
-	
-				// particle rise
 	
 	
-				// particle explode & stars fly to initCrood
+				this.explodeParticle.lightUp().then(function () {
+					that.explodeParticle.explode();
+	
+					setTimeout(function () {
+						that.addTHREEObjTween(that.objects.starGroup, {
+							scale: new THREE.Vector3(1, 1, 1)
+						}, 3000).start();
+					}, 1500);
+				});
 	
 				// line connect
 	
@@ -1894,7 +1889,7 @@
 	        var _this = _possibleConstructorReturn(this, (ExplodeParticles.__proto__ || Object.getPrototypeOf(ExplodeParticles)).call(this));
 	
 	        _this.particleSystem;
-	        _this.initPos = new THREE.Vector3(0, -500, 0);
+	        _this.initPos = new THREE.Vector3(0, 0, 0);
 	        _this.finalPos = new THREE.Vector3(0, 0, 0);
 	        return _this;
 	    }
@@ -1920,25 +1915,30 @@
 	                };
 	            }).then(function () {
 	                var imgData = getImageData(logoImg, 0, 0, 0);
-	                var maxR = 300; // 旋转飞起最大半径
 	                var zRandom = 200;
-	                var yOffset = -500;
+	                var yOffset = 0; //-500;
 	                var geom = new THREE.Geometry();
-	                var material = new THREE.ParticleBasicMaterial({
+	                var material = new THREE.PointsMaterial({
 	                    map: particleMap,
-	                    size: 10,
+	                    size: 3,
 	                    transparent: true,
-	                    opacity: 1,
-	
+	                    opacity: 0.8,
 	                    sizeAttenuation: true,
 	                    color: 0xffffff,
 	                    blending: THREE.AdditiveBlending
 	                });
 	
 	                imgData.forEach(function (pixel) {
-	                    var v3 = new THREE.Vector3(pixel.size.x, pixel.size.y + yOffset, (Math.random() - 0.5) * 2 * zRandom);
-	                    v3.ix = v3.x;v3.iy = v3.y;v3.iz = v3.z;
+	                    var v3 = new THREE.Vector3(pixel.size.x * 1, pixel.size.y * 1 + yOffset, 0);
+	                    v3.initV = v3.clone(); // for lightUp
+	                    v3.lightupZ = (Math.random() - 0.5) * 5 * zRandom;
+	                    v3.z = v3.lightupZ;
+	
+	                    v3.exAngle = Math.random() * Math.PI * 2; // for explode
+	                    v3.exAngleY = (Math.random() - 0.5) * Math.PI * 1; // for explode
+	                    v3.rPercent = Math.random() * 2 + 1;
 	                    geom.vertices.push(v3);
+	                    // geom.vertices.push(v3);
 	                });
 	                that.particleSystem = new THREE.ParticleSystem(geom, material);
 	                // M3.scene.add(that.particleSystem);
@@ -1952,25 +1952,112 @@
 	        key: 'lightUp',
 	        value: function lightUp() {
 	            var that = this;
-	            var tween = new TWEEN.Tween({ z: 1 }).to({ z: 0.2 }, 2000);
+	            var dur = 4000;
+	            var cameraTween = void 0;
 	
-	            tween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
-	                var z = this.z;
-	                that.particleSystem.geometry.verticesNeedUpdate = true;
+	            return new Promise(function (resolve) {
+	                // camera ani
+	                M3.camera.position.set(100, 0, -500);
+	                M3.camera.lookAt(that.initPos);
+	                M3.camera.up.set(1, 0, 0);
+	                cameraTween = that.addTHREEObjTween(M3.camera, {
+	                    position: new THREE.Vector3(0, 0, 500),
+	                    up: new THREE.Vector3(0, 1, 0)
+	                }, dur, {
+	                    onUpdate: function onUpdate() {
+	                        M3.camera.lookAt(that.initPos);
+	                    },
+	                    onComplete: function onComplete() {
+	                        that.removeTween(cameraTween);
+	                    }
+	                }).start();
 	
-	                // console.log(z);
-	                that.particleSystem.geometry.vertices.forEach(function (v3) {
-	                    v3.z = v3.iz * z;
-	                }.bind(this));
-	            }).start();
-	            this.addTween(tween);
+	                // particle ani
+	                var particleTween = new TWEEN.Tween({ z: 1 }).to({ z: 0 }, dur * 1.2);
+	                particleTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
+	                    var z = this.z;
+	                    that.particleSystem.geometry.verticesNeedUpdate = true;
+	                    that.particleSystem.geometry.vertices.forEach(function (v3) {
+	                        v3.z = v3.lightupZ * z;
+	                    });
+	                }).onComplete(function () {
+	                    return resolve();
+	                }).start();
+	                that.addTween(particleTween);
+	            });
 	        }
 	    }, {
 	        key: 'rise',
-	        value: function rise() {}
+	        value: function rise() {
+	            var cameraTween = this.addTHREEObjTween(M3.camera, {
+	                position: new THREE.Vector3(0, -500, 0),
+	                lookAt: this.finalPos,
+	                up: new THREE.Vector3(0, 1, 0)
+	            }, dur, {
+	                // onUpdate() { M3.camera.lookAt(that.initPos); },
+	                onComplete: function onComplete() {
+	                    that.removeTween(cameraTween);
+	                }
+	            }).start();
+	
+	            var maxR = 300; // 旋转飞起最大半径
+	            var maxA = Math.PI * 3; // 每个粒子旋转最大角度
+	
+	        }
 	    }, {
 	        key: 'explode',
-	        value: function explode() {}
+	        value: function explode() {
+	            var that = this;
+	            var gatherDur = 1500;
+	            var explodeDur = 3000;
+	            var cameraDur = gatherDur + explodeDur;
+	            var gatherTween = new TWEEN.Tween({ p: 1 }).to({ p: -1 }, gatherDur);
+	            var explodeTween = new TWEEN.Tween({ r: 0, size: 3 }).to({ r: 1000, size: 40 }, explodeDur);
+	            var cameraTween = new TWEEN.Tween({ a: Math.PI * 0.5 }).to({ a: Math.PI * 2.5 }, cameraDur + 1000);
+	
+	            cameraTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
+	                // 聚集
+	                var a = this.a;
+	                M3.camera.position.x = Math.cos(a) * 500;
+	                M3.camera.position.z = Math.sin(a) * 500;
+	                M3.camera.position.y = Math.cos(a) * 200;
+	                M3.camera.lookAt(that.initPos);
+	            }).onComplete(function () {}).start();
+	
+	            gatherTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
+	
+	                // 聚集
+	                var p = this.p > 0 ? this.p : 0;
+	                that.particleSystem.geometry.verticesNeedUpdate = true;
+	                that.particleSystem.geometry.vertices.forEach(function (v3) {
+	                    v3.setLength(v3.initV.length() * p);
+	                });
+	            }).onComplete(function () {
+	                // console.log
+	                // explode
+	                explodeTween.start();
+	            }).start();
+	
+	            explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function () {
+	                // explode
+	                var r = this.r;
+	                var planeR = void 0;
+	                that.particleSystem.material.size = this.size;
+	                that.particleSystem.material.needsUpdate = true;
+	
+	                that.particleSystem.geometry.verticesNeedUpdate = true;
+	                that.particleSystem.geometry.vertices.forEach(function (v3) {
+	                    planeR = r * v3.rPercent * Math.cos(v3.exAngleY);
+	                    v3.y = r * v3.rPercent * Math.sin(v3.exAngleY);
+	                    v3.x = planeR * Math.cos(v3.exAngle);
+	                    v3.z = planeR * Math.sin(v3.exAngle);
+	                });
+	            }).onComplete(function () {}); //.start();
+	
+	
+	            this.addTween(gatherTween);
+	            this.addTween(explodeTween);
+	        }
 	    }]);
 	
 	    return ExplodeParticles;

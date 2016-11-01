@@ -59,7 +59,7 @@ p {
 
 body {
   font-family: 'microsoft yahei';
-  background-image: radial-gradient(circle, #276378, #000); }
+  background: #000; }
 
 .none {
   display: none !important; }

@@ -57,7 +57,7 @@ var materialsJSON = {
     "faces": [], 
     "vertices": [], 
     "materials": [{
-        "opacity": 0.37398338317871094, 
+        "opacity": 0.57398338317871094, 
         "specularCoef": 37.46666717529297, 
         "blending": "NormalBlending", 
         "depthTest": true, 

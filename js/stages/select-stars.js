@@ -241,6 +241,7 @@ class SelectStars extends Stage {
 			starGroup.add(star.mesh);
 		});
 		this.objects.starGroup = starGroup;
+		this.objects.starGroup.scale.set(0.0001, 0.0001,  0.0001);
 
 		// line
 		let line;
@@ -276,28 +277,27 @@ class SelectStars extends Stage {
 	}
 
 	entry() {
+		var that = this;
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
-		this.camera.position.set(0, 0, 500);
 
 
 		// lightUp
 		// this.camera.lookAt(this.objects.particleSystem.position);
 		// console.log(this.explodeParticle.initPos);
-		this.camera.position.set(500, -500, 0);
-		this.addTHREEObjTween(this.camera, {
-			position: new THREE.Vector3(0, -500, 500),
-			lookAt: new THREE.Vector3(0, -500, 0),
-		}, 2000, {
-			onUpdate() {console.log(this);}
-		}).start();
-		this.camera.lookAt(this.explodeParticle.initPos);
-
-		this.explodeParticle.lightUp();
-
-		// particle rise
 
 
-		// particle explode & stars fly to initCrood
+		this.explodeParticle.lightUp().then(function() {
+			that.explodeParticle.explode();
+
+			setTimeout(function() {
+				that.addTHREEObjTween(that.objects.starGroup, {
+					scale: new THREE.Vector3(1,1,1)
+				}, 3000).start();
+			}, 1500);
+		});
+
+
+
 
 		// line connect
 
