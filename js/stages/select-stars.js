@@ -19,6 +19,7 @@ class Star extends Time {
 		this.mesh.position.set(0, 0, 0);
 		// this.mesh.scale.set(0, 0, 0);
 
+		// this.mesh.rotation.set(Math.random(), Math.random(), Math.random());
 		this.t = this.addTick(function() {
 			// this.mesh.rotation.x += 0.02;
 			this.mesh.rotation.y += 0.006;
@@ -35,14 +36,14 @@ class Star extends Time {
 		if (Math.random() > 0) {
 			gemo = new THREE.BoxGeometry(15, 15, 15);
 		}
-		var material1 = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true});
+		var material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
 		var material2 = THREE.CustomMaterial.glass.clone();
 		// material1.opacity = 0.2
 		// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
 		var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
 		var mesh = new THREE.Mesh(gemo, mulMaterial);
 		
-		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [/*material1, */material2]);
+		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
@@ -98,12 +99,26 @@ class ProductStar extends Star {
 		var material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
 		// var material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
 		var mesh = new THREE.Mesh(svgGemo, material);
-		mesh.scale.set(0.1, 0.1, 0.1 );
+		mesh.scale.set(0.2, 0.2, 0.2 );
 		this.svgMesh = mesh;
 
+		var initV = new THREE.Vector3(0,0,1);
+		var finalV = this.initCrood.clone().normalize();
+
+		initV.y = finalV.y = 0;
+		var axis = new THREE.Vector3();
+		axis.crossVectors(initV, finalV).normalize();
+		var angle = Math.acos( initV.dot(finalV) / initV.length() / initV.length());
+		var quaternion = new THREE.Quaternion(); 
+
+		quaternion.setFromAxisAngle(axis, angle);
+		mesh.rotation.setFromQuaternion(quaternion);
+
+		
 		group.add(mesh);
 		group.add(this.mesh);
 		this.mesh = group;
+		// this.mesh = mesh;
 	}
 
 	lightUp() {
@@ -123,7 +138,7 @@ class Line extends Time {
 	}
 
 	init() {
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.0});
+		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
 		var gemo = new THREE.Geometry();
 		gemo.vertices.push(
 			this.start,
@@ -134,16 +149,22 @@ class Line extends Time {
 		this.mesh.visible = false;
 	}
 
-	connect() {
+	connect(dur=2000, delay=0) {
+		var that = this;
 		var random = Math.random()*2|0;
 		var movePoint = ['start', 'end'][random];
 		var staticPoint = ['start', 'end'][(random+1) % 2];
 		var dest = this[movePoint].clone();
 		
+		function update() {
+			that.mesh.geometry.verticesNeedUpdate = true;
+			that.mesh.material.needUpdate = true;
+		}
+
 		this.mesh.visible = true;
 		this[movePoint].copy(this[staticPoint]);
-		this.addTHREEObjTween(this[movePoint], dest, 2000).start();
-		this.addTHREEObjTween(this.mesh.material, {opacity: 0.2}, 2000).start();
+		this[movePoint].animate(dest, 2000, delay, {onUpdate: update})
+		this.mesh.material.animate({opacity: 0.4}, 2000, delay, {onUpdate: update})
 	}
 
 	setStart(crood) {
@@ -172,6 +193,7 @@ class SelectStars extends Stage {
 		this._maxConnectDistant = this._gridSize * 4; // 两个点的距离小于多少被连在一起
 
 		this._stars = [];
+		this._lines = [];
 		this._products;
 
 		this.explodeParticle = new ExplodeParticle();
@@ -222,7 +244,7 @@ class SelectStars extends Stage {
 		let productIndexes = new Set();
 		while(productIndexes.size < this._products.length) {
 			productIndexes.add((Math.random() * this._starCount)|0);
-		}	
+		}
 		// console.log(starCroods, productIndexes);
 		let productCfgIndex = 0; // selectCfg.products 的 index
 		starCroods.forEach(function(starCrood, index) {
@@ -236,12 +258,14 @@ class SelectStars extends Stage {
 			} else {
 				star = new Star(starCrood); star.init();
 			}
-			star.setCrood(starCrood);
+			// star.setCrood(starCrood);
+			star.setCrood(new THREE.Vector3(0, 0, 0));
+			// star.mesh.scale.setScalar(0.0001);
 			that._stars.push(star);
 			starGroup.add(star.mesh);
 		});
 		this.objects.starGroup = starGroup;
-		this.objects.starGroup.scale.set(0.0001, 0.0001,  0.0001);
+		this.objects.starGroup.scale.setScalar(0.0001);
 
 		// line
 		let line;
@@ -250,22 +274,23 @@ class SelectStars extends Stage {
 			that._stars.forEach(function(jStar, j) {
 				if (
 					i === j || 
-					iStar.connectStars.indexOf(jStar) !== -1 && 
+					iStar.connectStars.indexOf(jStar) !== -1 || 
 					jStar.connectStars.indexOf(iStar) !== -1 ||
-					(new THREE.Vector3).subVectors(iStar.mesh.position, jStar.mesh.position).length() > that._maxConnectDistant
+					(new THREE.Vector3).subVectors(iStar.initCrood, jStar.initCrood).length() > that._maxConnectDistant
 				) return;
 
 
-				line = new Line(iStar.mesh.position, jStar.mesh.position);
+				line = new Line(iStar.initCrood, jStar.initCrood);
 				iStar.connectStars.push(jStar);
 				jStar.connectStars.push(iStar);
 				iStar.startLines.push(line);
 				jStar.endLines.push(line);
 				lineGroup.add(line.mesh);
+				that._lines.push(line);
 			});
 		});
 		this.objects.lineGroup = lineGroup;
-
+		
 		// import build
 		return new Promise(function(resolve) {
 			that.explodeParticle.build().then(function() {
@@ -282,28 +307,36 @@ class SelectStars extends Stage {
 
 
 		// lightUp
-		// this.camera.lookAt(this.objects.particleSystem.position);
-		// console.log(this.explodeParticle.initPos);
-
-
 		this.explodeParticle.lightUp().then(function() {
-			that.explodeParticle.explode();
 
-			setTimeout(function() {
-				that.addTHREEObjTween(that.objects.starGroup, {
-					scale: new THREE.Vector3(1,1,1)
-				}, 3000).start();
-			}, 1500);
+			that.objects.starGroup.rotation.x = Math.PI * 20;
+			that.objects.starGroup.animate({
+				scale: new THREE.Vector3(1,1,1),
+				rotation_x: 0 
+			}, 800, 800);
+
+			that._stars.forEach(function(star) {
+				star.mesh.animate({position: star.initCrood}, 300, (/*Math.random() * 300 + */2000)|0 )
+			});	
+
+			return that.explodeParticle.explode();
+		}).then(function() {
+			that._lines.forEach(function(line) {
+				line.connect(3000, Math.random() * 2000);
+			});
+
+			that._controls = new THREE.TrackballControls(that.camera, M3.renderer.domElement);
+			that._controls.staticMoving = true;
+			that._controls.travel = true;
+			that._t = that.addTick(function(delta) {
+				that._controls.update(delta);
+			});
 		});
 
-
-
-
-		// line connect
-
 		// control travel
-
-		/*this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+		/*this.camera.position.set(0,0,1000);
+		this.camera.lookAt(new THREE.Vector3);
+		this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
 		this._controls.staticMoving = true;
 		this._controls.travel = false;
 		this._t = this.addTick(function(delta) {

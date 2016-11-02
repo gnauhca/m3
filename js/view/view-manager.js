@@ -2,7 +2,6 @@ import Progress from './progress.js';
 // import Index from './index.js';
 import Select from './select.js';
 import Display from './display.js';
-
 var _viewConstructors = {
     'progress': Progress,
     // 'index': Index,

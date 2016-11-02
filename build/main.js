@@ -61,7 +61,6 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	__webpack_require__(19);
-	
 	(function () {
 		__webpack_require__(22); //return;
 	
@@ -132,16 +131,16 @@
 			var axisHelper = new THREE.AxisHelper(100);
 			M3.scene.add(axisHelper);
 			/* grid helper */
-			/*	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
-	  	gridHelperX.rotation.z = Math.PI / 2;
-	  	M3.scene.add( gridHelperX );
-	  
-	  	var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
-	  	M3.scene.add( gridHelperY );
-	  
-	  	var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
-	  	gridHelperZ.rotation.x = Math.PI / 2;
-	  	M3.scene.add( gridHelperZ );*/
+			// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+			// gridHelperX.rotation.z = Math.PI / 2;
+			// M3.scene.add( gridHelperX );
+	
+			// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+			// M3.scene.add( gridHelperY );
+	
+			var gridHelperZ = new THREE.GridHelper(size, step, 0x0000ff);
+			gridHelperZ.rotation.x = Math.PI / 2;
+			M3.scene.add(gridHelperZ);
 	
 			// M3.viewManager.activateView('index');
 			// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
@@ -431,7 +430,7 @@
 		delta: 16
 	};
 	
-	stop = false;
+	var stop = false;
 	TIME.addBody = function (timeBody) {
 		this.bodys.push(timeBody);
 	};
@@ -443,7 +442,6 @@
 			this.bodys.splice(index, 1);
 		}
 	};
-	
 	TIME.tick = function () {
 		var now = new Date().getTime();
 		var last = now;
@@ -688,6 +686,8 @@
 	
 		return Time;
 	}();
+	
+	window.Time = Time;
 	
 	exports.default = Time;
 
@@ -1525,6 +1525,7 @@
 				this.mesh.position.set(0, 0, 0);
 				// this.mesh.scale.set(0, 0, 0);
 	
+				// this.mesh.rotation.set(Math.random(), Math.random(), Math.random());
 				this.t = this.addTick(function () {
 					// this.mesh.rotation.x += 0.02;
 					this.mesh.rotation.y += 0.006;
@@ -1542,14 +1543,14 @@
 				if (Math.random() > 0) {
 					gemo = new THREE.BoxGeometry(15, 15, 15);
 				}
-				var material1 = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true });
+				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
 				var material2 = THREE.CustomMaterial.glass.clone();
 				// material1.opacity = 0.2
 				// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
 				var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
 				var mesh = new THREE.Mesh(gemo, mulMaterial);
 	
-				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [/*material1, */material2]);
+				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
 	
@@ -1618,12 +1619,25 @@
 				var material = new THREE.MeshBasicMaterial({ color: 0x0cbbef });
 				// var material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
 				var mesh = new THREE.Mesh(svgGemo, material);
-				mesh.scale.set(0.1, 0.1, 0.1);
+				mesh.scale.set(0.2, 0.2, 0.2);
 				this.svgMesh = mesh;
+	
+				var initV = new THREE.Vector3(0, 0, 1);
+				var finalV = this.initCrood.clone().normalize();
+	
+				initV.y = finalV.y = 0;
+				var axis = new THREE.Vector3();
+				axis.crossVectors(initV, finalV).normalize();
+				var angle = Math.acos(initV.dot(finalV) / initV.length() / initV.length());
+				var quaternion = new THREE.Quaternion();
+	
+				quaternion.setFromAxisAngle(axis, angle);
+				mesh.rotation.setFromQuaternion(quaternion);
 	
 				group.add(mesh);
 				group.add(this.mesh);
 				this.mesh = group;
+				// this.mesh = mesh;
 			}
 		}, {
 			key: 'lightUp',
@@ -1653,7 +1667,7 @@
 		_createClass(Line, [{
 			key: 'init',
 			value: function init() {
-				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.0 });
+				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
 				var gemo = new THREE.Geometry();
 				gemo.vertices.push(this.start, this.end);
 				var line = new THREE.Line(gemo, material);
@@ -1663,15 +1677,24 @@
 		}, {
 			key: 'connect',
 			value: function connect() {
+				var dur = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2000;
+				var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
+	
+				var that = this;
 				var random = Math.random() * 2 | 0;
 				var movePoint = ['start', 'end'][random];
 				var staticPoint = ['start', 'end'][(random + 1) % 2];
 				var dest = this[movePoint].clone();
 	
+				function update() {
+					that.mesh.geometry.verticesNeedUpdate = true;
+					that.mesh.material.needUpdate = true;
+				}
+	
 				this.mesh.visible = true;
 				this[movePoint].copy(this[staticPoint]);
-				this.addTHREEObjTween(this[movePoint], dest, 2000).start();
-				this.addTHREEObjTween(this.mesh.material, { opacity: 0.2 }, 2000).start();
+				this[movePoint].animate(dest, 2000, delay, { onUpdate: update });
+				this.mesh.material.animate({ opacity: 0.4 }, 2000, delay, { onUpdate: update });
 			}
 		}, {
 			key: 'setStart',
@@ -1710,6 +1733,7 @@
 			_this4._maxConnectDistant = _this4._gridSize * 4; // 两个点的距离小于多少被连在一起
 	
 			_this4._stars = [];
+			_this4._lines = [];
 			_this4._products;
 	
 			_this4.explodeParticle = new _explodeParticles2.default();
@@ -1777,26 +1801,29 @@
 					} else {
 						star = new Star(starCrood);star.init();
 					}
-					star.setCrood(starCrood);
+					// star.setCrood(starCrood);
+					star.setCrood(new THREE.Vector3(0, 0, 0));
+					// star.mesh.scale.setScalar(0.0001);
 					that._stars.push(star);
 					starGroup.add(star.mesh);
 				});
 				this.objects.starGroup = starGroup;
-				this.objects.starGroup.scale.set(0.0001, 0.0001, 0.0001);
+				this.objects.starGroup.scale.setScalar(0.0001);
 	
 				// line
 				var line = void 0;
 				var lineGroup = new THREE.Group();
 				this._stars.forEach(function (iStar, i) {
 					that._stars.forEach(function (jStar, j) {
-						if (i === j || iStar.connectStars.indexOf(jStar) !== -1 && jStar.connectStars.indexOf(iStar) !== -1 || new THREE.Vector3().subVectors(iStar.mesh.position, jStar.mesh.position).length() > that._maxConnectDistant) return;
+						if (i === j || iStar.connectStars.indexOf(jStar) !== -1 || jStar.connectStars.indexOf(iStar) !== -1 || new THREE.Vector3().subVectors(iStar.initCrood, jStar.initCrood).length() > that._maxConnectDistant) return;
 	
-						line = new Line(iStar.mesh.position, jStar.mesh.position);
+						line = new Line(iStar.initCrood, jStar.initCrood);
 						iStar.connectStars.push(jStar);
 						jStar.connectStars.push(iStar);
 						iStar.startLines.push(line);
 						jStar.endLines.push(line);
 						lineGroup.add(line.mesh);
+						that._lines.push(line);
 					});
 				});
 				this.objects.lineGroup = lineGroup;
@@ -1820,25 +1847,36 @@
 				}.bind(this));
 	
 				// lightUp
-				// this.camera.lookAt(this.objects.particleSystem.position);
-				// console.log(this.explodeParticle.initPos);
-	
-	
 				this.explodeParticle.lightUp().then(function () {
-					that.explodeParticle.explode();
 	
-					setTimeout(function () {
-						that.addTHREEObjTween(that.objects.starGroup, {
-							scale: new THREE.Vector3(1, 1, 1)
-						}, 3000).start();
-					}, 1500);
+					that.objects.starGroup.rotation.x = Math.PI * 20;
+					that.objects.starGroup.animate({
+						scale: new THREE.Vector3(1, 1, 1),
+						rotation_x: 0
+					}, 800, 800);
+	
+					that._stars.forEach(function (star) {
+						star.mesh.animate({ position: star.initCrood }, 300, /*Math.random() * 300 + */2000 | 0);
+					});
+	
+					return that.explodeParticle.explode();
+				}).then(function () {
+					that._lines.forEach(function (line) {
+						line.connect(3000, Math.random() * 2000);
+					});
+	
+					that._controls = new THREE.TrackballControls(that.camera, M3.renderer.domElement);
+					that._controls.staticMoving = true;
+					that._controls.travel = true;
+					that._t = that.addTick(function (delta) {
+						that._controls.update(delta);
+					});
 				});
 	
-				// line connect
-	
 				// control travel
-	
-				/*this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+				/*this.camera.position.set(0,0,1000);
+	   this.camera.lookAt(new THREE.Vector3);
+	   this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
 	   this._controls.staticMoving = true;
 	   this._controls.travel = false;
 	   this._t = this.addTick(function(delta) {
@@ -1961,7 +1999,7 @@
 	                M3.camera.lookAt(that.initPos);
 	                M3.camera.up.set(1, 0, 0);
 	                cameraTween = that.addTHREEObjTween(M3.camera, {
-	                    position: new THREE.Vector3(0, 0, 500),
+	                    position: new THREE.Vector3(0, 0, 300),
 	                    up: new THREE.Vector3(0, 1, 0)
 	                }, dur, {
 	                    onUpdate: function onUpdate() {
@@ -2008,18 +2046,18 @@
 	        key: 'explode',
 	        value: function explode() {
 	            var that = this;
-	            var gatherDur = 1500;
+	            var gatherDur = 2200;
 	            var explodeDur = 3000;
 	            var cameraDur = gatherDur + explodeDur;
 	            var gatherTween = new TWEEN.Tween({ p: 1 }).to({ p: -1 }, gatherDur);
-	            var explodeTween = new TWEEN.Tween({ r: 0, size: 3 }).to({ r: 1000, size: 40 }, explodeDur);
+	            var explodeTween = new TWEEN.Tween({ r: 0, size: 3 }).to({ r: 1000, size: 20 }, explodeDur);
 	            var cameraTween = new TWEEN.Tween({ a: Math.PI * 0.5 }).to({ a: Math.PI * 2.5 }, cameraDur + 1000);
 	
 	            cameraTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function () {
 	                // 聚集
 	                var a = this.a;
-	                M3.camera.position.x = Math.cos(a) * 500;
-	                M3.camera.position.z = Math.sin(a) * 500;
+	                M3.camera.position.x = Math.cos(a) * 300;
+	                M3.camera.position.z = Math.sin(a) * 300;
 	                M3.camera.position.y = Math.cos(a) * 200;
 	                M3.camera.lookAt(that.initPos);
 	            }).onComplete(function () {}).start();
@@ -2038,23 +2076,26 @@
 	                explodeTween.start();
 	            }).start();
 	
-	            explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function () {
-	                // explode
-	                var r = this.r;
-	                var planeR = void 0;
-	                that.particleSystem.material.size = this.size;
-	                that.particleSystem.material.needsUpdate = true;
+	            this.addTween(gatherTween);
+	            this.addTween(explodeTween);
 	
-	                that.particleSystem.geometry.verticesNeedUpdate = true;
-	                that.particleSystem.geometry.vertices.forEach(function (v3) {
-	                    planeR = r * v3.rPercent * Math.cos(v3.exAngleY);
-	                    v3.y = r * v3.rPercent * Math.sin(v3.exAngleY);
-	                    v3.x = planeR * Math.cos(v3.exAngle);
-	                    v3.z = planeR * Math.sin(v3.exAngle);
-	                });
-	            }).onComplete(function () {}); //.start();
+	            return new Promise(function (resolve) {
+	                explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function () {
+	                    // explode
+	                    var r = this.r;
+	                    var planeR = void 0;
+	                    that.particleSystem.material.size = this.size;
+	                    that.particleSystem.material.needsUpdate = true;
 	
-	
+	                    that.particleSystem.geometry.verticesNeedUpdate = true;
+	                    that.particleSystem.geometry.vertices.forEach(function (v3) {
+	                        planeR = r * v3.rPercent * Math.cos(v3.exAngleY);
+	                        v3.y = r * v3.rPercent * Math.sin(v3.exAngleY);
+	                        v3.x = planeR * Math.cos(v3.exAngle);
+	                        v3.z = planeR * Math.sin(v3.exAngle);
+	                    });
+	                }).onComplete(resolve);
+	            });
 	            this.addTween(gatherTween);
 	            this.addTween(explodeTween);
 	        }

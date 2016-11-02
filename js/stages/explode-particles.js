@@ -79,7 +79,7 @@ class ExplodeParticles extends Time {
             M3.camera.lookAt(that.initPos);
             M3.camera.up.set(1, 0, 0);
             cameraTween = that.addTHREEObjTween(M3.camera, {
-                position: new THREE.Vector3(0, 0, 500),
+                position: new THREE.Vector3(0, 0, 300),
                 up: new THREE.Vector3(0, 1 ,0)
             }, dur, {
                 onUpdate() { M3.camera.lookAt(that.initPos); },
@@ -117,18 +117,18 @@ class ExplodeParticles extends Time {
 
     explode() {
         let that = this;
-        let gatherDur = 1500;
+        let gatherDur = 2200;
         let explodeDur = 3000;
         let cameraDur = gatherDur + explodeDur;
         let gatherTween = new TWEEN.Tween({p: 1}).to({p: -1}, gatherDur);
-        let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 40}, explodeDur);
+        let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 20}, explodeDur);
         let cameraTween = new TWEEN.Tween({a: Math.PI*0.5}).to({a: Math.PI*2.5}, cameraDur + 1000);
 
         cameraTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function() {
             // 聚集
             let a = this.a;
-            M3.camera.position.x = Math.cos(a) * 500;
-            M3.camera.position.z = Math.sin(a) * 500;
+            M3.camera.position.x = Math.cos(a) * 300;
+            M3.camera.position.z = Math.sin(a) * 300;
             M3.camera.position.y = Math.cos(a) * 200;
             M3.camera.lookAt(that.initPos);
         }).onComplete(function() { }).start();
@@ -148,23 +148,26 @@ class ExplodeParticles extends Time {
 
         }).start();
 
-        explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function() {
-            // explode
-            let r = this.r;
-            let planeR;
-            that.particleSystem.material.size = this.size;
-            that.particleSystem.material.needsUpdate = true;
+        this.addTween(gatherTween);  
+        this.addTween(explodeTween);  
 
-            that.particleSystem.geometry.verticesNeedUpdate = true;
-            that.particleSystem.geometry.vertices.forEach(function(v3) {
-                planeR = r * v3.rPercent * Math.cos(v3.exAngleY);
-                v3.y = r * v3.rPercent * Math.sin(v3.exAngleY);
-                v3.x = planeR * Math.cos(v3.exAngle);
-                v3.z = planeR * Math.sin(v3.exAngle);
-            });
-        }).onComplete(function() {})//.start();
+        return new Promise(function(resolve) {
+            explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function() {
+                // explode
+                let r = this.r;
+                let planeR;
+                that.particleSystem.material.size = this.size;
+                that.particleSystem.material.needsUpdate = true;
 
-
+                that.particleSystem.geometry.verticesNeedUpdate = true;
+                that.particleSystem.geometry.vertices.forEach(function(v3) {
+                    planeR = r * v3.rPercent * Math.cos(v3.exAngleY);
+                    v3.y = r * v3.rPercent * Math.sin(v3.exAngleY);
+                    v3.x = planeR * Math.cos(v3.exAngle);
+                    v3.z = planeR * Math.sin(v3.exAngle);
+                });
+            }).onComplete(resolve)
+        });
         this.addTween(gatherTween);  
         this.addTween(explodeTween);  
         

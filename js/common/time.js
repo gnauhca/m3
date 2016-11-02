@@ -6,7 +6,7 @@ var TIME = {
 	delta: 16
 }
 
-stop = false;
+var stop = false;
 TIME.addBody = function(timeBody) {
 	this.bodys.push(timeBody);
 }
@@ -18,7 +18,6 @@ TIME.removeBody = function(timeBody) {
 		this.bodys.splice(index, 1);
 	}
 }
-
 TIME.tick = (function() {
 	var now = (new Date()).getTime();
 	var last = now;
@@ -61,7 +60,6 @@ TIME.handleFrame = function(delta) {
 }
 
 window.TIME = TIME;
-
 
 /* 时间物体类，提供两个时机，帧更新，固定间隔更新，每一个有时间概念的物体，就继承 */
 class Time {
@@ -243,6 +241,8 @@ class Time {
 		});
 	}
 }
+
+window.Time = Time;
 
 export default Time;
 

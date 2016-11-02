@@ -131,6 +131,18 @@ window.easing= {
 	}
 };
 
+window.getAngle = function(x, y) {
+	var angel = Math.atan(y/x);
+
+	if (x < 0) {
+		angel += Math.PI;
+	} else if (y < 0) {
+		angel += Math.PI * 2;
+	}
+	return angel;
+}
+
+
 window.calculateSubWindowSize = (function() {
 	var r13 = 1/3;
 	var r23 = 2/3;
