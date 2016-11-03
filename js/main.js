@@ -1,28 +1,30 @@
 import ViewManager from './view/view-manager.js';
 import Time from 'time.js';
 import Loader from 'loader.js';
-require('../assets/mobiles/pro5/pro5.js');
-(function() { 
+import {ASSETS} from 'config.js'
+
 require('../css/common.scss');//return;
+
+// require('../assets/mobiles/pro5/pro5.js');
+(function() { 
 
 window.M3 = {};
 M3.viewManager = new ViewManager();
 
 // todo: webgl 检查
 // ...
-
-
-/*var loader = new Loader();
+var loader = new Loader();
 var progressView = M3.viewManager.getView('progress');
 progressView.activate();
-loader.load({url: './build/presets.js', size: 100}, function(percent) {
+loader.load(ASSETS, function(percent) {
 	progressView.setProgress(percent);
-}).then(function() {
+}).then(function(assets) {
+	M3.assets = assets;
 	progressView.inactivate();
 	appInit();
-});*/
+});
 
-appInit();
+// appInit();
 
 function appInit() {
 	window.TIME.start();

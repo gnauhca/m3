@@ -58,30 +58,32 @@
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
+	var _config = __webpack_require__(33);
+	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(19);
+	__webpack_require__(22); //return;
+	
+	// require('../assets/mobiles/pro5/pro5.js');
 	(function () {
-		__webpack_require__(22); //return;
 	
 		window.M3 = {};
 		M3.viewManager = new _viewManager2.default();
 	
 		// todo: webgl 检查
 		// ...
+		var loader = new _loader2.default();
+		var progressView = M3.viewManager.getView('progress');
+		progressView.activate();
+		loader.load(_config.ASSETS, function (percent) {
+			progressView.setProgress(percent);
+		}).then(function (assets) {
+			M3.assets = assets;
+			progressView.inactivate();
+			appInit();
+		});
 	
-	
-		/*var loader = new Loader();
-	 var progressView = M3.viewManager.getView('progress');
-	 progressView.activate();
-	 loader.load({url: './build/presets.js', size: 100}, function(percent) {
-	 	progressView.setProgress(percent);
-	 }).then(function() {
-	 	progressView.inactivate();
-	 	appInit();
-	 });*/
-	
-		appInit();
+		// appInit();
 	
 		function appInit() {
 			window.TIME.start();
@@ -757,8 +759,6 @@
 		}, {
 			key: 'activate',
 			value: function activate() {
-				var _this2 = this;
-	
 				// stage init
 				// if (!this._selectTable.isInit) {
 				// 	this._selectTable.init();
@@ -772,10 +772,9 @@
 	
 	
 				if (!this._selectStarsStage.isInit) {
-					this._selectStarsStage.init().then(function () {
-						return _this2._selectStarsStage.entry();
-					});
+					this._selectStarsStage.init();
 				}
+				this._selectStarsStage.entry();
 	
 				// select animation
 			}
@@ -1511,6 +1510,7 @@
 	
 			_this.startLines = []; // 以此星星为起点的 Line
 			_this.endLines = []; // 以此星星为终点的 Line
+			_this.box;
 			_this.mesh;
 			_this.connectStars = [];
 			_this.initCrood = initCrood;
@@ -1546,25 +1546,23 @@
 				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
 				var material2 = THREE.CustomMaterial.glass.clone();
 				// material1.opacity = 0.2
-				// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
+				// let material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
 				var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
-				var mesh = new THREE.Mesh(gemo, mulMaterial);
-	
 				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
-	
 				this.mesh = mesh;
+				this.box = mesh;
 			}
 		}, {
 			key: 'setCrood',
 			value: function setCrood(crood) {
 				this.mesh.position.copy(crood);
-				this.startLines.forEach(function (line) {
-					line.setStart(crood);
+				this.startLines.forEach(function () {
+					this.update();
 				});
-				this.endLines.forEach(function (line) {
-					line.setEnd(crood);
+				this.endLines.forEach(function () {
+					this.update();
 				});
 			}
 		}, {
@@ -1617,7 +1615,7 @@
 				var group = new THREE.Group();
 				var svgGemo = new THREE.SVGGemetry(this.svgString, {});
 				var material = new THREE.MeshBasicMaterial({ color: 0x0cbbef });
-				// var material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
+				// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
 				var mesh = new THREE.Mesh(svgGemo, material);
 				mesh.scale.set(0.2, 0.2, 0.2);
 				this.svgMesh = mesh;
@@ -1650,17 +1648,23 @@
 	var Line = function (_Time2) {
 		_inherits(Line, _Time2);
 	
-		function Line(croodStart, croodEnd) {
+		function Line(startStar, endStar) {
 			_classCallCheck(this, Line);
 	
 			var _this3 = _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).call(this));
 	
-			_this3.start = croodStart.clone();
-			_this3.end = croodEnd.clone();
+			_this3.startStar = startStar;
+			_this3.endStar = endStar;
 	
+			_this3.start = new THREE.Vector3();
+			_this3.end = new THREE.Vector3();
+	
+			_this3.startPointLight; // 端点光
+			_this3.endPointLight; // 端点光
+	
+			_this3.ray = new THREE.Raycaster();
+			_this3.connected = false;
 			_this3.init();
-			_this3.setStart(croodStart);
-			_this3.setEnd(croodEnd);
 			return _this3;
 		}
 	
@@ -1670,6 +1674,7 @@
 				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
 				var gemo = new THREE.Geometry();
 				gemo.vertices.push(this.start, this.end);
+	
 				var line = new THREE.Line(gemo, material);
 				this.mesh = line;
 				this.mesh.visible = false;
@@ -1681,32 +1686,55 @@
 				var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 	
 				var that = this;
-				var random = Math.random() * 2 | 0;
-				var movePoint = ['start', 'end'][random];
-				var staticPoint = ['start', 'end'][(random + 1) % 2];
-				var dest = this[movePoint].clone();
+				var moveIndex = Math.random() * 2 | 0;
+				var staticIndex = (moveIndex + 1) % 2;
 	
 				function update() {
 					that.mesh.geometry.verticesNeedUpdate = true;
 					that.mesh.material.needUpdate = true;
 				}
 	
-				this.mesh.visible = true;
-				this[movePoint].copy(this[staticPoint]);
-				this[movePoint].animate(dest, 2000, delay, { onUpdate: update });
-				this.mesh.material.animate({ opacity: 0.4 }, 2000, delay, { onUpdate: update });
+				var pointTween = new TWEEN.Tween({ p: 0 }).to({ p: 1 }, dur).onUpdate(function () {
+					var curCroods = that.calCrood();
+					var sub = new THREE.Vector3().subVectors(curCroods[moveIndex], curCroods[staticIndex]);
+					sub.setLength(sub.length * this.p);
+					curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
+					that.setCrood(curCroods);
+				}).onComplete(function () {
+					that.removeTween(pointTween);
+					that.connected = true;
+				});
+				setTimeout(function () {
+					return pointTween.start();
+				}, delay);
+				this.mesh.material.animate({ opacity: 0.4 }, dur, delay, { onUpdate: update });
 			}
 		}, {
-			key: 'setStart',
-			value: function setStart(crood) {
-				this.start.copy(crood);
+			key: 'calCrood',
+			value: function calCrood() {
+				var startV = this.startStar.box.getWorldPosition();
+				var endV = this.endStar.box.getWorldPosition();
+	
+				console.log(this.startStar.initCrood, this.endStar.initCrood);
+				// console.log(startV, endV, (new THREE.Vector3).subVectors(endV, startV));
+				this.ray.set(startV, new THREE.Vector3().subVectors(endV, startV).normalize());
+				var intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box]);
+				console.log(intersects);
+				return [intersects[0].point, intersects[1].point];
+			}
+		}, {
+			key: 'setCrood',
+			value: function setCrood(croods) {
+				this.start.copy(croods[0]);
+				this.end.copy(croods[1]);
 				this.mesh.geometry.verticesNeedUpdate = true;
 			}
 		}, {
-			key: 'setEnd',
-			value: function setEnd(crood) {
-				this.end.copy(crood);
-				this.mesh.geometry.verticesNeedUpdate = true;
+			key: 'update',
+			value: function update() {
+				if (!this.connected) return;
+				var vecs = calCrood();
+				setCrood(vecs[0], vecs[1]);
 			}
 		}]);
 	
@@ -1791,7 +1819,7 @@
 				// console.log(starCroods, productIndexes);
 				var productCfgIndex = 0; // selectCfg.products 的 index
 				starCroods.forEach(function (starCrood, index) {
-					var star;
+					var star = void 0;
 					if (productIndexes.has(index)) {
 						star = new ProductStar(starCrood, that._products[productCfgIndex].svgString);
 						star.init();
@@ -1817,7 +1845,7 @@
 					that._stars.forEach(function (jStar, j) {
 						if (i === j || iStar.connectStars.indexOf(jStar) !== -1 || jStar.connectStars.indexOf(iStar) !== -1 || new THREE.Vector3().subVectors(iStar.initCrood, jStar.initCrood).length() > that._maxConnectDistant) return;
 	
-						line = new Line(iStar.initCrood, jStar.initCrood);
+						line = new Line(iStar, jStar);
 						iStar.connectStars.push(jStar);
 						jStar.connectStars.push(iStar);
 						iStar.startLines.push(line);
@@ -1829,14 +1857,8 @@
 				this.objects.lineGroup = lineGroup;
 	
 				// import build
-				return new Promise(function (resolve) {
-					that.explodeParticle.build().then(function () {
-						that.objects.particleSystem = that.explodeParticle.particleSystem;
-						resolve();
-					}.bind(that));
-				}).catch(function (e) {
-					return console.error(e.stack);
-				});
+				this.explodeParticle.build();
+				this.objects.particleSystem = this.explodeParticle.particleSystem;
 			}
 		}, {
 			key: 'entry',
@@ -1906,10 +1928,6 @@
 	
 	var _time2 = _interopRequireDefault(_time);
 	
-	var _selectConf = __webpack_require__(8);
-	
-	var _selectConf2 = _interopRequireDefault(_selectConf);
-	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -1939,58 +1957,46 @@
 	        key: 'build',
 	        value: function build() {
 	            var that = this;
-	            var logoImg;
-	            var particleMap;
+	            var logoImg = M3.assets.logoImg;
+	            var particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src);
+	            // new THREE.Texture(M3.assets.particleMap);
+	            // particleMap.image = M3.assets.particleMap;
 	
-	            return new Promise(function (loaded) {
-	                logoImg = new Image();
-	                logoImg.src = _selectConf2.default.logoImg;
-	                logoImg.onload = function () {
-	                    new THREE.TextureLoader().load(_selectConf2.default.particleMap, function (texture) {
-	                        particleMap = texture;
-	                        loaded();
-	                    });
-	                };
-	            }).then(function () {
-	                var imgData = getImageData(logoImg, 0, 0, 0);
-	                var zRandom = 200;
-	                var yOffset = 0; //-500;
-	                var geom = new THREE.Geometry();
-	                var material = new THREE.PointsMaterial({
-	                    map: particleMap,
-	                    size: 3,
-	                    transparent: true,
-	                    opacity: 0.8,
-	                    sizeAttenuation: true,
-	                    color: 0xffffff,
-	                    blending: THREE.AdditiveBlending
-	                });
-	
-	                imgData.forEach(function (pixel) {
-	                    var v3 = new THREE.Vector3(pixel.size.x * 1, pixel.size.y * 1 + yOffset, 0);
-	                    v3.initV = v3.clone(); // for lightUp
-	                    v3.lightupZ = (Math.random() - 0.5) * 5 * zRandom;
-	                    v3.z = v3.lightupZ;
-	
-	                    v3.exAngle = Math.random() * Math.PI * 2; // for explode
-	                    v3.exAngleY = (Math.random() - 0.5) * Math.PI * 1; // for explode
-	                    v3.rPercent = Math.random() * 2 + 1;
-	                    geom.vertices.push(v3);
-	                    // geom.vertices.push(v3);
-	                });
-	                that.particleSystem = new THREE.ParticleSystem(geom, material);
-	                // M3.scene.add(that.particleSystem);
-	                // console.log(that.particleSystem);
-	            }).catch(function (e) {
-	                return console.error(e.stack);
+	            var imgData = getImageData(logoImg, 0, 0, 0);
+	            var zRandom = 200;
+	            var yOffset = 0; //-500;
+	            var geom = new THREE.Geometry();
+	            var material = new THREE.PointsMaterial({
+	                map: particleMap,
+	                size: 3,
+	                transparent: true,
+	                opacity: 0.8,
+	                sizeAttenuation: true,
+	                color: 0xffffff,
+	                blending: THREE.AdditiveBlending
 	            });
-	            //M3.scene.add(that.particleSystem);
+	
+	            imgData.forEach(function (pixel) {
+	                var v3 = new THREE.Vector3(pixel.size.x * 1, pixel.size.y * 1 + yOffset, 0);
+	                v3.initV = v3.clone(); // for lightUp
+	                v3.lightupZ = (Math.random() - 0.5) * 5 * zRandom;
+	                v3.z = v3.lightupZ;
+	
+	                v3.exAngle = Math.random() * Math.PI * 2; // for explode
+	                v3.exAngleY = (Math.random() - 0.5) * Math.PI * 1; // for explode
+	                v3.rPercent = Math.random() * 2 + 1;
+	                geom.vertices.push(v3);
+	                // geom.vertices.push(v3);
+	            });
+	            that.particleSystem = new THREE.ParticleSystem(geom, material);
+	            // M3.scene.add(that.particleSystem);
+	            // console.log(that.particleSystem);
 	        }
 	    }, {
 	        key: 'lightUp',
 	        value: function lightUp() {
 	            var that = this;
-	            var dur = 4000;
+	            var dur = 40;
 	            var cameraTween = void 0;
 	
 	            return new Promise(function (resolve) {
@@ -2024,24 +2030,21 @@
 	                that.addTween(particleTween);
 	            });
 	        }
-	    }, {
-	        key: 'rise',
-	        value: function rise() {
-	            var cameraTween = this.addTHREEObjTween(M3.camera, {
-	                position: new THREE.Vector3(0, -500, 0),
+	
+	        /*rise() {
+	        let cameraTween = this.addTHREEObjTween(M3.camera, {
+	        position: new THREE.Vector3(0, -500, 0),
 	                lookAt: this.finalPos,
-	                up: new THREE.Vector3(0, 1, 0)
-	            }, dur, {
-	                // onUpdate() { M3.camera.lookAt(that.initPos); },
-	                onComplete: function onComplete() {
-	                    that.removeTween(cameraTween);
-	                }
-	            }).start();
+	                up: new THREE.Vector3(0, 1 ,0)
+	        }, dur, {
+	        // onUpdate() { M3.camera.lookAt(that.initPos); },
+	                onComplete() { that.removeTween(cameraTween); }
+	        }).start();
+	             let maxR = 300; // 旋转飞起最大半径
+	            let maxA = Math.PI * 3; // 每个粒子旋转最大角度
+	             
+	        }*/
 	
-	            var maxR = 300; // 旋转飞起最大半径
-	            var maxA = Math.PI * 3; // 每个粒子旋转最大角度
-	
-	        }
 	    }, {
 	        key: 'explode',
 	        value: function explode() {
@@ -3034,10 +3037,11 @@
 			value: function load(loadParams, onProgress) {
 				var that = this;
 				return new Promise(function (onLoad, reject) {
+					var loadedCount = 0;
 					var totalSize = 0; // 总大小
 					var loadedSize = 0; // 已经下载大小
 					var loadTasks = [];
-					var loadTask;
+					var loadTask = void 0;
 	
 					loadTasks = that._getLoadTasks(loadParams);
 	
@@ -3054,17 +3058,20 @@
 						totalSize += loadTask.size;
 	
 						if (loadedCache[loadTask.url]) {
+							loadedCount++;
 							loadTask.loaded = loadTask.size;
 							continue;
 						}
-	
 						(function (loadTask) {
 							loadMethod[loadTask.type](loadTask.url, function (res) {
+								loadedCount++;
 								loadedCache[loadTask.url] = res;
 								loadTask.loaded = loadTask.size;
 	
+								// console.log(loadTasks[0].loaded, loadTasks[1].loaded);
 								// 成功回调
-								if (getLoadedSize() / totalSize === 1) {
+								if (getLoadedSize() / totalSize === 1 && loadedCount === loadTasks.length) {
+									// console.log(that._getResults(loadParams));
 									onLoad(that._getResults(loadParams));
 								}
 							}, function (progress) {
@@ -3108,7 +3115,7 @@
 	
 				function _getLoadTasks(params) {
 					var urls = [];
-					var type;
+					var type = void 0;
 	
 					if (Object.prototype.toString.call(params) === '[object Array]') {
 						params.forEach(function (param) {
@@ -3156,7 +3163,6 @@
 						return params;
 					}
 				}
-	
 				return _getResults(params);
 			}
 		}]);
@@ -3176,8 +3182,9 @@
 		// 下载图片
 		'img': function img(url, onload, onProgress) {
 			var imgLoader = new THREE.ImageLoader();
-			imgLoader.load(url, function () {
-				onload(url);
+			imgLoader.load(url, function (img) {
+				img.dataset.src = url;
+				onload(img);
 			}, function (xhr) {
 				return onProgress(xhr.loaded / xhr.total);
 			});
@@ -3753,6 +3760,38 @@
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin
+
+/***/ },
+/* 23 */,
+/* 24 */,
+/* 25 */,
+/* 26 */,
+/* 27 */,
+/* 28 */,
+/* 29 */,
+/* 30 */,
+/* 31 */,
+/* 32 */,
+/* 33 */
+/***/ function(module, exports, __webpack_require__) {
+
+	"use strict";
+	
+	Object.defineProperty(exports, "__esModule", {
+	    value: true
+	});
+	var BUILDPATH = './build/';
+	var CONFIG = {};
+	var ASSETS = {
+	    //libjs: BUILDPATH + '/presets.js',
+	
+	    // select
+	    logoImg: { url: BUILDPATH + __webpack_require__(9), size: 10 },
+	    particleMap: { url: BUILDPATH + __webpack_require__(10), size: 10 }
+	};
+	
+	exports.CONFIG = CONFIG;
+	exports.ASSETS = ASSETS;
 
 /***/ }
 /******/ ]);

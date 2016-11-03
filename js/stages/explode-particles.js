@@ -1,5 +1,4 @@
 import Time from 'time.js';
-import selectCfg from 'select-conf.js';
 
 
 class ExplodeParticles extends Time {
@@ -15,62 +14,52 @@ class ExplodeParticles extends Time {
     }
 
     build() {
-        var that = this;
-        var logoImg;
-        var particleMap;
+        let that = this;
+        let logoImg = M3.assets.logoImg;
+        let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src); 
+        // new THREE.Texture(M3.assets.particleMap);
+        // particleMap.image = M3.assets.particleMap;
 
-        return new Promise(function(loaded) {
-            logoImg = new Image();
-            logoImg.src = selectCfg.logoImg;
-            logoImg.onload = function() {
-                (new THREE.TextureLoader).load(selectCfg.particleMap, function(texture) {
-                    particleMap = texture;
-                    loaded();
-                });
-            };
-        }).then(function() {
-            var imgData = getImageData(logoImg, 0, 0, 0);
-            var zRandom = 200;
-            var yOffset = 0;//-500;
-            var geom = new THREE.Geometry();
-            var material = new THREE.PointsMaterial({
-                map: particleMap,
-                size: 3,
-                transparent: true,
-                opacity: 0.8,
-                sizeAttenuation: true,
-                color: 0xffffff,
-                blending: THREE.AdditiveBlending,
-                // vertexColors: THREE.FaceColors
-            });
+        let imgData = getImageData(logoImg, 0, 0, 0);
+        let zRandom = 200;
+        let yOffset = 0;//-500;
+        let geom = new THREE.Geometry();
+        let material = new THREE.PointsMaterial({
+            map: particleMap,
+            size: 3,
+            transparent: true,
+            opacity: 0.8,
+            sizeAttenuation: true,
+            color: 0xffffff,
+            blending: THREE.AdditiveBlending,
+            // vertexColors: THREE.FaceColors
+        });
 
-            imgData.forEach(function(pixel) {
-                let v3 = new THREE.Vector3(
-                    pixel.size.x * 1,
-                    pixel.size.y * 1 + yOffset,
-                    0
-                );
-                v3.initV = v3.clone(); // for lightUp
-                v3.lightupZ = (Math.random() - 0.5) * 5 * zRandom
-                v3.z = v3.lightupZ;
+        imgData.forEach(function(pixel) {
+            let v3 = new THREE.Vector3(
+                pixel.size.x * 1,
+                pixel.size.y * 1 + yOffset,
+                0
+            );
+            v3.initV = v3.clone(); // for lightUp
+            v3.lightupZ = (Math.random() - 0.5) * 5 * zRandom
+            v3.z = v3.lightupZ;
 
-                
-                v3.exAngle = Math.random() * Math.PI * 2; // for explode
-                v3.exAngleY = (Math.random() - 0.5) * Math.PI * 1; // for explode
-                v3.rPercent = Math.random() * 2 + 1
-                geom.vertices.push(v3);
-                // geom.vertices.push(v3);
-            });
-            that.particleSystem = new THREE.ParticleSystem(geom, material); 
+            
+            v3.exAngle = Math.random() * Math.PI * 2; // for explode
+            v3.exAngleY = (Math.random() - 0.5) * Math.PI * 1; // for explode
+            v3.rPercent = Math.random() * 2 + 1
+            geom.vertices.push(v3);
+            // geom.vertices.push(v3);
+        });
+        that.particleSystem = new THREE.ParticleSystem(geom, material); 
             // M3.scene.add(that.particleSystem);
             // console.log(that.particleSystem);
-        }).catch(e => console.error(e.stack));
-        //M3.scene.add(that.particleSystem);
     }
 
     lightUp() {
         let that = this;
-        let dur = 4000;
+        let dur = 40;
         let cameraTween;
         
         return new Promise(function(resolve) {
@@ -99,7 +88,7 @@ class ExplodeParticles extends Time {
         });
     }
 
-    rise() {
+    /*rise() {
 		let cameraTween = this.addTHREEObjTween(M3.camera, {
 			position: new THREE.Vector3(0, -500, 0),
             lookAt: this.finalPos,
@@ -113,7 +102,7 @@ class ExplodeParticles extends Time {
         let maxA = Math.PI * 3; // 每个粒子旋转最大角度
 
         
-    }
+    }*/
 
     explode() {
         let that = this;

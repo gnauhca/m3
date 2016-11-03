@@ -8,6 +8,7 @@ class Star extends Time {
 		super();
 		this.startLines = []; // 以此星星为起点的 Line
 		this.endLines = []; // 以此星星为终点的 Line
+		this.box;
 		this.mesh;
 		this.connectStars = []; 
 		this.initCrood = initCrood;
@@ -31,36 +32,33 @@ class Star extends Time {
 
 	build() {
 		// create mesh
-		var gemo = new THREE.SphereGeometry(10, 10, 10);
+		let gemo = new THREE.SphereGeometry(10, 10, 10);
 		gemo = new THREE.TetrahedronGeometry(15, 0);
 		if (Math.random() > 0) {
 			gemo = new THREE.BoxGeometry(15, 15, 15);
 		}
-		var material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
-		var material2 = THREE.CustomMaterial.glass.clone();
+		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
+		let material2 = THREE.CustomMaterial.glass.clone();
 		// material1.opacity = 0.2
-		// var material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-		var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
-		var mesh = new THREE.Mesh(gemo, mulMaterial);
-		
-		var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
-
+		// let material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
+		let mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
+		let mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
-
 		this.mesh = mesh;
+		this.box = mesh;
 	}
 
 	setCrood(crood) {
 		this.mesh.position.copy(crood);
-		this.startLines.forEach(function(line) { line.setStart(crood); });
-		this.endLines.forEach(function(line) { line.setEnd(crood); });
+		this.startLines.forEach(function() {this.update()});
+		this.endLines.forEach(function() {this.update()});
 	}
 
 
 	autoMove() {
 		function move() {
-			var newCrood = that.initCrood.clone().add(new THREE.Vector3(
+			let newCrood = that.initCrood.clone().add(new THREE.Vector3(
 				Math.random() * 20,
 				Math.random() * 20,
 				Math.random() * 20
@@ -94,22 +92,22 @@ class ProductStar extends Star {
 
 	build() {
 		super.build();
-		var group = new THREE.Group();
-		var svgGemo = new THREE.SVGGemetry(this.svgString, {});
-		var material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
-		// var material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
-		var mesh = new THREE.Mesh(svgGemo, material);
+		let group = new THREE.Group();
+		let svgGemo = new THREE.SVGGemetry(this.svgString, {});
+		let material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
+		// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
+		let mesh = new THREE.Mesh(svgGemo, material);
 		mesh.scale.set(0.2, 0.2, 0.2 );
 		this.svgMesh = mesh;
 
-		var initV = new THREE.Vector3(0,0,1);
-		var finalV = this.initCrood.clone().normalize();
+		let initV = new THREE.Vector3(0,0,1);
+		let finalV = this.initCrood.clone().normalize();
 
 		initV.y = finalV.y = 0;
-		var axis = new THREE.Vector3();
+		let axis = new THREE.Vector3();
 		axis.crossVectors(initV, finalV).normalize();
-		var angle = Math.acos( initV.dot(finalV) / initV.length() / initV.length());
-		var quaternion = new THREE.Quaternion(); 
+		let angle = Math.acos( initV.dot(finalV) / initV.length() / initV.length());
+		let quaternion = new THREE.Quaternion(); 
 
 		quaternion.setFromAxisAngle(axis, angle);
 		mesh.rotation.setFromQuaternion(quaternion);
@@ -127,53 +125,78 @@ class ProductStar extends Star {
 }
 
 class Line extends Time {
-	constructor(croodStart, croodEnd) {
+	constructor(startStar, endStar) {
 		super();
-		this.start = croodStart.clone();
-		this.end = croodEnd.clone();
+		this.startStar = startStar;
+		this.endStar = endStar;
 
+		this.start = new THREE.Vector3;
+		this.end = new THREE.Vector3;
+
+		this.startPointLight; // 端点光
+		this.endPointLight; // 端点光
+
+		this.ray = new THREE.Raycaster();
+		this.connected = false;
 		this.init();
-		this.setStart(croodStart);
-		this.setEnd(croodEnd);
 	}
 
 	init() {
-		var material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
-		var gemo = new THREE.Geometry();
-		gemo.vertices.push(
-			this.start,
-			this.end
-		);
-		var line = new THREE.Line(gemo, material);
+		let material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
+		let gemo = new THREE.Geometry();
+		gemo.vertices.push(this.start, this.end);
+
+		let line = new THREE.Line(gemo, material);
 		this.mesh = line;
 		this.mesh.visible = false;
 	}
 
 	connect(dur=2000, delay=0) {
-		var that = this;
-		var random = Math.random()*2|0;
-		var movePoint = ['start', 'end'][random];
-		var staticPoint = ['start', 'end'][(random+1) % 2];
-		var dest = this[movePoint].clone();
+		let that = this;
+		let moveIndex = Math.random()*2|0;
+		let staticIndex = (moveIndex+1) % 2;
 		
 		function update() {
 			that.mesh.geometry.verticesNeedUpdate = true;
 			that.mesh.material.needUpdate = true;
 		}
 
-		this.mesh.visible = true;
-		this[movePoint].copy(this[staticPoint]);
-		this[movePoint].animate(dest, 2000, delay, {onUpdate: update})
-		this.mesh.material.animate({opacity: 0.4}, 2000, delay, {onUpdate: update})
+		var pointTween = new TWEEN.Tween({p: 0}).to({p: 1}, dur).onUpdate(function() {
+			let curCroods = that.calCrood();
+			let sub = (new THREE.Vector3).subVectors(curCroods[moveIndex],curCroods[staticIndex]);
+			sub.setLength(sub.length * this.p);
+			curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
+			that.setCrood(curCroods);
+		}).onComplete(function() {
+			that.removeTween(pointTween);
+			that.connected = true;
+		});
+		setTimeout(()=>pointTween.start(), delay);		
+		this.mesh.material.animate({opacity: 0.4}, dur, delay, {onUpdate: update})
 	}
 
-	setStart(crood) {
-		this.start.copy(crood);
+	calCrood() {
+		let startV = this.startStar.box.getWorldPosition();
+		let endV = this.endStar.box.getWorldPosition();
+
+		console.log(this.startStar.initCrood, this.endStar.initCrood);
+		// console.log(startV, endV, (new THREE.Vector3).subVectors(endV, startV));
+		this.ray.set(startV, (new THREE.Vector3).subVectors(endV, startV).normalize());
+		let intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box]);
+		console.log(intersects);
+		return [intersects[0].point, intersects[1].point];
+	}
+
+	setCrood(croods) {
+		this.start.copy(croods[0]);
+		this.end.copy(croods[1]);
 		this.mesh.geometry.verticesNeedUpdate = true;
 	}
-	setEnd(crood) {
-		this.end.copy(crood);
-		this.mesh.geometry.verticesNeedUpdate = true;
+
+	update() {
+		if (!this.connected) return;
+		var vecs = calCrood();
+		setCrood(vecs[0], vecs[1]);
 	}
 }
 
@@ -248,7 +271,7 @@ class SelectStars extends Stage {
 		// console.log(starCroods, productIndexes);
 		let productCfgIndex = 0; // selectCfg.products 的 index
 		starCroods.forEach(function(starCrood, index) {
-			var star;
+			let star;
 			if (productIndexes.has(index)) {
 				star = new ProductStar(starCrood, that._products[productCfgIndex].svgString);
 				star.init();
@@ -279,8 +302,7 @@ class SelectStars extends Stage {
 					(new THREE.Vector3).subVectors(iStar.initCrood, jStar.initCrood).length() > that._maxConnectDistant
 				) return;
 
-
-				line = new Line(iStar.initCrood, jStar.initCrood);
+				line = new Line(iStar, jStar);
 				iStar.connectStars.push(jStar);
 				jStar.connectStars.push(iStar);
 				iStar.startLines.push(line);
@@ -292,17 +314,13 @@ class SelectStars extends Stage {
 		this.objects.lineGroup = lineGroup;
 		
 		// import build
-		return new Promise(function(resolve) {
-			that.explodeParticle.build().then(function() {
-				that.objects.particleSystem = that.explodeParticle.particleSystem;
-				resolve();
-			}.bind(that));
-		}).catch(e => console.error(e.stack));
+		this.explodeParticle.build();
+		this.objects.particleSystem = this.explodeParticle.particleSystem;
 
 	}
 
 	entry() {
-		var that = this;
+		let that = this;
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
 
 
