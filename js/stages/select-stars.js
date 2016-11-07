@@ -24,6 +24,7 @@ class Star extends Time {
 		this.t = this.addTick(function() {
 			// this.mesh.rotation.x += 0.02;
 			this.mesh.rotation.y += 0.006;
+			this.setCrood();
 			// this.mesh.rotation.z += 0.02;
 		}.bind(this));
 
@@ -39,9 +40,7 @@ class Star extends Time {
 		}
 		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
 		let material2 = THREE.CustomMaterial.glass.clone();
-		// material1.opacity = 0.2
-		// let material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-		let mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
+		material2.side = THREE.DoubleSide;
 		let mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
@@ -50,9 +49,9 @@ class Star extends Time {
 	}
 
 	setCrood(crood) {
-		this.mesh.position.copy(crood);
-		this.startLines.forEach(function() {this.update()});
-		this.endLines.forEach(function() {this.update()});
+		crood && this.mesh.position.copy(crood);
+		this.startLines.forEach((line) => line.update());
+		this.endLines.forEach((line) => line.update());
 	}
 
 
@@ -156,15 +155,16 @@ class Line extends Time {
 		let moveIndex = Math.random()*2|0;
 		let staticIndex = (moveIndex+1) % 2;
 		
+		this.mesh.visible = true;
 		function update() {
 			that.mesh.geometry.verticesNeedUpdate = true;
 			that.mesh.material.needUpdate = true;
 		}
-
-		var pointTween = new TWEEN.Tween({p: 0}).to({p: 1}, dur).onUpdate(function() {
+		
+		let pointTween = new TWEEN.Tween({p: 0}).to({p: 1}, dur).onUpdate(function() {
 			let curCroods = that.calCrood();
 			let sub = (new THREE.Vector3).subVectors(curCroods[moveIndex],curCroods[staticIndex]);
-			sub.setLength(sub.length * this.p);
+			sub.setLength(sub.length() * this.p);
 			curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
 			that.setCrood(curCroods);
 		}).onComplete(function() {
@@ -179,12 +179,24 @@ class Line extends Time {
 		let startV = this.startStar.box.getWorldPosition();
 		let endV = this.endStar.box.getWorldPosition();
 
-		console.log(this.startStar.initCrood, this.endStar.initCrood);
+		// console.log(this.startStar.initCrood, this.endStar.initCrood);
 		// console.log(startV, endV, (new THREE.Vector3).subVectors(endV, startV));
 		this.ray.set(startV, (new THREE.Vector3).subVectors(endV, startV).normalize());
-		let intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box]);
-		console.log(intersects);
-		return [intersects[0].point, intersects[1].point];
+		let intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box], true);
+		let pointStart,pointEnd;
+
+		intersects.forEach(function(intersect) {
+			if (!pointStart && this.startStar.box.children.indexOf(intersect.object) !== -1) {
+				pointStart = intersect.point;
+			}
+			if (!pointEnd && this.endStar.box.children.indexOf(intersect.object) !== -1) {
+				pointEnd = intersect.point;
+			}
+		}.bind(this));
+
+		//console.log(intersects);
+		//console.log(pointStart, pointEnd);
+		return [pointStart, pointEnd];
 	}
 
 	setCrood(croods) {
@@ -195,8 +207,8 @@ class Line extends Time {
 
 	update() {
 		if (!this.connected) return;
-		var vecs = calCrood();
-		setCrood(vecs[0], vecs[1]);
+		let vecs = this.calCrood();
+		this.setCrood(vecs);
 	}
 }
 

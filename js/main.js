@@ -43,12 +43,17 @@ function appInit() {
 
 	M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 
-	// main render tick
-	var m3Time = new Time();
 
-	M3.tick = m3Time.addTick(function() {
-		M3.renderer.render(M3.scene, M3.camera);
-	});
+	/* fog */
+	var fog = new THREE.Fog(0x000000, 0, 2000);
+	// M3.scene.fog = fog;
+
+ 	var spotLight = new THREE.SpotLight(0xffffff);
+ 	spotLight.intensity = 0.8;
+ 	spotLight.position.set(-300, 500, 200);
+ 	spotLight.lookAt(new THREE.Vector3); 
+	M3.scene.add(spotLight);
+
 
 
 	window.addEventListener('resize', function() {
@@ -62,20 +67,11 @@ function appInit() {
 
 
 
-	/* fog */
-	var fog = new THREE.Fog(0x000000, 0, 2000);
-	// M3.scene.fog = fog;
 
-	var size = 400;
-	var step = 10;
-
- 	var spotLight = new THREE.SpotLight(0xffffff);
- 	spotLight.intensity = 0.8;
- 	spotLight.position.set(-300, 500, 200);
- 	spotLight.lookAt(new THREE.Vector3); 
-	M3.scene.add(spotLight);
 
 	/* helper */
+	var size = 400;
+	var step = 10;
 	var axisHelper = new THREE.AxisHelper( 100 );
 	M3.scene.add( axisHelper );
 	/* grid helper */
@@ -90,6 +86,30 @@ function appInit() {
 	gridHelperZ.rotation.x = Math.PI / 2;
 	M3.scene.add( gridHelperZ );
 
+	function initStats() {
+
+		var stats = new Stats();
+
+		stats.setMode(0); // 0: fps, 1: ms
+
+		// Align top-left
+		stats.domElement.style.position = 'absolute';
+		stats.domElement.style.zIndex = 100000;
+		stats.domElement.style.left = '0px';
+		stats.domElement.style.top = '0px';
+
+		document.body.appendChild(stats.domElement);
+		return stats;
+	}
+	var stats = initStats();
+
+	// main render tick
+	var m3Time = new Time();
+
+	M3.tick = m3Time.addTick(function() {
+		stats.update();
+		M3.renderer.render(M3.scene, M3.camera);
+	});
 
 
 	// M3.viewManager.activateView('index');

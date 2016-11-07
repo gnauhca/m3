@@ -1,6 +1,6 @@
 window.$ = window.jQuery = require('jquery');
 window.THREE = require('./libs/three.min.js');
-window.TWEEN = require('./libs/tween.js');
+window.TWEEN = require('./libs/Tween.js');
 
 // require('exports?window.dat!./libs/dat.gui.js');
 require('./libs/d3-threeD.js');

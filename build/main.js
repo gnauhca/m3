@@ -58,11 +58,11 @@
 	
 	var _loader2 = _interopRequireDefault(_loader);
 	
-	var _config = __webpack_require__(33);
+	var _config = __webpack_require__(22);
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(22); //return;
+	__webpack_require__(23); //return;
 	
 	// require('../assets/mobiles/pro5/pro5.js');
 	(function () {
@@ -101,12 +101,15 @@
 	
 			M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 	
-			// main render tick
-			var m3Time = new _time2.default();
+			/* fog */
+			var fog = new THREE.Fog(0x000000, 0, 2000);
+			// M3.scene.fog = fog;
 	
-			M3.tick = m3Time.addTick(function () {
-				M3.renderer.render(M3.scene, M3.camera);
-			});
+			var spotLight = new THREE.SpotLight(0xffffff);
+			spotLight.intensity = 0.8;
+			spotLight.position.set(-300, 500, 200);
+			spotLight.lookAt(new THREE.Vector3());
+			M3.scene.add(spotLight);
 	
 			window.addEventListener('resize', function () {
 				winWidth = window.innerWidth;
@@ -116,20 +119,9 @@
 				M3.renderer.setSize(winWidth, winHeight);
 			});
 	
-			/* fog */
-			var fog = new THREE.Fog(0x000000, 0, 2000);
-			// M3.scene.fog = fog;
-	
+			/* helper */
 			var size = 400;
 			var step = 10;
-	
-			var spotLight = new THREE.SpotLight(0xffffff);
-			spotLight.intensity = 0.8;
-			spotLight.position.set(-300, 500, 200);
-			spotLight.lookAt(new THREE.Vector3());
-			M3.scene.add(spotLight);
-	
-			/* helper */
 			var axisHelper = new THREE.AxisHelper(100);
 			M3.scene.add(axisHelper);
 			/* grid helper */
@@ -143,6 +135,31 @@
 			var gridHelperZ = new THREE.GridHelper(size, step, 0x0000ff);
 			gridHelperZ.rotation.x = Math.PI / 2;
 			M3.scene.add(gridHelperZ);
+	
+			function initStats() {
+	
+				var stats = new Stats();
+	
+				stats.setMode(0); // 0: fps, 1: ms
+	
+				// Align top-left
+				stats.domElement.style.position = 'absolute';
+				stats.domElement.style.zIndex = 100000;
+				stats.domElement.style.left = '0px';
+				stats.domElement.style.top = '0px';
+	
+				document.body.appendChild(stats.domElement);
+				return stats;
+			}
+			var stats = initStats();
+	
+			// main render tick
+			var m3Time = new _time2.default();
+	
+			M3.tick = m3Time.addTick(function () {
+				stats.update();
+				M3.renderer.render(M3.scene, M3.camera);
+			});
 	
 			// M3.viewManager.activateView('index');
 			// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
@@ -1529,6 +1546,7 @@
 				this.t = this.addTick(function () {
 					// this.mesh.rotation.x += 0.02;
 					this.mesh.rotation.y += 0.006;
+					this.setCrood();
 					// this.mesh.rotation.z += 0.02;
 				}.bind(this));
 	
@@ -1545,9 +1563,7 @@
 				}
 				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
 				var material2 = THREE.CustomMaterial.glass.clone();
-				// material1.opacity = 0.2
-				// let material2 = new THREE.MeshPhongMaterial({color: 0xabcdef, transparent: true, opacity: 0.7});
-				var mulMaterial = new THREE.MultiMaterial([/*material1, */material2]);
+				material2.side = THREE.DoubleSide;
 				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
@@ -1557,12 +1573,12 @@
 		}, {
 			key: 'setCrood',
 			value: function setCrood(crood) {
-				this.mesh.position.copy(crood);
-				this.startLines.forEach(function () {
-					this.update();
+				crood && this.mesh.position.copy(crood);
+				this.startLines.forEach(function (line) {
+					return line.update();
 				});
-				this.endLines.forEach(function () {
-					this.update();
+				this.endLines.forEach(function (line) {
+					return line.update();
 				});
 			}
 		}, {
@@ -1689,6 +1705,7 @@
 				var moveIndex = Math.random() * 2 | 0;
 				var staticIndex = (moveIndex + 1) % 2;
 	
+				this.mesh.visible = true;
 				function update() {
 					that.mesh.geometry.verticesNeedUpdate = true;
 					that.mesh.material.needUpdate = true;
@@ -1697,7 +1714,7 @@
 				var pointTween = new TWEEN.Tween({ p: 0 }).to({ p: 1 }, dur).onUpdate(function () {
 					var curCroods = that.calCrood();
 					var sub = new THREE.Vector3().subVectors(curCroods[moveIndex], curCroods[staticIndex]);
-					sub.setLength(sub.length * this.p);
+					sub.setLength(sub.length() * this.p);
 					curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
 					that.setCrood(curCroods);
 				}).onComplete(function () {
@@ -1715,12 +1732,25 @@
 				var startV = this.startStar.box.getWorldPosition();
 				var endV = this.endStar.box.getWorldPosition();
 	
-				console.log(this.startStar.initCrood, this.endStar.initCrood);
+				// console.log(this.startStar.initCrood, this.endStar.initCrood);
 				// console.log(startV, endV, (new THREE.Vector3).subVectors(endV, startV));
 				this.ray.set(startV, new THREE.Vector3().subVectors(endV, startV).normalize());
-				var intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box]);
-				console.log(intersects);
-				return [intersects[0].point, intersects[1].point];
+				var intersects = this.ray.intersectObjects([this.startStar.box, this.endStar.box], true);
+				var pointStart = void 0,
+				    pointEnd = void 0;
+	
+				intersects.forEach(function (intersect) {
+					if (!pointStart && this.startStar.box.children.indexOf(intersect.object) !== -1) {
+						pointStart = intersect.point;
+					}
+					if (!pointEnd && this.endStar.box.children.indexOf(intersect.object) !== -1) {
+						pointEnd = intersect.point;
+					}
+				}.bind(this));
+	
+				//console.log(intersects);
+				//console.log(pointStart, pointEnd);
+				return [pointStart, pointEnd];
 			}
 		}, {
 			key: 'setCrood',
@@ -1733,8 +1763,8 @@
 			key: 'update',
 			value: function update() {
 				if (!this.connected) return;
-				var vecs = calCrood();
-				setCrood(vecs[0], vecs[1]);
+				var vecs = this.calCrood();
+				this.setCrood(vecs);
 			}
 		}]);
 	
@@ -3757,22 +3787,6 @@
 
 /***/ },
 /* 22 */
-/***/ function(module, exports) {
-
-	// removed by extract-text-webpack-plugin
-
-/***/ },
-/* 23 */,
-/* 24 */,
-/* 25 */,
-/* 26 */,
-/* 27 */,
-/* 28 */,
-/* 29 */,
-/* 30 */,
-/* 31 */,
-/* 32 */,
-/* 33 */
 /***/ function(module, exports, __webpack_require__) {
 
 	"use strict";
@@ -3792,6 +3806,12 @@
 	
 	exports.CONFIG = CONFIG;
 	exports.ASSETS = ASSETS;
+
+/***/ },
+/* 23 */
+/***/ function(module, exports) {
+
+	// removed by extract-text-webpack-plugin
 
 /***/ }
 /******/ ]);
