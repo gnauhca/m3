@@ -148,12 +148,20 @@ class Loader {
  */
 let loadMethod = {
 
-	// 下载图片
+	// 下载图片 
+	// return {src: string, img: dom, texture: THREE.Texture}
 	'img': function(url, onload, onProgress) {
 		let imgLoader = new THREE.ImageLoader();
 		imgLoader.load(url, function(img) {
-			img.dataset.src = url;
-			onload(img);
+			let particleMap = new THREE.TextureLoader().load(url, function(texture) {
+				let imgInfo = {};
+				imgInfo.img = img;
+				imgInfo.src = url;
+				imgInfo.texture = texture;
+				onload(imgInfo);
+			});
+			/*img.dataset.src = url;
+			onload(img);*/
 		}, function(xhr) {
 			return onProgress(xhr.loaded / xhr.total);
 		});

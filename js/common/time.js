@@ -112,105 +112,6 @@ class Time {
 		this.tweens.push(tween);
 	}
 
-	/*
-	 * tweenObj
-	 */
-	addTHREEObjTween(threeObj, target, dur, tweenObj) {		
-		var that = this;
-		var init = {};
-		var dest = {};
-	    
-	    var attrs = ['x', 'y', 'z', 'r', 'g', 'b', 'opacity'];
-		var separater = '_';
-
-		function setInit(key) {
-			let keyArr = key.split('_');
-			let subObj = threeObj;
-
-			keyArr.forEach(function(subKey) { subObj = subObj[subKey]; });
-			init[key] = subObj;
-		}
-
-		if (threeObj instanceof THREE.Vector3 && target instanceof THREE.Vector3) {
-			// 向量
-			['x', 'y', 'z'].forEach(function(pos) {
-				init[pos] = threeObj[pos];
-				dest[pos] = target[pos];
-			});
-		} else {
-			// object3d or material
-			for (let key in target) {
-				let destKey = key;
-
-				if (key === 'lookAt') {
-					let initLookAt = THREE.THREEUtil.getLookAt(threeObj);
-					['x','y','z'].forEach(function(lookAtKey) {
-						init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
-						dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
-					});
-				} else {
-					if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-						target[key] = new THREE.Color(target[key]);
-					}
-					if (typeof target[key] === 'object') {
-						for (let cKey in target[key]) {
-							destKey = key;
-							if (attrs.indexOf(cKey) !== -1) {
-								destKey += '_' + cKey;
-								dest[destKey] = target[key][cKey];
-								setInit(destKey);
-							}
-						}
-					} else {
-						dest[destKey] = target[key];
-						setInit(destKey);
-					}
-				}
-			}
-		}
-
-
-
-
-		// console.log(init,dest);
-		var tween;
-		tweenObj = tweenObj || {};
-		tween = new TWEEN.Tween(init)
-		tween.to(dest, dur)
-			.easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut)
-			.onUpdate(function() {
-				let current = this;
-				for (let currentKey in current) {
-					if (currentKey.indexOf('lookAt') === -1) {
-						let keyArr = currentKey.split('_');
-						let last = keyArr.pop();
-						let subObj = threeObj;
-						keyArr.forEach(function(key) { subObj = subObj[key]; });
-						subObj[last] = current[currentKey];
-					}
-				}
-
-				if (current.lookAt_x) {
-					threeObj.lookAt(
-						new THREE.Vector3(current.lookAt_x, current.lookAt_y, current.lookAt_z)
-					);
-				}
-				tweenObj.onUpdate && tweenObj.onUpdate.call(this);
-			})
-			.onComplete(function() {
-				var completeRemove = true;
-				if (tweenObj.onComplete) {
-					if (tweenObj.onComplete() === false)
-					completeRemove = false;
-				}
-
-				completeRemove && that.removeTween(tween);
-			});
-
-		this.tweens.push(tween);
-		return tween;
-	}
-
 	removeTween(tween) {
 		if (!tween) {
 			// remove all
@@ -243,6 +144,11 @@ class Time {
 }
 
 window.Time = Time;
+
+for (let i = 0; i < 10000; i+=100) {
+	window['TIME_' + i] = window.env === 'develop' ? 100 : i;
+}
+
 
 export default Time;
 

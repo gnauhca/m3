@@ -435,8 +435,6 @@
 		value: true
 	});
 	
-	var _typeof = typeof Symbol === "function" && typeof Symbol.iterator === "symbol" ? function (obj) { return typeof obj; } : function (obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; };
-	
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
 	
 	function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
@@ -565,107 +563,6 @@
 			value: function addTween(tween) {
 				this.tweens.push(tween);
 			}
-	
-			/*
-	   * tweenObj
-	   */
-	
-		}, {
-			key: 'addTHREEObjTween',
-			value: function addTHREEObjTween(threeObj, target, dur, tweenObj) {
-				var that = this;
-				var init = {};
-				var dest = {};
-	
-				var attrs = ['x', 'y', 'z', 'r', 'g', 'b', 'opacity'];
-				var separater = '_';
-	
-				function setInit(key) {
-					var keyArr = key.split('_');
-					var subObj = threeObj;
-	
-					keyArr.forEach(function (subKey) {
-						subObj = subObj[subKey];
-					});
-					init[key] = subObj;
-				}
-	
-				if (threeObj instanceof THREE.Vector3 && target instanceof THREE.Vector3) {
-					// 向量
-					['x', 'y', 'z'].forEach(function (pos) {
-						init[pos] = threeObj[pos];
-						dest[pos] = target[pos];
-					});
-				} else {
-					// object3d or material
-					for (var key in target) {
-						var destKey = key;
-	
-						if (key === 'lookAt') {
-							(function () {
-								var initLookAt = THREE.THREEUtil.getLookAt(threeObj);
-								['x', 'y', 'z'].forEach(function (lookAtKey) {
-									init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
-									dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
-								});
-							})();
-						} else {
-							if (/color/i.test(key) > 0 && !(target[key] instanceof THREE.Color)) {
-								target[key] = new THREE.Color(target[key]);
-							}
-							if (_typeof(target[key]) === 'object') {
-								for (var cKey in target[key]) {
-									destKey = key;
-									if (attrs.indexOf(cKey) !== -1) {
-										destKey += '_' + cKey;
-										dest[destKey] = target[key][cKey];
-										setInit(destKey);
-									}
-								}
-							} else {
-								dest[destKey] = target[key];
-								setInit(destKey);
-							}
-						}
-					}
-				}
-	
-				// console.log(init,dest);
-				var tween;
-				tweenObj = tweenObj || {};
-				tween = new TWEEN.Tween(init);
-				tween.to(dest, dur).easing(tweenObj.easing || TWEEN.Easing.Cubic.InOut).onUpdate(function () {
-					var current = this;
-					for (var currentKey in current) {
-						if (currentKey.indexOf('lookAt') === -1) {
-							(function () {
-								var keyArr = currentKey.split('_');
-								var last = keyArr.pop();
-								var subObj = threeObj;
-								keyArr.forEach(function (key) {
-									subObj = subObj[key];
-								});
-								subObj[last] = current[currentKey];
-							})();
-						}
-					}
-	
-					if (current.lookAt_x) {
-						threeObj.lookAt(new THREE.Vector3(current.lookAt_x, current.lookAt_y, current.lookAt_z));
-					}
-					tweenObj.onUpdate && tweenObj.onUpdate.call(this);
-				}).onComplete(function () {
-					var completeRemove = true;
-					if (tweenObj.onComplete) {
-						if (tweenObj.onComplete() === false) completeRemove = false;
-					}
-	
-					completeRemove && that.removeTween(tween);
-				});
-	
-				this.tweens.push(tween);
-				return tween;
-			}
 		}, {
 			key: 'removeTween',
 			value: function removeTween(tween) {
@@ -707,6 +604,10 @@
 	}();
 	
 	window.Time = Time;
+	
+	for (var i = 0; i < 10000; i += 100) {
+		window['TIME_' + i] = window.env === 'develop' ? 100 : i;
+	}
 	
 	exports.default = Time;
 
@@ -792,6 +693,7 @@
 					this._selectStarsStage.init();
 				}
 				this._selectStarsStage.entry();
+				this._selectStarsStage.interacted = true;
 	
 				// select animation
 			}
@@ -1561,6 +1463,7 @@
 				if (Math.random() > 0) {
 					gemo = new THREE.BoxGeometry(15, 15, 15);
 				}
+	
 				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
 				var material2 = THREE.CustomMaterial.glass.clone();
 				material2.side = THREE.DoubleSide;
@@ -1569,6 +1472,7 @@
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
 				this.mesh = mesh;
 				this.box = mesh;
+				this.box.name = 'starbox';
 			}
 		}, {
 			key: 'setCrood',
@@ -1614,7 +1518,14 @@
 			var _this2 = _possibleConstructorReturn(this, (ProductStar.__proto__ || Object.getPrototypeOf(ProductStar)).call(this, crood));
 	
 			_this2.name;
-			_this2.svgString = svgString;
+			_this2.selected = false;
+			_this2._svgString = svgString;
+	
+			_this2._svgMesh;
+			_this2._glowSprite;
+	
+			_this2._selectTween;
+	
 			return _this2;
 		}
 	
@@ -1629,12 +1540,11 @@
 			value: function build() {
 				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'build', this).call(this);
 				var group = new THREE.Group();
-				var svgGemo = new THREE.SVGGemetry(this.svgString, {});
+				var svgGemo = new THREE.SVGGemetry(this._svgString, {});
 				var material = new THREE.MeshBasicMaterial({ color: 0x0cbbef });
 				// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
-				var mesh = new THREE.Mesh(svgGemo, material);
-				mesh.scale.set(0.2, 0.2, 0.2);
-				this.svgMesh = mesh;
+				var svgMesh = new THREE.Mesh(svgGemo, material);
+				svgMesh.scale.set(0.1, 0.1, 0.1);
 	
 				var initV = new THREE.Vector3(0, 0, 1);
 				var finalV = this.initCrood.clone().normalize();
@@ -1646,16 +1556,58 @@
 				var quaternion = new THREE.Quaternion();
 	
 				quaternion.setFromAxisAngle(axis, angle);
-				mesh.rotation.setFromQuaternion(quaternion);
+				svgMesh.rotation.setFromQuaternion(quaternion);
+				this._svgMesh = svgMesh;
 	
-				group.add(mesh);
+				var spriteMap = M3.assets.particleMap.texture;
+	
+				var spriteMaterial = new THREE.SpriteMaterial({
+					map: spriteMap,
+					blending: THREE.AdditiveBlending,
+					transparent: true,
+					opacity: 0
+				});
+				var glowSprite = new THREE.Sprite(spriteMaterial);
+				glowSprite.scale.set(80, 80, 80);
+				this._glowSprite = glowSprite;
+	
+				group.add(glowSprite);
+				group.add(svgMesh);
 				group.add(this.mesh);
 				this.mesh = group;
-				// this.mesh = mesh;
 			}
 		}, {
-			key: 'lightUp',
-			value: function lightUp() {}
+			key: 'select',
+			value: function select() {
+				var _this3 = this;
+	
+				var that = this;
+				this.selected = true;
+				this._glowSprite.visible = true;
+				this._glowSprite.material.stopAnimate().animate({ opacity: 0.6 }, 300, 0, {
+					onUpdate: function onUpdate() {
+						return function () {
+							this._glowSprite.material.needUpdate = true;
+						};
+					},
+					onComplete: function onComplete() {
+						return _this3._glowSprite.visible = true;
+					}
+				});
+			}
+		}, {
+			key: 'unSelect',
+			value: function unSelect() {
+				var _this4 = this;
+	
+				this.selected = false;
+				this._glowSprite.visible = true;
+				this._glowSprite.material.stopAnimate().animate({ opacity: 0 }, 300, 0, {
+					onComplete: function onComplete() {
+						return _this4._glowSprite.visible = false;
+					}
+				});
+			}
 		}]);
 	
 		return ProductStar;
@@ -1667,38 +1619,57 @@
 		function Line(startStar, endStar) {
 			_classCallCheck(this, Line);
 	
-			var _this3 = _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).call(this));
+			var _this5 = _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).call(this));
 	
-			_this3.startStar = startStar;
-			_this3.endStar = endStar;
+			_this5.startStar = startStar;
+			_this5.endStar = endStar;
 	
-			_this3.start = new THREE.Vector3();
-			_this3.end = new THREE.Vector3();
+			_this5.start = new THREE.Vector3();
+			_this5.end = new THREE.Vector3();
 	
-			_this3.startPointLight; // 端点光
-			_this3.endPointLight; // 端点光
+			_this5.mesh; // 需要被加进场景的物体
+			_this5.line;
+			_this5.startPointLight; // 端点光
+			_this5.endPointLight; // 端点光
 	
-			_this3.ray = new THREE.Raycaster();
-			_this3.connected = false;
-			_this3.init();
-			return _this3;
+			_this5.ray = new THREE.Raycaster();
+			_this5.connected = false;
+			_this5.init();
+			return _this5;
 		}
 	
 		_createClass(Line, [{
 			key: 'init',
 			value: function init() {
-				var material = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
-				var gemo = new THREE.Geometry();
-				gemo.vertices.push(this.start, this.end);
+				var lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+				var lineGeom = new THREE.Geometry();
+				lineGeom.vertices.push(this.start, this.end);
+				this.line = new THREE.Line(lineGeom, lineMaterial);
 	
-				var line = new THREE.Line(gemo, material);
-				this.mesh = line;
+				var pointLightMap = M3.assets.particleMap.texture;
+	
+				var spriteMaterial = new THREE.SpriteMaterial({
+					size: 15,
+					map: pointLightMap,
+					blending: THREE.AdditiveBlending,
+					transparent: true,
+					opacity: 0
+				});
+				this.startPointLight = new THREE.Sprite(spriteMaterial);
+				this.endPointLight = new THREE.Sprite(spriteMaterial);
+				this.startPointLight.scale.set(10, 10, 10);
+				this.endPointLight.scale.set(10, 10, 10);
+	
+				this.mesh = new THREE.Group();
+				this.mesh.add(this.line);
+				this.mesh.add(this.startPointLight);
+				this.mesh.add(this.endPointLight);
 				this.mesh.visible = false;
 			}
 		}, {
 			key: 'connect',
 			value: function connect() {
-				var dur = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : 2000;
+				var dur = arguments.length > 0 && arguments[0] !== undefined ? arguments[0] : TIME_1000;
 				var delay = arguments.length > 1 && arguments[1] !== undefined ? arguments[1] : 0;
 	
 				var that = this;
@@ -1707,11 +1678,11 @@
 	
 				this.mesh.visible = true;
 				function update() {
-					that.mesh.geometry.verticesNeedUpdate = true;
-					that.mesh.material.needUpdate = true;
+					that.line.geometry.verticesNeedUpdate = true;
+					that.line.material.needUpdate = true;
 				}
 	
-				var pointTween = new TWEEN.Tween({ p: 0 }).to({ p: 1 }, dur).onUpdate(function () {
+				var pointTween = new TWEEN.Tween({ p: 0 }).to({ p: 1 }, dur).easing(TWEEN.Easing.Cubic.In).onUpdate(function () {
 					var curCroods = that.calCrood();
 					var sub = new THREE.Vector3().subVectors(curCroods[moveIndex], curCroods[staticIndex]);
 					sub.setLength(sub.length() * this.p);
@@ -1724,7 +1695,9 @@
 				setTimeout(function () {
 					return pointTween.start();
 				}, delay);
-				this.mesh.material.animate({ opacity: 0.4 }, dur, delay, { onUpdate: update });
+				this.line.material.animate({ opacity: 0.4 }, dur, delay, { onUpdate: update });
+				this.startPointLight.animate({ scale: new THREE.Vector3(1, 1, 1) }, dur, delay);
+				this.startPointLight.material.animate({ opacity: 0.5 }, dur, delay);
 			}
 		}, {
 			key: 'calCrood',
@@ -1757,7 +1730,11 @@
 			value: function setCrood(croods) {
 				this.start.copy(croods[0]);
 				this.end.copy(croods[1]);
-				this.mesh.geometry.verticesNeedUpdate = true;
+	
+				this.startPointLight.position.copy(this.start);
+				this.endPointLight.position.copy(this.end);
+	
+				this.line.geometry.verticesNeedUpdate = true;
 			}
 		}, {
 			key: 'update',
@@ -1777,38 +1754,83 @@
 		function SelectStars() {
 			_classCallCheck(this, SelectStars);
 	
-			var _this4 = _possibleConstructorReturn(this, (SelectStars.__proto__ || Object.getPrototypeOf(SelectStars)).call(this));
+			var _this6 = _possibleConstructorReturn(this, (SelectStars.__proto__ || Object.getPrototypeOf(SelectStars)).call(this));
 	
-			_this4.isInit = false;
+			_this6.isInit = false;
+			_this6.interacted = false;
 	
-			_this4._gridSize = 30;
-			_this4._starCount = 60;
-			_this4._rangeX = 20; // 边长
-			_this4._rangeY = 10; // 边长
-			_this4._rangeZ = 20; // 边长
+			_this6._gridSize = 30;
+			_this6._starCount = 60;
+			_this6._rangeX = 20; // 边长
+			_this6._rangeY = 10; // 边长
+			_this6._rangeZ = 20; // 边长
 	
-			_this4._minDistant = _this4._gridSize * 3; // 两个点之间最小间隔
-			_this4._maxConnectDistant = _this4._gridSize * 4; // 两个点的距离小于多少被连在一起
+			_this6._minDistant = _this6._gridSize * 3; // 两个点之间最小间隔
+			_this6._maxConnectDistant = _this6._gridSize * 4; // 两个点的距离小于多少被连在一起
 	
-			_this4._stars = [];
-			_this4._lines = [];
-			_this4._products;
+			_this6._productCfgs;
+			_this6._stars = [];
+			_this6._lines = [];
+			_this6._pStars = []; // 产品星
+			_this6._selectedPStars = [];
+			_this6._maxSelected = 2;
 	
-			_this4.explodeParticle = new _explodeParticles2.default();
-			return _this4;
+			_this6.explodeParticle = new _explodeParticles2.default();
+			return _this6;
 		}
 	
 		_createClass(SelectStars, [{
 			key: 'init',
 			value: function init() {
-				this._products = $.extend(true, [], _selectConf2.default.products);
+				this._productCfgs = $.extend(true, [], _selectConf2.default.products);
 				this.isInit = true;
+				this._initEvent();
 				return this._build();
+			}
+		}, {
+			key: '_initEvent',
+			value: function _initEvent() {
+				var that = this;
+				var raycaster = new THREE.Raycaster();
+				var intersects = void 0;
+				var mouse = new THREE.Vector2();
+				var hit = void 0;
+				var hitStar = void 0;
+	
+				function mousedown(event) {
+					if (!that.interacted) return;
+	
+					hit = null;
+					mouse.x = event.clientX / window.innerWidth * 2 - 1;
+					mouse.y = -(event.clientY / window.innerHeight) * 2 + 1;
+					raycaster.setFromCamera(mouse, M3.camera);
+					intersects = raycaster.intersectObjects(that._pStars.map(function (pStar) {
+						return pStar.box;
+					}), true);
+	
+					if (intersects.some(function (intersect) {
+						if (intersect.object.name === 'starbox') {
+							hit = intersect;
+							return true;
+						} else if (intersect.object.parent && intersect.object.parent.name === 'starbox') {
+							hit = intersect.object.parent;
+							return true;
+						}
+					})) {
+						hitStar = that._pStars.filter(function (pStar) {
+							return pStar.box === hit;
+						})[0];
+						that._toggle(hitStar);
+					}
+					// console.log(hit);
+				}
+	
+				document.addEventListener('click', mousedown);
 			}
 		}, {
 			key: '_build',
 			value: function _build() {
-				var _this5 = this;
+				var _this7 = this;
 	
 				var that = this;
 				var starCroods = [];
@@ -1820,7 +1842,7 @@
 	
 				var _loop = function _loop() {
 	
-					starCrood = new THREE.Vector3(parseInt(_this5._rangeX * Math.random()) * _this5._gridSize, parseInt(_this5._rangeY * Math.random()) * _this5._gridSize, parseInt(_this5._rangeZ * Math.random()) * _this5._gridSize);
+					starCrood = new THREE.Vector3(parseInt(_this7._rangeX * Math.random()) * _this7._gridSize, parseInt(_this7._rangeY * Math.random()) * _this7._gridSize, parseInt(_this7._rangeZ * Math.random()) * _this7._gridSize);
 					starCrood.add(toBaseVec);
 	
 					var hasConnect = false;
@@ -1843,7 +1865,7 @@
 	
 				// 在生成的 stars 点中，随机选择作为产品 star
 				var productIndexes = new Set();
-				while (productIndexes.size < this._products.length) {
+				while (productIndexes.size < this._productCfgs.length) {
 					productIndexes.add(Math.random() * this._starCount | 0);
 				}
 				// console.log(starCroods, productIndexes);
@@ -1851,10 +1873,10 @@
 				starCroods.forEach(function (starCrood, index) {
 					var star = void 0;
 					if (productIndexes.has(index)) {
-						star = new ProductStar(starCrood, that._products[productCfgIndex].svgString);
+						star = new ProductStar(starCrood, that._productCfgs[productCfgIndex].svgString);
 						star.init();
-						star.name = that._products[productCfgIndex].name;
-						that._products[productCfgIndex].star = star;
+						star.name = that._productCfgs[productCfgIndex].name;
+						that._pStars.push(star);
 						productCfgIndex++;
 					} else {
 						star = new Star(starCrood);star.init();
@@ -1905,22 +1927,22 @@
 					that.objects.starGroup.animate({
 						scale: new THREE.Vector3(1, 1, 1),
 						rotation_x: 0
-					}, 800, 800);
+					}, TIME_800, TIME_800);
 	
 					that._stars.forEach(function (star) {
-						star.mesh.animate({ position: star.initCrood }, 300, /*Math.random() * 300 + */2000 | 0);
+						star.mesh.animate({ position: star.initCrood }, TIME_300, TIME_2000 | 0);
 					});
-	
 					return that.explodeParticle.explode();
 				}).then(function () {
 					that._lines.forEach(function (line) {
-						line.connect(3000, Math.random() * 2000);
+						line.connect(TIME_3000, Math.random() * TIME_2000);
 					});
 	
 					that._controls = new THREE.TrackballControls(that.camera, M3.renderer.domElement);
 					that._controls.staticMoving = true;
 					that._controls.travel = true;
 					that._t = that.addTick(function (delta) {
+						that._controls.travel = false;
 						that._controls.update(delta);
 					});
 				});
@@ -1935,6 +1957,45 @@
 	   	this._controls.update(delta);
 	   });*/
 			}
+		}, {
+			key: '_select',
+			value: function _select(star) {
+				if (this._selectedPStars.length === this._maxSelected) {
+					this._selectedPStars.shift().unSelect();
+				}
+				star.select();
+				this._selectedPStars.push(star);
+			}
+		}, {
+			key: '_unSelect',
+			value: function _unSelect(star) {
+				star.unSelect();
+				this._selectedPStars = this._selectedPStars.filter(function (pStar) {
+					return star !== pStar;
+				});
+			}
+		}, {
+			key: '_toggle',
+			value: function _toggle(star) {
+				star.selected ? this._unSelect(star) : this._select(star);
+			}
+	
+			// 下列选择方法，使用产品名字，用于UI的交互
+	
+		}, {
+			key: 'selectMul',
+			value: function selectMul(arr) {}
+		}, {
+			key: 'toggle',
+			value: function toggle(name) {
+				var star = this._products.filter(function (product) {
+					return product.name === name;
+				})[0];
+				this._toggle(star);
+			}
+		}, {
+			key: 'getSelected',
+			value: function getSelected() {}
 		}]);
 	
 		return SelectStars;
@@ -1987,9 +2048,9 @@
 	        key: 'build',
 	        value: function build() {
 	            var that = this;
-	            var logoImg = M3.assets.logoImg;
-	            var particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src);
-	            // new THREE.Texture(M3.assets.particleMap);
+	            var logoImg = M3.assets.logoImg.img;
+	            // let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src); 
+	            var particleMap = M3.assets.particleMap.texture;
 	            // particleMap.image = M3.assets.particleMap;
 	
 	            var imgData = getImageData(logoImg, 0, 0, 0);
@@ -2026,7 +2087,7 @@
 	        key: 'lightUp',
 	        value: function lightUp() {
 	            var that = this;
-	            var dur = 40;
+	            var dur = TIME_4000;
 	            var cameraTween = void 0;
 	
 	            return new Promise(function (resolve) {
@@ -2034,17 +2095,14 @@
 	                M3.camera.position.set(100, 0, -500);
 	                M3.camera.lookAt(that.initPos);
 	                M3.camera.up.set(1, 0, 0);
-	                cameraTween = that.addTHREEObjTween(M3.camera, {
+	                M3.camera.animate({
 	                    position: new THREE.Vector3(0, 0, 300),
 	                    up: new THREE.Vector3(0, 1, 0)
-	                }, dur, {
+	                }, dur, 0, {
 	                    onUpdate: function onUpdate() {
 	                        M3.camera.lookAt(that.initPos);
-	                    },
-	                    onComplete: function onComplete() {
-	                        that.removeTween(cameraTween);
 	                    }
-	                }).start();
+	                });
 	
 	                // particle ani
 	                var particleTween = new TWEEN.Tween({ z: 1 }).to({ z: 0 }, dur * 1.2);
@@ -2079,8 +2137,8 @@
 	        key: 'explode',
 	        value: function explode() {
 	            var that = this;
-	            var gatherDur = 2200;
-	            var explodeDur = 3000;
+	            var gatherDur = TIME_2200;
+	            var explodeDur = TIME_3000;
 	            var cameraDur = gatherDur + explodeDur;
 	            var gatherTween = new TWEEN.Tween({ p: 1 }).to({ p: -1 }, gatherDur);
 	            var explodeTween = new TWEEN.Tween({ r: 0, size: 3 }).to({ r: 1000, size: 20 }, explodeDur);
@@ -2129,8 +2187,6 @@
 	                    });
 	                }).onComplete(resolve);
 	            });
-	            this.addTween(gatherTween);
-	            this.addTween(explodeTween);
 	        }
 	    }]);
 	
@@ -3209,12 +3265,20 @@
 	
 	var loadMethod = {
 	
-		// 下载图片
+		// 下载图片 
+		// return {src: string, img: dom, texture: THREE.Texture}
 		'img': function img(url, onload, onProgress) {
 			var imgLoader = new THREE.ImageLoader();
 			imgLoader.load(url, function (img) {
-				img.dataset.src = url;
-				onload(img);
+				var particleMap = new THREE.TextureLoader().load(url, function (texture) {
+					var imgInfo = {};
+					imgInfo.img = img;
+					imgInfo.src = url;
+					imgInfo.texture = texture;
+					onload(imgInfo);
+				});
+				/*img.dataset.src = url;
+	   onload(img);*/
 			}, function (xhr) {
 				return onProgress(xhr.loaded / xhr.total);
 			});

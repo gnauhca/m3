@@ -41,6 +41,7 @@ class SelectView extends View {
 			this._selectStarsStage.init();
 		}
 		this._selectStarsStage.entry();
+		this._selectStarsStage.interacted = true;
 
 		// select animation
 		

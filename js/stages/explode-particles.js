@@ -15,9 +15,9 @@ class ExplodeParticles extends Time {
 
     build() {
         let that = this;
-        let logoImg = M3.assets.logoImg;
-        let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src); 
-        // new THREE.Texture(M3.assets.particleMap);
+        let logoImg = M3.assets.logoImg.img;
+        // let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src); 
+        let particleMap= M3.assets.particleMap.texture;
         // particleMap.image = M3.assets.particleMap;
 
         let imgData = getImageData(logoImg, 0, 0, 0);
@@ -59,7 +59,7 @@ class ExplodeParticles extends Time {
 
     lightUp() {
         let that = this;
-        let dur = 40;
+        let dur = TIME_4000;
         let cameraTween;
         
         return new Promise(function(resolve) {
@@ -67,13 +67,12 @@ class ExplodeParticles extends Time {
             M3.camera.position.set(100, 0, -500);
             M3.camera.lookAt(that.initPos);
             M3.camera.up.set(1, 0, 0);
-            cameraTween = that.addTHREEObjTween(M3.camera, {
+            M3.camera.animate({
                 position: new THREE.Vector3(0, 0, 300),
                 up: new THREE.Vector3(0, 1 ,0)
-            }, dur, {
+            }, dur, 0, {
                 onUpdate() { M3.camera.lookAt(that.initPos); },
-                onComplete() { that.removeTween(cameraTween); }
-            }).start();
+            });
 
             // particle ani
             let particleTween = new TWEEN.Tween({z: 1}).to({z: 0}, dur * 1.2);
@@ -106,8 +105,8 @@ class ExplodeParticles extends Time {
 
     explode() {
         let that = this;
-        let gatherDur = 2200;
-        let explodeDur = 3000;
+        let gatherDur = TIME_2200;
+        let explodeDur = TIME_3000;
         let cameraDur = gatherDur + explodeDur;
         let gatherTween = new TWEEN.Tween({p: 1}).to({p: -1}, gatherDur);
         let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 20}, explodeDur);
@@ -157,12 +156,7 @@ class ExplodeParticles extends Time {
                 });
             }).onComplete(resolve)
         });
-        this.addTween(gatherTween);  
-        this.addTween(explodeTween);  
-        
     }
-
-    
 }
 
 export default ExplodeParticles;

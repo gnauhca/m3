@@ -38,6 +38,7 @@ class Star extends Time {
 		if (Math.random() > 0) {
 			gemo = new THREE.BoxGeometry(15, 15, 15);
 		}
+
 		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
 		let material2 = THREE.CustomMaterial.glass.clone();
 		material2.side = THREE.DoubleSide;
@@ -46,6 +47,7 @@ class Star extends Time {
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
 		this.mesh = mesh;
 		this.box = mesh;
+		this.box.name = 'starbox';
 	}
 
 	setCrood(crood) {
@@ -81,7 +83,14 @@ class ProductStar extends Star {
 	constructor(crood, svgString) {
 		super(crood);
 		this.name;
-		this.svgString = svgString;
+		this.selected = false;
+		this._svgString = svgString;
+
+		this._svgMesh;
+		this._glowSprite;
+
+		this._selectTween;
+
 	}
 
 	init() {
@@ -92,12 +101,11 @@ class ProductStar extends Star {
 	build() {
 		super.build();
 		let group = new THREE.Group();
-		let svgGemo = new THREE.SVGGemetry(this.svgString, {});
+		let svgGemo = new THREE.SVGGemetry(this._svgString, {});
 		let material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
 		// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
-		let mesh = new THREE.Mesh(svgGemo, material);
-		mesh.scale.set(0.2, 0.2, 0.2 );
-		this.svgMesh = mesh;
+		let svgMesh = new THREE.Mesh(svgGemo, material);
+		svgMesh.scale.set(0.1, 0.1, 0.1);
 
 		let initV = new THREE.Vector3(0,0,1);
 		let finalV = this.initCrood.clone().normalize();
@@ -109,17 +117,45 @@ class ProductStar extends Star {
 		let quaternion = new THREE.Quaternion(); 
 
 		quaternion.setFromAxisAngle(axis, angle);
-		mesh.rotation.setFromQuaternion(quaternion);
+		svgMesh.rotation.setFromQuaternion(quaternion);
+		this._svgMesh = svgMesh;
 
+		let spriteMap = M3.assets.particleMap.texture; 
+
+		let spriteMaterial = new THREE.SpriteMaterial({
+			map: spriteMap,
+			blending: THREE.AdditiveBlending,
+			transparent: true,
+			opacity: 0
+		});
+		let glowSprite = new THREE.Sprite(spriteMaterial);
+		glowSprite.scale.set(80, 80, 80);
+		this._glowSprite = glowSprite;
 		
-		group.add(mesh);
+		group.add(glowSprite);
+		group.add(svgMesh);
 		group.add(this.mesh);
 		this.mesh = group;
-		// this.mesh = mesh;
 	}
 
-	lightUp() {
+	select() {
+		var that = this;
+		this.selected = true;
+		this._glowSprite.visible = true;
+		this._glowSprite.material.stopAnimate().animate({opacity: 0.6}, 300, 0, {
+			onUpdate: () => function() {
+				this._glowSprite.material.needUpdate = true;
+			},
+			onComplete: ()=>this._glowSprite.visible = true
+		});
+	}
 
+	unSelect() {
+		this.selected = false;
+		this._glowSprite.visible = true;
+		this._glowSprite.material.stopAnimate().animate({opacity: 0}, 300, 0, {
+			onComplete: ()=>this._glowSprite.visible = false
+		});
 	}
 }
 
@@ -132,6 +168,8 @@ class Line extends Time {
 		this.start = new THREE.Vector3;
 		this.end = new THREE.Vector3;
 
+		this.mesh; // 需要被加进场景的物体
+		this.line;
 		this.startPointLight; // 端点光
 		this.endPointLight; // 端点光
 
@@ -141,38 +179,58 @@ class Line extends Time {
 	}
 
 	init() {
-		let material = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
-		let gemo = new THREE.Geometry();
-		gemo.vertices.push(this.start, this.end);
+		let lineMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
+		let lineGeom = new THREE.Geometry();
+		lineGeom.vertices.push(this.start, this.end);
+		this.line = new THREE.Line(lineGeom, lineMaterial);
 
-		let line = new THREE.Line(gemo, material);
-		this.mesh = line;
+		let pointLightMap = M3.assets.particleMap.texture; 
+
+		let spriteMaterial = new THREE.SpriteMaterial({
+			size: 15,
+			map: pointLightMap,
+			blending: THREE.AdditiveBlending,
+			transparent: true,
+			opacity: 0
+		});
+		this.startPointLight = new THREE.Sprite(spriteMaterial);
+		this.endPointLight = new THREE.Sprite(spriteMaterial);
+		this.startPointLight.scale.set(10,10,10);
+		this.endPointLight.scale.set(10,10,10);
+
+		this.mesh = new THREE.Group();
+		this.mesh.add(this.line);
+		this.mesh.add(this.startPointLight);
+		this.mesh.add(this.endPointLight);
 		this.mesh.visible = false;
 	}
 
-	connect(dur=2000, delay=0) {
+	connect(dur=TIME_1000, delay=0) {
 		let that = this;
 		let moveIndex = Math.random()*2|0;
 		let staticIndex = (moveIndex+1) % 2;
 		
 		this.mesh.visible = true;
 		function update() {
-			that.mesh.geometry.verticesNeedUpdate = true;
-			that.mesh.material.needUpdate = true;
+			that.line.geometry.verticesNeedUpdate = true;
+			that.line.material.needUpdate = true;
 		}
 		
-		let pointTween = new TWEEN.Tween({p: 0}).to({p: 1}, dur).onUpdate(function() {
-			let curCroods = that.calCrood();
-			let sub = (new THREE.Vector3).subVectors(curCroods[moveIndex],curCroods[staticIndex]);
-			sub.setLength(sub.length() * this.p);
-			curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
-			that.setCrood(curCroods);
-		}).onComplete(function() {
-			that.removeTween(pointTween);
-			that.connected = true;
-		});
+		let pointTween = new TWEEN.Tween({p: 0}).to({p: 1}, dur)
+			.easing(TWEEN.Easing.Cubic.In).onUpdate(function() {
+				let curCroods = that.calCrood();
+				let sub = (new THREE.Vector3).subVectors(curCroods[moveIndex],curCroods[staticIndex]);
+				sub.setLength(sub.length() * this.p);
+				curCroods[moveIndex] = curCroods[staticIndex].clone().add(sub);
+				that.setCrood(curCroods);
+			}).onComplete(function() {
+				that.removeTween(pointTween);
+				that.connected = true;
+			});
 		setTimeout(()=>pointTween.start(), delay);		
-		this.mesh.material.animate({opacity: 0.4}, dur, delay, {onUpdate: update})
+		this.line.material.animate({opacity: 0.4}, dur, delay, {onUpdate: update})
+		this.startPointLight.animate({scale: new THREE.Vector3(1,1,1)}, dur, delay);
+		this.startPointLight.material.animate({opacity: 0.5}, dur, delay);
 	}
 
 	calCrood() {
@@ -202,7 +260,11 @@ class Line extends Time {
 	setCrood(croods) {
 		this.start.copy(croods[0]);
 		this.end.copy(croods[1]);
-		this.mesh.geometry.verticesNeedUpdate = true;
+
+		this.startPointLight.position.copy(this.start);
+		this.endPointLight.position.copy(this.end);
+
+		this.line.geometry.verticesNeedUpdate = true;
 	}
 
 	update() {
@@ -217,6 +279,7 @@ class SelectStars extends Stage {
 		super();
 
 		this.isInit = false;
+		this.interacted = false;
 
 		this._gridSize = 30;
 		this._starCount = 60;
@@ -227,16 +290,55 @@ class SelectStars extends Stage {
 		this._minDistant = this._gridSize * 3; // 两个点之间最小间隔
 		this._maxConnectDistant = this._gridSize * 4; // 两个点的距离小于多少被连在一起
 
+		this._productCfgs;
 		this._stars = [];
 		this._lines = [];
-		this._products;
+		this._pStars = []; // 产品星
+		this._selectedPStars = [];
+		this._maxSelected = 2;
 
 		this.explodeParticle = new ExplodeParticle();
 	}
 	init() {
-		this._products = $.extend(true, [], selectCfg.products);
+		this._productCfgs = $.extend(true, [], selectCfg.products);
 		this.isInit = true;
+		this._initEvent();
 		return this._build();
+	}
+
+	_initEvent() {
+		let that = this;
+		let raycaster = new THREE.Raycaster();
+		let intersects;
+		let mouse = new THREE.Vector2();
+		let hit;
+		let hitStar;
+
+		function mousedown(event) {
+			if (!that.interacted) return;
+
+			hit = null;
+			mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
+			mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;	
+			raycaster.setFromCamera(mouse, M3.camera);
+			intersects = raycaster.intersectObjects(that._pStars.map(pStar=>pStar.box), true);
+
+			if (intersects.some(function(intersect) {
+				if (intersect.object.name === 'starbox') {
+					hit = intersect;
+					return true;
+				} else if (intersect.object.parent && intersect.object.parent.name === 'starbox') {
+					hit = intersect.object.parent;
+					return true;
+				}
+			})) {
+				hitStar = that._pStars.filter(pStar=>pStar.box===hit)[0];
+				that._toggle(hitStar);
+			}
+			// console.log(hit);
+		}
+
+		document.addEventListener('click', mousedown);
 	}
 
 	_build() {
@@ -277,7 +379,7 @@ class SelectStars extends Stage {
 
 		// 在生成的 stars 点中，随机选择作为产品 star
 		let productIndexes = new Set();
-		while(productIndexes.size < this._products.length) {
+		while(productIndexes.size < this._productCfgs.length) {
 			productIndexes.add((Math.random() * this._starCount)|0);
 		}
 		// console.log(starCroods, productIndexes);
@@ -285,10 +387,10 @@ class SelectStars extends Stage {
 		starCroods.forEach(function(starCrood, index) {
 			let star;
 			if (productIndexes.has(index)) {
-				star = new ProductStar(starCrood, that._products[productCfgIndex].svgString);
+				star = new ProductStar(starCrood, that._productCfgs[productCfgIndex].svgString);
 				star.init();
-				star.name = that._products[productCfgIndex].name;
-				that._products[productCfgIndex].star = star;
+				star.name = that._productCfgs[productCfgIndex].name;
+				that._pStars.push(star);
 				productCfgIndex++;
 			} else {
 				star = new Star(starCrood); star.init();
@@ -343,22 +445,23 @@ class SelectStars extends Stage {
 			that.objects.starGroup.animate({
 				scale: new THREE.Vector3(1,1,1),
 				rotation_x: 0 
-			}, 800, 800);
+			}, TIME_800, TIME_800);
 
 			that._stars.forEach(function(star) {
-				star.mesh.animate({position: star.initCrood}, 300, (/*Math.random() * 300 + */2000)|0 )
+				star.mesh.animate({position: star.initCrood}, TIME_300, (TIME_2000)|0 )
 			});	
-
 			return that.explodeParticle.explode();
+
 		}).then(function() {
 			that._lines.forEach(function(line) {
-				line.connect(3000, Math.random() * 2000);
+				line.connect(TIME_3000, Math.random() * TIME_2000);
 			});
 
 			that._controls = new THREE.TrackballControls(that.camera, M3.renderer.domElement);
 			that._controls.staticMoving = true;
 			that._controls.travel = true;
 			that._t = that.addTick(function(delta) {
+				that._controls.travel = false;
 				that._controls.update(delta);
 			});
 		});
@@ -374,6 +477,37 @@ class SelectStars extends Stage {
 		});*/
 	}
 
+
+	_select(star) {
+		if (this._selectedPStars.length === this._maxSelected) {
+			this._selectedPStars.shift().unSelect();
+		}
+		star.select();
+		this._selectedPStars.push(star);
+	}
+
+	_unSelect(star) {
+		star.unSelect();
+		this._selectedPStars = this._selectedPStars.filter(pStar=>star!==pStar);
+	}
+
+	_toggle(star) {
+		star.selected ? this._unSelect(star) : this._select(star);
+	}
+
+	// 下列选择方法，使用产品名字，用于UI的交互
+	selectMul(arr) {
+		
+	}
+
+	toggle(name) {
+		let star = this._products.filter((product)=>product.name===name)[0];
+		this._toggle(star);
+	}
+
+	getSelected() {
+
+	}
 	
 }
 
