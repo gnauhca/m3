@@ -3,7 +3,7 @@ import Time from 'time.js';
 import Loader from 'loader.js';
 import {ASSETS} from 'config.js'
 
-require('../css/common.scss');//return;
+require('../css/m3.scss');//return;
 
 // require('../assets/mobiles/pro5/pro5.js');
 (function() { 
@@ -16,12 +16,48 @@ M3.viewManager = new ViewManager();
 var loader = new Loader();
 var progressView = M3.viewManager.getView('progress');
 progressView.activate();
+
+
+
+//        var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+
+
+
 loader.load(ASSETS, function(percent) {
 	progressView.setProgress(percent);
 }).then(function(assets) {
 	M3.assets = assets;
 	progressView.inactivate();
+
+	// envMap
+	M3.assets.envMap = new THREE.CubeTexture(
+		[
+			M3.assets.envPosX.texture,
+			M3.assets.envNegX.texture,
+			M3.assets.envPosY.texture,
+			M3.assets.envNegY.texture,
+			M3.assets.envPosZ.texture,
+			M3.assets.envNegZ.texture
+		],
+		THREE.CubeReflectionMapping
+	);
+
+	var urls = [
+		ASSETS.envPosX.url,
+		ASSETS.envNegX.url,
+		ASSETS.envPosY.url,
+		ASSETS.envNegY.url,
+		ASSETS.envPosZ.url,
+		ASSETS.envNegZ.url
+	];
+	var textureCube = THREE.ImageUtils.loadTextureCube(urls,  THREE.CubeReflectionMapping);
+	M3.assets.envMap = textureCube;
+	// console.log(M3.assets.envMap);
+	
+	
 	appInit();
+
+
 });
 
 // appInit();
@@ -45,7 +81,7 @@ function appInit() {
 
 
 	/* fog */
-	var fog = new THREE.Fog(0x000000, 0, 2000);
+	var fog = new THREE.Fog(0x666666, 0, 2000);
 	// M3.scene.fog = fog;
 
  	var spotLight = new THREE.SpotLight(0xffffff);
@@ -63,9 +99,6 @@ function appInit() {
 		M3.camera.updateProjectionMatrix();
 		M3.renderer.setSize(winWidth, winHeight);
 	});
-
-
-
 
 
 
@@ -114,7 +147,7 @@ function appInit() {
 
 	// M3.viewManager.activateView('index');
 	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-	M3.viewManager.activateView('select');	
+	// M3.viewManager.activateView('select');	
 }
 
 })();

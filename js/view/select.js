@@ -21,7 +21,8 @@ class SelectView extends View {
 	}
 
 	init() {
-
+		// ui
+		
 	}
 
 	activate() { 

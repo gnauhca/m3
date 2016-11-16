@@ -13,6 +13,7 @@ class Star extends Time {
 		this.connectStars = []; 
 		this.initCrood = initCrood;
 		this.autoMoveTween;
+		this.rotateT;
 	}
 
 	init() {
@@ -21,11 +22,11 @@ class Star extends Time {
 		// this.mesh.scale.set(0, 0, 0);
 
 		// this.mesh.rotation.set(Math.random(), Math.random(), Math.random());
-		this.t = this.addTick(function() {
-			// this.mesh.rotation.x += 0.02;
+		this.rotateT = this.addTick(function() {
+			this.mesh.rotation.x += 0.002;
 			this.mesh.rotation.y += 0.006;
-			this.setCrood();
-			// this.mesh.rotation.z += 0.02;
+			// this.setCrood();
+			this.mesh.rotation.z += 0.002;
 		}.bind(this));
 
 		let that = this;
@@ -33,16 +34,22 @@ class Star extends Time {
 
 	build() {
 		// create mesh
-		let gemo = new THREE.SphereGeometry(10, 10, 10);
-		gemo = new THREE.TetrahedronGeometry(15, 0);
+		let geom = new THREE.SphereGeometry(10, 10, 10);
+		geom = new THREE.TetrahedronGeometry(15, 0);
 		if (Math.random() > 0) {
-			gemo = new THREE.BoxGeometry(15, 15, 15);
+			geom = new THREE.BoxGeometry(15, 15, 15);
 		}
+		// geom.computeVertexNormals();
 
 		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
-		let material2 = THREE.CustomMaterial.glass.clone();
+		// let material2 = THREE.CustomMaterial.glass.clone();
+		let material2 = new THREE.MeshLambertMaterial();
+		material2.envMap = M3.assets.envMap;
 		material2.side = THREE.DoubleSide;
-		let mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
+		material2.transparent = true;
+		material2.opacity = 0.5;
+		let mesh = new THREE.Mesh(geom, material2);
+		// let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [/*material1,*/ material2]);
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
 		this.mesh = mesh;
@@ -91,19 +98,29 @@ class ProductStar extends Star {
 
 		this._selectTween;
 
+		this.updateT;
 	}
 
 	init() {
-		super.init();
-		this.removeTick(this.t);
+		super.init(); // call build
+		this.removeTick(this.rotateT);
+		this.updateT = this.addTween(() => {
+			this._glowSprite.material.needUpdate = true;
+			this._svgMesh.material.needUpdate = true;
+		});
 	}
 
 	build() {
 		super.build();
 		let group = new THREE.Group();
 		let svgGemo = new THREE.SVGGemetry(this._svgString, {});
-		let material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
+		//let material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
+		let material = new THREE.MeshBasicMaterial({color: 0x095c75});
 		// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
+		let svgMaterial = new THREE.MeshPhongMaterial({
+			color: 0x095c75,
+			emissive: 0xffffff
+		});
 		let svgMesh = new THREE.Mesh(svgGemo, material);
 		svgMesh.scale.set(0.1, 0.1, 0.1);
 
@@ -129,7 +146,7 @@ class ProductStar extends Star {
 			opacity: 0
 		});
 		let glowSprite = new THREE.Sprite(spriteMaterial);
-		glowSprite.scale.set(80, 80, 80);
+		glowSprite.scale.set(30, 30, 30);
 		this._glowSprite = glowSprite;
 		
 		group.add(glowSprite);
@@ -142,10 +159,8 @@ class ProductStar extends Star {
 		var that = this;
 		this.selected = true;
 		this._glowSprite.visible = true;
-		this._glowSprite.material.stopAnimate().animate({opacity: 0.6}, 300, 0, {
-			onUpdate: () => function() {
-				this._glowSprite.material.needUpdate = true;
-			},
+		this._svgMesh.material.stopAnimate().animate({color: 0xffffff}, 300);
+		this._glowSprite.material.stopAnimate().animate({opacity: 1}, 300, 0, {
 			onComplete: ()=>this._glowSprite.visible = true
 		});
 	}
@@ -153,6 +168,7 @@ class ProductStar extends Star {
 	unSelect() {
 		this.selected = false;
 		this._glowSprite.visible = true;
+		this._svgMesh.material.stopAnimate().animate({color: 0x095c75}, 300);
 		this._glowSprite.material.stopAnimate().animate({opacity: 0}, 300, 0, {
 			onComplete: ()=>this._glowSprite.visible = false
 		});
@@ -179,7 +195,14 @@ class Line extends Time {
 	}
 
 	init() {
-		let lineMaterial = new THREE.MeshBasicMaterial({color: 0xffffff, transparent: true, opacity: 0.4});
+		let lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0, linewidth: 1, transparent: true } );
+		/*let lineMaterial = new THREE.MeshBasicMaterial({ 
+			map: M3.assets.particleMap.texture,
+			blending: THREE.AdditiveBlending,
+			color: 0xffffff, 
+			transparent: true, 
+			opacity: 0.4 
+		});*/
 		let lineGeom = new THREE.Geometry();
 		lineGeom.vertices.push(this.start, this.end);
 		this.line = new THREE.Line(lineGeom, lineMaterial);
@@ -187,7 +210,6 @@ class Line extends Time {
 		let pointLightMap = M3.assets.particleMap.texture; 
 
 		let spriteMaterial = new THREE.SpriteMaterial({
-			size: 15,
 			map: pointLightMap,
 			blending: THREE.AdditiveBlending,
 			transparent: true,
@@ -244,10 +266,14 @@ class Line extends Time {
 		let pointStart,pointEnd;
 
 		intersects.forEach(function(intersect) {
-			if (!pointStart && this.startStar.box.children.indexOf(intersect.object) !== -1) {
+			if (!pointStart && 
+				(this.startStar.box === intersect.object ||
+				this.startStar.box.children.indexOf(intersect.object) !== -1 )) {
 				pointStart = intersect.point;
 			}
-			if (!pointEnd && this.endStar.box.children.indexOf(intersect.object) !== -1) {
+			if (!pointEnd && 
+				(this.endStar.box === intersect.object ||
+				this.endStar.box.children.indexOf(intersect.object) !== -1 )) {
 				pointEnd = intersect.point;
 			}
 		}.bind(this));
@@ -325,7 +351,7 @@ class SelectStars extends Stage {
 
 			if (intersects.some(function(intersect) {
 				if (intersect.object.name === 'starbox') {
-					hit = intersect;
+					hit = intersect.object;
 					return true;
 				} else if (intersect.object.parent && intersect.object.parent.name === 'starbox') {
 					hit = intersect.object.parent;

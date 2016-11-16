@@ -106,7 +106,7 @@ class ExplodeParticles extends Time {
     explode() {
         let that = this;
         let gatherDur = TIME_2200;
-        let explodeDur = TIME_3000;
+        let explodeDur = TIME_4000;
         let cameraDur = gatherDur + explodeDur;
         let gatherTween = new TWEEN.Tween({p: 1}).to({p: -1}, gatherDur);
         let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 20}, explodeDur);

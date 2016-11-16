@@ -217,18 +217,18 @@ class DisplayMobile extends Stage {
 		var initCameraPosition = this.objectSizes.camera.position;
 		var initCameraLookAtPosition = this.objectSizes.camera.position;
 
-		this.addTHREEObjTween(this.objects.mesh, {
+		this.objects.mesh.animate({
         	rotation: initModelRotation
-        }, 1000).start();
+        }, 1000);
 		
-		this.addTHREEObjTween(this._camera, {
+		this._camera.animate({
         	position: initCameraPosition,
         	lookAt: initCameraLookAtPosition
-        }, 1000, {
+        }, 1000, 0, {
         	onComplete: function() {
         		this.setState('handle');
         	}.bind(this)
-        }).start();   
+        });   
 	}
 
 	_setupScene() {
@@ -259,18 +259,18 @@ class DisplayMobile extends Stage {
 			that.objects.mesh.rotation.copy(initModelRotation);
 			that.objects.mesh.rotation.x -= Math.PI * 0.5;
 			that.objects.mesh.rotation.z += Math.PI * 1.2;
-			that.addTHREEObjTween(that.objects.mesh, {
+			that.objects.mesh.animate({
 				rotation: initModelRotation
-			}, 2000).start();
+			}, 2000);
 
-			that.addTHREEObjTween(that._camera, {
+			that._camera.animate({
 				position: initCameraPosition
-			}, 2000, {
+			}, 2000, 0, {
 				onComplete: function() {
 					that.setState('handle');
 					resolve();
 				}
-			}).start();
+			});
 		});
 	}
 

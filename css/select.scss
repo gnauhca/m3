@@ -1,0 +1,29 @@
+.select-page {
+    .select-bar {
+        position: fixed;
+        z-index: 1000;
+        bottom: 0;
+
+        width: 100%;
+        padding: 50px 0;
+        background-color: rgba(0, 0, 0, 0.3);
+
+        .select-bar-con {
+            width: 1000px;
+            margin: 0 auto;
+        }
+        .select-products {
+            li {
+                float: left;
+                width: 100px;
+                height: 50px;
+                line-height: 50px;
+                margin: 0 10px;
+                background: rgba(255,255,255,0.2);
+                color: #00bbef;
+                font-size: 24px;
+                text-align: center;
+            }
+        }
+    }
+}

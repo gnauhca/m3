@@ -62,7 +62,7 @@
 	
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 	
-	__webpack_require__(23); //return;
+	__webpack_require__(29); //return;
 	
 	// require('../assets/mobiles/pro5/pro5.js');
 	(function () {
@@ -75,11 +75,25 @@
 		var loader = new _loader2.default();
 		var progressView = M3.viewManager.getView('progress');
 		progressView.activate();
+	
+		//        var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+	
+	
 		loader.load(_config.ASSETS, function (percent) {
 			progressView.setProgress(percent);
 		}).then(function (assets) {
 			M3.assets = assets;
 			progressView.inactivate();
+	
+			// envMap
+			M3.assets.envMap = new THREE.CubeTexture([M3.assets.envPosX.texture, M3.assets.envNegX.texture, M3.assets.envPosY.texture, M3.assets.envNegY.texture, M3.assets.envPosZ.texture, M3.assets.envNegZ.texture], THREE.CubeReflectionMapping);
+	
+			var urls = [_config.ASSETS.envPosX.url, _config.ASSETS.envNegX.url, _config.ASSETS.envPosY.url, _config.ASSETS.envNegY.url, _config.ASSETS.envPosZ.url, _config.ASSETS.envNegZ.url];
+			var textureCube = THREE.ImageUtils.loadTextureCube(urls, THREE.CubeReflectionMapping);
+			M3.assets.envMap = textureCube;
+			// console.log(M3.assets.envMap);
+	
+	
 			appInit();
 		});
 	
@@ -102,7 +116,7 @@
 			M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 	
 			/* fog */
-			var fog = new THREE.Fog(0x000000, 0, 2000);
+			var fog = new THREE.Fog(0x666666, 0, 2000);
 			// M3.scene.fog = fog;
 	
 			var spotLight = new THREE.SpotLight(0xffffff);
@@ -163,7 +177,7 @@
 	
 			// M3.viewManager.activateView('index');
 			// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-			M3.viewManager.activateView('select');
+			// M3.viewManager.activateView('select');	
 		}
 	})();
 
@@ -673,7 +687,10 @@
 	
 		_createClass(SelectView, [{
 			key: 'init',
-			value: function init() {}
+			value: function init() {
+				// ui
+	
+			}
 		}, {
 			key: 'activate',
 			value: function activate() {
@@ -1434,6 +1451,7 @@
 			_this.connectStars = [];
 			_this.initCrood = initCrood;
 			_this.autoMoveTween;
+			_this.rotateT;
 			return _this;
 		}
 	
@@ -1445,11 +1463,11 @@
 				// this.mesh.scale.set(0, 0, 0);
 	
 				// this.mesh.rotation.set(Math.random(), Math.random(), Math.random());
-				this.t = this.addTick(function () {
-					// this.mesh.rotation.x += 0.02;
+				this.rotateT = this.addTick(function () {
+					this.mesh.rotation.x += 0.002;
 					this.mesh.rotation.y += 0.006;
-					this.setCrood();
-					// this.mesh.rotation.z += 0.02;
+					// this.setCrood();
+					this.mesh.rotation.z += 0.002;
 				}.bind(this));
 	
 				var that = this;
@@ -1458,16 +1476,22 @@
 			key: 'build',
 			value: function build() {
 				// create mesh
-				var gemo = new THREE.SphereGeometry(10, 10, 10);
-				gemo = new THREE.TetrahedronGeometry(15, 0);
+				var geom = new THREE.SphereGeometry(10, 10, 10);
+				geom = new THREE.TetrahedronGeometry(15, 0);
 				if (Math.random() > 0) {
-					gemo = new THREE.BoxGeometry(15, 15, 15);
+					geom = new THREE.BoxGeometry(15, 15, 15);
 				}
+				// geom.computeVertexNormals();
 	
 				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
-				var material2 = THREE.CustomMaterial.glass.clone();
+				// let material2 = THREE.CustomMaterial.glass.clone();
+				var material2 = new THREE.MeshLambertMaterial();
+				material2.envMap = M3.assets.envMap;
 				material2.side = THREE.DoubleSide;
-				var mesh = THREE.SceneUtils.createMultiMaterialObject(gemo, [material1, material2]);
+				material2.transparent = true;
+				material2.opacity = 0.5;
+				var mesh = new THREE.Mesh(geom, material2);
+				// let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [/*material1,*/ material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
 				this.mesh = mesh;
@@ -1526,14 +1550,21 @@
 	
 			_this2._selectTween;
 	
+			_this2.updateT;
 			return _this2;
 		}
 	
 		_createClass(ProductStar, [{
 			key: 'init',
 			value: function init() {
-				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'init', this).call(this);
-				this.removeTick(this.t);
+				var _this3 = this;
+	
+				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'init', this).call(this); // call build
+				this.removeTick(this.rotateT);
+				this.updateT = this.addTween(function () {
+					_this3._glowSprite.material.needUpdate = true;
+					_this3._svgMesh.material.needUpdate = true;
+				});
 			}
 		}, {
 			key: 'build',
@@ -1541,8 +1572,13 @@
 				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'build', this).call(this);
 				var group = new THREE.Group();
 				var svgGemo = new THREE.SVGGemetry(this._svgString, {});
-				var material = new THREE.MeshBasicMaterial({ color: 0x0cbbef });
+				//let material = new THREE.MeshBasicMaterial({color: 0x0cbbef});
+				var material = new THREE.MeshBasicMaterial({ color: 0x095c75 });
 				// let material = new THREE.MeshPhongMaterial({color: 0x0a4fdc});
+				var svgMaterial = new THREE.MeshPhongMaterial({
+					color: 0x095c75,
+					emissive: 0xffffff
+				});
 				var svgMesh = new THREE.Mesh(svgGemo, material);
 				svgMesh.scale.set(0.1, 0.1, 0.1);
 	
@@ -1568,7 +1604,7 @@
 					opacity: 0
 				});
 				var glowSprite = new THREE.Sprite(spriteMaterial);
-				glowSprite.scale.set(80, 80, 80);
+				glowSprite.scale.set(30, 30, 30);
 				this._glowSprite = glowSprite;
 	
 				group.add(glowSprite);
@@ -1579,32 +1615,29 @@
 		}, {
 			key: 'select',
 			value: function select() {
-				var _this3 = this;
+				var _this4 = this;
 	
 				var that = this;
 				this.selected = true;
 				this._glowSprite.visible = true;
-				this._glowSprite.material.stopAnimate().animate({ opacity: 0.6 }, 300, 0, {
-					onUpdate: function onUpdate() {
-						return function () {
-							this._glowSprite.material.needUpdate = true;
-						};
-					},
+				this._svgMesh.material.stopAnimate().animate({ color: 0xffffff }, 300);
+				this._glowSprite.material.stopAnimate().animate({ opacity: 1 }, 300, 0, {
 					onComplete: function onComplete() {
-						return _this3._glowSprite.visible = true;
+						return _this4._glowSprite.visible = true;
 					}
 				});
 			}
 		}, {
 			key: 'unSelect',
 			value: function unSelect() {
-				var _this4 = this;
+				var _this5 = this;
 	
 				this.selected = false;
 				this._glowSprite.visible = true;
+				this._svgMesh.material.stopAnimate().animate({ color: 0x095c75 }, 300);
 				this._glowSprite.material.stopAnimate().animate({ opacity: 0 }, 300, 0, {
 					onComplete: function onComplete() {
-						return _this4._glowSprite.visible = false;
+						return _this5._glowSprite.visible = false;
 					}
 				});
 			}
@@ -1619,29 +1652,36 @@
 		function Line(startStar, endStar) {
 			_classCallCheck(this, Line);
 	
-			var _this5 = _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).call(this));
+			var _this6 = _possibleConstructorReturn(this, (Line.__proto__ || Object.getPrototypeOf(Line)).call(this));
 	
-			_this5.startStar = startStar;
-			_this5.endStar = endStar;
+			_this6.startStar = startStar;
+			_this6.endStar = endStar;
 	
-			_this5.start = new THREE.Vector3();
-			_this5.end = new THREE.Vector3();
+			_this6.start = new THREE.Vector3();
+			_this6.end = new THREE.Vector3();
 	
-			_this5.mesh; // 需要被加进场景的物体
-			_this5.line;
-			_this5.startPointLight; // 端点光
-			_this5.endPointLight; // 端点光
+			_this6.mesh; // 需要被加进场景的物体
+			_this6.line;
+			_this6.startPointLight; // 端点光
+			_this6.endPointLight; // 端点光
 	
-			_this5.ray = new THREE.Raycaster();
-			_this5.connected = false;
-			_this5.init();
-			return _this5;
+			_this6.ray = new THREE.Raycaster();
+			_this6.connected = false;
+			_this6.init();
+			return _this6;
 		}
 	
 		_createClass(Line, [{
 			key: 'init',
 			value: function init() {
-				var lineMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff, transparent: true, opacity: 0.4 });
+				var lineMaterial = new THREE.LineBasicMaterial({ color: 0xffffff, opacity: 0, linewidth: 1, transparent: true });
+				/*let lineMaterial = new THREE.MeshBasicMaterial({ 
+	   	map: M3.assets.particleMap.texture,
+	   	blending: THREE.AdditiveBlending,
+	   	color: 0xffffff, 
+	   	transparent: true, 
+	   	opacity: 0.4 
+	   });*/
 				var lineGeom = new THREE.Geometry();
 				lineGeom.vertices.push(this.start, this.end);
 				this.line = new THREE.Line(lineGeom, lineMaterial);
@@ -1649,7 +1689,6 @@
 				var pointLightMap = M3.assets.particleMap.texture;
 	
 				var spriteMaterial = new THREE.SpriteMaterial({
-					size: 15,
 					map: pointLightMap,
 					blending: THREE.AdditiveBlending,
 					transparent: true,
@@ -1713,10 +1752,10 @@
 				    pointEnd = void 0;
 	
 				intersects.forEach(function (intersect) {
-					if (!pointStart && this.startStar.box.children.indexOf(intersect.object) !== -1) {
+					if (!pointStart && (this.startStar.box === intersect.object || this.startStar.box.children.indexOf(intersect.object) !== -1)) {
 						pointStart = intersect.point;
 					}
-					if (!pointEnd && this.endStar.box.children.indexOf(intersect.object) !== -1) {
+					if (!pointEnd && (this.endStar.box === intersect.object || this.endStar.box.children.indexOf(intersect.object) !== -1)) {
 						pointEnd = intersect.point;
 					}
 				}.bind(this));
@@ -1754,29 +1793,29 @@
 		function SelectStars() {
 			_classCallCheck(this, SelectStars);
 	
-			var _this6 = _possibleConstructorReturn(this, (SelectStars.__proto__ || Object.getPrototypeOf(SelectStars)).call(this));
+			var _this7 = _possibleConstructorReturn(this, (SelectStars.__proto__ || Object.getPrototypeOf(SelectStars)).call(this));
 	
-			_this6.isInit = false;
-			_this6.interacted = false;
+			_this7.isInit = false;
+			_this7.interacted = false;
 	
-			_this6._gridSize = 30;
-			_this6._starCount = 60;
-			_this6._rangeX = 20; // 边长
-			_this6._rangeY = 10; // 边长
-			_this6._rangeZ = 20; // 边长
+			_this7._gridSize = 30;
+			_this7._starCount = 60;
+			_this7._rangeX = 20; // 边长
+			_this7._rangeY = 10; // 边长
+			_this7._rangeZ = 20; // 边长
 	
-			_this6._minDistant = _this6._gridSize * 3; // 两个点之间最小间隔
-			_this6._maxConnectDistant = _this6._gridSize * 4; // 两个点的距离小于多少被连在一起
+			_this7._minDistant = _this7._gridSize * 3; // 两个点之间最小间隔
+			_this7._maxConnectDistant = _this7._gridSize * 4; // 两个点的距离小于多少被连在一起
 	
-			_this6._productCfgs;
-			_this6._stars = [];
-			_this6._lines = [];
-			_this6._pStars = []; // 产品星
-			_this6._selectedPStars = [];
-			_this6._maxSelected = 2;
+			_this7._productCfgs;
+			_this7._stars = [];
+			_this7._lines = [];
+			_this7._pStars = []; // 产品星
+			_this7._selectedPStars = [];
+			_this7._maxSelected = 2;
 	
-			_this6.explodeParticle = new _explodeParticles2.default();
-			return _this6;
+			_this7.explodeParticle = new _explodeParticles2.default();
+			return _this7;
 		}
 	
 		_createClass(SelectStars, [{
@@ -1810,7 +1849,7 @@
 	
 					if (intersects.some(function (intersect) {
 						if (intersect.object.name === 'starbox') {
-							hit = intersect;
+							hit = intersect.object;
 							return true;
 						} else if (intersect.object.parent && intersect.object.parent.name === 'starbox') {
 							hit = intersect.object.parent;
@@ -1830,7 +1869,7 @@
 		}, {
 			key: '_build',
 			value: function _build() {
-				var _this7 = this;
+				var _this8 = this;
 	
 				var that = this;
 				var starCroods = [];
@@ -1842,7 +1881,7 @@
 	
 				var _loop = function _loop() {
 	
-					starCrood = new THREE.Vector3(parseInt(_this7._rangeX * Math.random()) * _this7._gridSize, parseInt(_this7._rangeY * Math.random()) * _this7._gridSize, parseInt(_this7._rangeZ * Math.random()) * _this7._gridSize);
+					starCrood = new THREE.Vector3(parseInt(_this8._rangeX * Math.random()) * _this8._gridSize, parseInt(_this8._rangeY * Math.random()) * _this8._gridSize, parseInt(_this8._rangeZ * Math.random()) * _this8._gridSize);
 					starCrood.add(toBaseVec);
 	
 					var hasConnect = false;
@@ -2138,7 +2177,7 @@
 	        value: function explode() {
 	            var that = this;
 	            var gatherDur = TIME_2200;
-	            var explodeDur = TIME_3000;
+	            var explodeDur = TIME_4000;
 	            var cameraDur = gatherDur + explodeDur;
 	            var gatherTween = new TWEEN.Tween({ p: 1 }).to({ p: -1 }, gatherDur);
 	            var explodeTween = new TWEEN.Tween({ r: 0, size: 3 }).to({ r: 1000, size: 20 }, explodeDur);
@@ -2835,18 +2874,18 @@
 				var initCameraPosition = this.objectSizes.camera.position;
 				var initCameraLookAtPosition = this.objectSizes.camera.position;
 	
-				this.addTHREEObjTween(this.objects.mesh, {
+				this.objects.mesh.animate({
 					rotation: initModelRotation
-				}, 1000).start();
+				}, 1000);
 	
-				this.addTHREEObjTween(this._camera, {
+				this._camera.animate({
 					position: initCameraPosition,
 					lookAt: initCameraLookAtPosition
-				}, 1000, {
+				}, 1000, 0, {
 					onComplete: function () {
 						this.setState('handle');
 					}.bind(this)
-				}).start();
+				});
 			}
 		}, {
 			key: '_setupScene',
@@ -2881,18 +2920,18 @@
 					that.objects.mesh.rotation.copy(initModelRotation);
 					that.objects.mesh.rotation.x -= Math.PI * 0.5;
 					that.objects.mesh.rotation.z += Math.PI * 1.2;
-					that.addTHREEObjTween(that.objects.mesh, {
+					that.objects.mesh.animate({
 						rotation: initModelRotation
-					}, 2000).start();
+					}, 2000);
 	
-					that.addTHREEObjTween(that._camera, {
+					that._camera.animate({
 						position: initCameraPosition
-					}, 2000, {
+					}, 2000, 0, {
 						onComplete: function onComplete() {
 							that.setState('handle');
 							resolve();
 						}
-					}).start();
+					});
 				});
 			}
 		}, {
@@ -3028,7 +3067,9 @@
 							var material = mParse.materials[0];
 							var model;
 	
-							if (material.name.match('glass')) {}
+							if (material.name.match('glass')) {
+								material.envMap = M3.assets.envMap;
+							}
 							/*if (material.name.indexOf('metal') >= 0) {
 	      	var texture = new THREE.ImageUtils.loadTexture('./assets/pro5/metal.jpg');
 	      	texture.repeat.set(50,50);
@@ -3863,6 +3904,15 @@
 	var ASSETS = {
 	    //libjs: BUILDPATH + '/presets.js',
 	
+	
+	    // envmap
+	    envPosZ: { url: BUILDPATH + __webpack_require__(23), size: 20 },
+	    envNegZ: { url: BUILDPATH + __webpack_require__(24), size: 20 },
+	    envPosX: { url: BUILDPATH + __webpack_require__(25), size: 20 },
+	    envNegX: { url: BUILDPATH + __webpack_require__(26), size: 20 },
+	    envPosY: { url: BUILDPATH + __webpack_require__(27), size: 20 },
+	    envNegY: { url: BUILDPATH + __webpack_require__(28), size: 20 },
+	
 	    // select
 	    logoImg: { url: BUILDPATH + __webpack_require__(9), size: 10 },
 	    particleMap: { url: BUILDPATH + __webpack_require__(10), size: 10 }
@@ -3873,6 +3923,42 @@
 
 /***/ },
 /* 23 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/front.jpg";
+
+/***/ },
+/* 24 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/back.jpg";
+
+/***/ },
+/* 25 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/right.jpg";
+
+/***/ },
+/* 26 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/left.jpg";
+
+/***/ },
+/* 27 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/top.jpg";
+
+/***/ },
+/* 28 */
+/***/ function(module, exports, __webpack_require__) {
+
+	module.exports = __webpack_require__.p + "assets/texture/bottom.jpg";
+
+/***/ },
+/* 29 */
 /***/ function(module, exports) {
 
 	// removed by extract-text-webpack-plugin

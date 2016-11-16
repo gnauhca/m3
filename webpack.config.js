@@ -37,7 +37,7 @@ module.exports = {
 
     module: {
         loaders: [
-            { test: /css\/common\.scss$/, loader: ExtractTextPlugin.extract(['css', 'sass']) },
+            { test: /css\/m3\.scss$/, loader: ExtractTextPlugin.extract(['css', 'sass']) },
             { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] },
 
             { test: /assets.*?\.json$/, loaders: ['json'] },
