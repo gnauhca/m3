@@ -5,24 +5,56 @@
         bottom: 0;
 
         width: 100%;
-        padding: 50px 0;
-        background-color: rgba(0, 0, 0, 0.3);
+        // padding: 50px 0;
+        background-color: rgba(255, 255, 255, 0.2);
 
         .select-bar-con {
             width: 1000px;
             margin: 0 auto;
         }
         .select-products {
+            width: 850px;
+            float: left;
             li {
                 float: left;
-                width: 100px;
+                padding: 0 20px;
+                // width: 100px;
                 height: 50px;
                 line-height: 50px;
-                margin: 0 10px;
-                background: rgba(255,255,255,0.2);
-                color: #00bbef;
+                // margin: 0 10px;
+                background: rgba(255,255,255,0.4);
+                // border-radius: 3px;
+                transform: skewX(-20deg);
+                transition: 0.5s all;
+                color: #000;
                 font-size: 24px;
                 text-align: center;
+                cursor: pointer;
+                @for $i from 1 to 20 {
+                    &:nth-child(#{$i}) {
+                        background-color: rgba(255,255,255,0.6 - 0.05 * $i);
+                    }
+                }
+                &:hover, &.selected {
+                    background-color: #0bb6e2;
+                    color: #fff;
+                }
+            }
+        }
+        .select-confirm {
+            float: left;
+            display: block;
+            width: 150px;
+            height: 50px;
+            background-color: rgba(255,255,255,0.3);
+            border: none;
+            // border-radius: 3px;
+            color: #000;
+            font-size: 30px; 
+            cursor: pointer;
+            &.selected {
+                color: #fff;
+                background-color: #0bb6e2;
             }
         }
     }

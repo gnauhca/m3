@@ -22,7 +22,33 @@ class SelectView extends View {
 
 	init() {
 		// ui
-		
+		var $selectProducts = $('.select-products');
+		var selectHTML = '';
+		selectCfg.products.forEach(function(product) {
+			selectHTML += `<li data-product-name="${product.name}">${product.name}</li>`;
+		});
+		$selectProducts.html(selectHTML);
+		this._initEvent();
+	}
+
+	_initEvent() {
+		let that = this;
+		let $selectView = $('#selectView');
+		let $ok = $('.select-confirm');
+		$('#selectView').on('click', '.select-products li', function() {
+			if (!that.activate) return;
+			let $productItems = $('#selectView .select-products li');
+			let productName = $(this).data('productName');
+			$productItems.removeClass('selected');
+
+			that._selectStarsStage.toggle(productName);
+			that._selectStarsStage.getSelected().forEach((name)=>$productItems.filter(`[data-product-name=${name}]`).addClass('selected'));
+			$productItems.filter('.selected').length?$ok.addClass('selected'):$ok.removeClass('selected');
+		});
+		$('#selectView').on('click', '.select-confirm.selected', function() {
+			// go to display
+			
+		});
 	}
 
 	activate() { 
@@ -49,6 +75,7 @@ class SelectView extends View {
 	}
 
 	inactivate() { }
+
 }
 
 export default SelectView;

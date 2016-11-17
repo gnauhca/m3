@@ -157,21 +157,79 @@ body {
   z-index: 1000;
   bottom: 0;
   width: 100%;
-  padding: 50px 0;
-  background-color: rgba(0, 0, 0, 0.3); }
+  background-color: rgba(255, 255, 255, 0.2); }
   .select-page .select-bar .select-bar-con {
     width: 1000px;
     margin: 0 auto; }
-  .select-page .select-bar .select-products li {
+  .select-page .select-bar .select-products {
+    width: 850px;
+    float: left; }
+    .select-page .select-bar .select-products li {
+      float: left;
+      padding: 0 20px;
+      height: 50px;
+      line-height: 50px;
+      background: rgba(255, 255, 255, 0.4);
+      transform: skewX(-20deg);
+      transition: 0.5s all;
+      color: #000;
+      font-size: 24px;
+      text-align: center;
+      cursor: pointer; }
+      .select-page .select-bar .select-products li:nth-child(1) {
+        background-color: rgba(255, 255, 255, 0.55); }
+      .select-page .select-bar .select-products li:nth-child(2) {
+        background-color: rgba(255, 255, 255, 0.5); }
+      .select-page .select-bar .select-products li:nth-child(3) {
+        background-color: rgba(255, 255, 255, 0.45); }
+      .select-page .select-bar .select-products li:nth-child(4) {
+        background-color: rgba(255, 255, 255, 0.4); }
+      .select-page .select-bar .select-products li:nth-child(5) {
+        background-color: rgba(255, 255, 255, 0.35); }
+      .select-page .select-bar .select-products li:nth-child(6) {
+        background-color: rgba(255, 255, 255, 0.3); }
+      .select-page .select-bar .select-products li:nth-child(7) {
+        background-color: rgba(255, 255, 255, 0.25); }
+      .select-page .select-bar .select-products li:nth-child(8) {
+        background-color: rgba(255, 255, 255, 0.2); }
+      .select-page .select-bar .select-products li:nth-child(9) {
+        background-color: rgba(255, 255, 255, 0.15); }
+      .select-page .select-bar .select-products li:nth-child(10) {
+        background-color: rgba(255, 255, 255, 0.1); }
+      .select-page .select-bar .select-products li:nth-child(11) {
+        background-color: rgba(255, 255, 255, 0.05); }
+      .select-page .select-bar .select-products li:nth-child(12) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(13) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(14) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(15) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(16) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(17) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(18) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:nth-child(19) {
+        background-color: rgba(255, 255, 255, 0); }
+      .select-page .select-bar .select-products li:hover, .select-page .select-bar .select-products li.selected {
+        background-color: #0bb6e2;
+        color: #fff; }
+  .select-page .select-bar .select-confirm {
     float: left;
-    width: 100px;
+    display: block;
+    width: 150px;
     height: 50px;
-    line-height: 50px;
-    margin: 0 10px;
-    background: rgba(255, 255, 255, 0.2);
-    color: #00bbef;
-    font-size: 24px;
-    text-align: center; }
+    background-color: rgba(255, 255, 255, 0.3);
+    border: none;
+    color: #000;
+    font-size: 30px;
+    cursor: pointer; }
+    .select-page .select-bar .select-confirm.selected {
+      color: #fff;
+      background-color: #0bb6e2; }
 
 #displayView {
   position: fixed;

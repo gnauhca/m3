@@ -139,12 +139,12 @@
 			var axisHelper = new THREE.AxisHelper(100);
 			M3.scene.add(axisHelper);
 			/* grid helper */
-			// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
-			// gridHelperX.rotation.z = Math.PI / 2;
-			// M3.scene.add( gridHelperX );
+			var gridHelperX = new THREE.GridHelper(size, step, 0xff0000);
+			gridHelperX.rotation.z = Math.PI / 2;
+			M3.scene.add(gridHelperX);
 	
-			// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
-			// M3.scene.add( gridHelperY );
+			var gridHelperY = new THREE.GridHelper(size, step, 0x00ff00);
+			M3.scene.add(gridHelperY);
 	
 			var gridHelperZ = new THREE.GridHelper(size, step, 0x0000ff);
 			gridHelperZ.rotation.x = Math.PI / 2;
@@ -177,7 +177,7 @@
 	
 			// M3.viewManager.activateView('index');
 			// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-			// M3.viewManager.activateView('select');	
+			M3.viewManager.activateView('select');
 		}
 	})();
 
@@ -689,7 +689,36 @@
 			key: 'init',
 			value: function init() {
 				// ui
+				var $selectProducts = $('.select-products');
+				var selectHTML = '';
+				_selectConf2.default.products.forEach(function (product) {
+					selectHTML += '<li data-product-name="' + product.name + '">' + product.name + '</li>';
+				});
+				$selectProducts.html(selectHTML);
+				this._initEvent();
+			}
+		}, {
+			key: '_initEvent',
+			value: function _initEvent() {
+				var that = this;
+				var $selectView = $('#selectView');
+				var $ok = $('.select-confirm');
+				$('#selectView').on('click', '.select-products li', function () {
+					if (!that.activate) return;
+					var $productItems = $('#selectView .select-products li');
+					var productName = $(this).data('productName');
+					$productItems.removeClass('selected');
 	
+					that._selectStarsStage.toggle(productName);
+					that._selectStarsStage.getSelected().forEach(function (name) {
+						return $productItems.filter('[data-product-name=' + name + ']').addClass('selected');
+					});
+					$productItems.filter('.selected').length ? $ok.addClass('selected') : $ok.removeClass('selected');
+				});
+				$('#selectView').on('click', '.select-confirm.selected', function () {
+					// go to display
+	
+				});
 			}
 		}, {
 			key: 'activate',
@@ -1476,7 +1505,7 @@
 			key: 'build',
 			value: function build() {
 				// create mesh
-				var geom = new THREE.SphereGeometry(10, 10, 10);
+				var geom = new THREE.SphereGeometry(10, 20, 20);
 				geom = new THREE.TetrahedronGeometry(15, 0);
 				if (Math.random() > 0) {
 					geom = new THREE.BoxGeometry(15, 15, 15);
@@ -1560,7 +1589,7 @@
 				var _this3 = this;
 	
 				_get(ProductStar.prototype.__proto__ || Object.getPrototypeOf(ProductStar.prototype), 'init', this).call(this); // call build
-				this.removeTick(this.rotateT);
+				// this.removeTick(this.rotateT);
 				this.updateT = this.addTween(function () {
 					_this3._glowSprite.material.needUpdate = true;
 					_this3._svgMesh.material.needUpdate = true;
@@ -1604,7 +1633,7 @@
 					opacity: 0
 				});
 				var glowSprite = new THREE.Sprite(spriteMaterial);
-				glowSprite.scale.set(30, 30, 30);
+				glowSprite.scale.set(60, 60, 60);
 				this._glowSprite = glowSprite;
 	
 				group.add(glowSprite);
@@ -1921,7 +1950,7 @@
 						star = new Star(starCrood);star.init();
 					}
 					// star.setCrood(starCrood);
-					star.setCrood(new THREE.Vector3(0, 0, 0));
+					star.setCrood(new THREE.Vector3(Math.random() * 2, Math.random() * 2, Math.random() * 2));
 					// star.mesh.scale.setScalar(0.0001);
 					that._stars.push(star);
 					starGroup.add(star.mesh);
@@ -1981,7 +2010,6 @@
 					that._controls.staticMoving = true;
 					that._controls.travel = true;
 					that._t = that.addTick(function (delta) {
-						that._controls.travel = false;
 						that._controls.update(delta);
 					});
 				});
@@ -1999,10 +2027,27 @@
 		}, {
 			key: '_select',
 			value: function _select(star) {
+				var that = this;
 				if (this._selectedPStars.length === this._maxSelected) {
 					this._selectedPStars.shift().unSelect();
 				}
 				star.select();
+	
+				// camera lookAt it
+	
+				this._controls.travel = false;
+	
+				var cameraPosition = star.mesh.position.clone();
+				cameraPosition.setLength(cameraPosition.length() + this._minDistant * 0.8);
+				this.camera.userData.lookAt = new THREE.Vector3();
+				this.camera.stopAnimate().animate({ position: cameraPosition, lookAt: new THREE.Vector3() }, 2000, 0, {
+					onComplete: function onComplete() {
+						setTimeout(function () {
+							that._controls.travel = true;
+						}, 1000);
+					}
+				});
+	
 				this._selectedPStars.push(star);
 			}
 		}, {
@@ -2027,14 +2072,22 @@
 		}, {
 			key: 'toggle',
 			value: function toggle(name) {
-				var star = this._products.filter(function (product) {
-					return product.name === name;
+				var star = this._pStars.filter(function (pStar) {
+					return pStar.name === name;
 				})[0];
 				this._toggle(star);
 			}
 		}, {
 			key: 'getSelected',
-			value: function getSelected() {}
+			value: function getSelected() {
+				var selectedNames = this._pStars.filter(function (pStar) {
+					return pStar.selected;
+				}).map(function (pStar) {
+					return pStar.name;
+				});
+	
+				return selectedNames;
+			}
 		}]);
 	
 		return SelectStars;

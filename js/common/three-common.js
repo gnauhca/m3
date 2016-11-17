@@ -43,7 +43,7 @@ THREE.Object3D.prototype.animate = function(target, dur, delay=0, tweenObj) {
 			let destKey = key;
 
 			if (key === 'lookAt') {
-				let initLookAt = THREE.THREEUtil.getLookAt(object3D);
+				let initLookAt = object3D.userData.lookAt || THREE.THREEUtil.getLookAt(object3D);
 				['x','y','z'].forEach(function(lookAtKey) {
 					init['lookAt_' + lookAtKey] = initLookAt[lookAtKey];
 					dest['lookAt_' + lookAtKey] = target['lookAt'][lookAtKey];
@@ -126,6 +126,7 @@ function stopAnimate() {
 
 THREE.Material.prototype.animate = THREE.Object3D.prototype.animate;
 THREE.Vector3.prototype.animate = THREE.Object3D.prototype.animate;
+THREE.Object3D.prototype.stopAnimate = stopAnimate;
 THREE.Material.prototype.stopAnimate = stopAnimate;
 THREE.Vector3.prototype.stopAnimate = stopAnimate;
 

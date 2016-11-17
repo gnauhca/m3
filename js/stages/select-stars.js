@@ -34,7 +34,7 @@ class Star extends Time {
 
 	build() {
 		// create mesh
-		let geom = new THREE.SphereGeometry(10, 10, 10);
+		let geom = new THREE.SphereGeometry(10, 20, 20);
 		geom = new THREE.TetrahedronGeometry(15, 0);
 		if (Math.random() > 0) {
 			geom = new THREE.BoxGeometry(15, 15, 15);
@@ -103,7 +103,7 @@ class ProductStar extends Star {
 
 	init() {
 		super.init(); // call build
-		this.removeTick(this.rotateT);
+		// this.removeTick(this.rotateT);
 		this.updateT = this.addTween(() => {
 			this._glowSprite.material.needUpdate = true;
 			this._svgMesh.material.needUpdate = true;
@@ -146,7 +146,7 @@ class ProductStar extends Star {
 			opacity: 0
 		});
 		let glowSprite = new THREE.Sprite(spriteMaterial);
-		glowSprite.scale.set(30, 30, 30);
+		glowSprite.scale.set(60, 60, 60);
 		this._glowSprite = glowSprite;
 		
 		group.add(glowSprite);
@@ -422,7 +422,7 @@ class SelectStars extends Stage {
 				star = new Star(starCrood); star.init();
 			}
 			// star.setCrood(starCrood);
-			star.setCrood(new THREE.Vector3(0, 0, 0));
+			star.setCrood(new THREE.Vector3(Math.random()*2, Math.random()*2, Math.random()*2));
 			// star.mesh.scale.setScalar(0.0001);
 			that._stars.push(star);
 			starGroup.add(star.mesh);
@@ -487,7 +487,6 @@ class SelectStars extends Stage {
 			that._controls.staticMoving = true;
 			that._controls.travel = true;
 			that._t = that.addTick(function(delta) {
-				that._controls.travel = false;
 				that._controls.update(delta);
 			});
 		});
@@ -505,10 +504,28 @@ class SelectStars extends Stage {
 
 
 	_select(star) {
+		var that = this;
 		if (this._selectedPStars.length === this._maxSelected) {
 			this._selectedPStars.shift().unSelect();
 		}
 		star.select();
+
+		// camera lookAt it
+
+		this._controls.travel = false;
+
+		let cameraPosition = star.mesh.position.clone();
+		cameraPosition.setLength(cameraPosition.length() + this._minDistant * 0.8);
+		this.camera.userData.lookAt = new THREE.Vector3;
+		this.camera.stopAnimate().animate({position: cameraPosition, lookAt: new THREE.Vector3}, 2000, 0, {
+			onComplete() {
+				setTimeout(function() {
+					that._controls.travel = true;
+				}, 1000);
+			}
+		});
+
+
 		this._selectedPStars.push(star);
 	}
 
@@ -527,12 +544,14 @@ class SelectStars extends Stage {
 	}
 
 	toggle(name) {
-		let star = this._products.filter((product)=>product.name===name)[0];
+		let star = this._pStars.filter((pStar)=>pStar.name===name)[0];
 		this._toggle(star);
 	}
 
 	getSelected() {
+		var selectedNames = this._pStars.filter((pStar)=>pStar.selected).map((pStar)=>pStar.name);
 
+		return selectedNames;
 	}
 	
 }
