@@ -236,7 +236,7 @@ class DisplayMobile extends Stage {
 		// 3D 相关资源创建
  		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
  		this.objects.spotLight.intensity = 1;
-		this._camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
+		this._camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
         this.trackball = new TrackballControls(this._camera);

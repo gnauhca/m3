@@ -35,19 +35,26 @@ class SelectView extends View {
 		let that = this;
 		let $selectView = $('#selectView');
 		let $ok = $('.select-confirm');
+		let $productItems = $('#selectView .select-products li');
 		$('#selectView').on('click', '.select-products li', function() {
 			if (!that.activate) return;
-			let $productItems = $('#selectView .select-products li');
 			let productName = $(this).data('productName');
-			$productItems.removeClass('selected');
 
 			that._selectStarsStage.toggle(productName);
-			that._selectStarsStage.getSelected().forEach((name)=>$productItems.filter(`[data-product-name=${name}]`).addClass('selected'));
+			that._selectStarsStage.getSelected()
+		});
+
+		that._selectStarsStage.addListener('selected-change', function(_selecteds) {
+			$productItems.removeClass('selected');
+			_selecteds.forEach((selected)=>$productItems.filter(`[data-product-name=${selected.name}]`).addClass('selected'));
 			$productItems.filter('.selected').length?$ok.addClass('selected'):$ok.removeClass('selected');
 		});
 		$('#selectView').on('click', '.select-confirm.selected', function() {
 			// go to display
-			
+			that.activeView('display', {
+				mobiles: that._selectStarsStage.getSelected(),
+				camera: that._selectStarsStage.camera
+			});
 		});
 	}
 

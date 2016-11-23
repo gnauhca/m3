@@ -30,7 +30,7 @@ module.exports = {
     },
     resolve: {
         root: process.cwd(),
-        modulesDirectories: ['./', 'node_modules', './js/common', './js/config']
+        modulesDirectories: ['./', 'node_modules', './js/libs', './js/common', './js/config']
     },
 
     devtool: 'source-map',

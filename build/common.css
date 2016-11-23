@@ -175,7 +175,8 @@ body {
       color: #000;
       font-size: 24px;
       text-align: center;
-      cursor: pointer; }
+      cursor: pointer;
+      /*&:hover, */ }
       .select-page .select-bar .select-products li:nth-child(1) {
         background-color: rgba(255, 255, 255, 0.55); }
       .select-page .select-bar .select-products li:nth-child(2) {
@@ -214,7 +215,7 @@ body {
         background-color: rgba(255, 255, 255, 0); }
       .select-page .select-bar .select-products li:nth-child(19) {
         background-color: rgba(255, 255, 255, 0); }
-      .select-page .select-bar .select-products li:hover, .select-page .select-bar .select-products li.selected {
+      .select-page .select-bar .select-products li.selected {
         background-color: #0bb6e2;
         color: #fff; }
   .select-page .select-bar .select-confirm {

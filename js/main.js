@@ -108,16 +108,16 @@ function appInit() {
 	var axisHelper = new THREE.AxisHelper( 100 );
 	M3.scene.add( axisHelper );
 	/* grid helper */
-	var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
-	gridHelperX.rotation.z = Math.PI / 2;
-	M3.scene.add( gridHelperX );
+	// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+	// gridHelperX.rotation.z = Math.PI / 2;
+	// M3.scene.add( gridHelperX );
 
-	var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
-	M3.scene.add( gridHelperY );
+	// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+	// M3.scene.add( gridHelperY );
 
-	var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
-	gridHelperZ.rotation.x = Math.PI / 2;
-	M3.scene.add( gridHelperZ );
+	// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+	// gridHelperZ.rotation.x = Math.PI / 2;
+	// M3.scene.add( gridHelperZ );
 
 	function initStats() {
 
@@ -146,8 +146,8 @@ function appInit() {
 
 
 	// M3.viewManager.activateView('index');
-	// M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-	M3.viewManager.activateView('select');	
+	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
+	// M3.viewManager.activateView('select');	
 }
 
 })();

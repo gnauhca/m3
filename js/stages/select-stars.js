@@ -23,10 +23,10 @@ class Star extends Time {
 
 		// this.mesh.rotation.set(Math.random(), Math.random(), Math.random());
 		this.rotateT = this.addTick(function() {
-			this.mesh.rotation.x += 0.002;
-			this.mesh.rotation.y += 0.006;
+			this.box.rotation.x += 0.002;
+			this.box.rotation.y += 0.006;
 			// this.setCrood();
-			this.mesh.rotation.z += 0.002;
+			this.box.rotation.z += 0.002;
 		}.bind(this));
 
 		let that = this;
@@ -34,11 +34,11 @@ class Star extends Time {
 
 	build() {
 		// create mesh
-		let geom = new THREE.SphereGeometry(10, 20, 20);
-		geom = new THREE.TetrahedronGeometry(15, 0);
+		let geom = new THREE.SphereGeometry(10, 30, 30);
+		/*geom = new THREE.TetrahedronGeometry(15, 0);
 		if (Math.random() > 0) {
 			geom = new THREE.BoxGeometry(15, 15, 15);
-		}
+		}*/
 		// geom.computeVertexNormals();
 
 		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
@@ -47,7 +47,8 @@ class Star extends Time {
 		material2.envMap = M3.assets.envMap;
 		material2.side = THREE.DoubleSide;
 		material2.transparent = true;
-		material2.opacity = 0.5;
+		material2.opacity = 0.1;
+		material2.refractionRatio = 1.4;
 		let mesh = new THREE.Mesh(geom, material2);
 		// let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [/*material1,*/ material2]);
 
@@ -527,11 +528,13 @@ class SelectStars extends Stage {
 
 
 		this._selectedPStars.push(star);
+		this.emitEvent('selected-change', [this._selectedPStars]);
 	}
 
 	_unSelect(star) {
 		star.unSelect();
 		this._selectedPStars = this._selectedPStars.filter(pStar=>star!==pStar);
+		this.emitEvent('selected-change', [this._selectedPStars]);
 	}
 
 	_toggle(star) {

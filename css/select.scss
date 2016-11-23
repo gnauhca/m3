@@ -35,7 +35,7 @@
                         background-color: rgba(255,255,255,0.6 - 0.05 * $i);
                     }
                 }
-                &:hover, &.selected {
+                /*&:hover, */&.selected {
                     background-color: #0bb6e2;
                     color: #fff;
                 }
