@@ -41,7 +41,6 @@ class SelectView extends View {
 			let productName = $(this).data('productName');
 
 			that._selectStarsStage.toggle(productName);
-			that._selectStarsStage.getSelected()
 		});
 
 		that._selectStarsStage.addListener('selected-change', function(_selecteds) {
@@ -51,10 +50,15 @@ class SelectView extends View {
 		});
 		$('#selectView').on('click', '.select-confirm.selected', function() {
 			// go to display
-			that.activeView('display', {
-				mobiles: that._selectStarsStage.getSelected(),
-				camera: that._selectStarsStage.camera
-			});
+
+			// format data for display view
+			// {'name': 'pro6', 'position': V3}
+
+			let selectedData = that._selectStarsStage.getSelected().map(pStar=>({'name': pStar.name, 'position': pStar.mesh.position.clone()}));
+
+			M3.viewManager.activateView('display', {mobiles: selectedData});
+			that.inactivate();
+			// that._selectStarsStage.
 		});
 	}
 
@@ -75,13 +79,14 @@ class SelectView extends View {
 			this._selectStarsStage.init();
 		}
 		this._selectStarsStage.entry();
-		this._selectStarsStage.interacted = true;
 
 		// select animation
 		
 	}
 
-	inactivate() { }
+	inactivate() {
+		this._selectStarsStage.leave();
+	}
 
 }
 

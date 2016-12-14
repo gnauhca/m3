@@ -1,7 +1,7 @@
 import Time from 'time.js';
 import Stage from './stage.js';
 import selectCfg from 'select-conf.js';
-import ExplodeParticle from './explode-particles.js';
+import ExplodeParticles from './explode-particles.js';
 
 class Star extends Time {
 	constructor(initCrood) {
@@ -324,13 +324,16 @@ class SelectStars extends Stage {
 		this._selectedPStars = [];
 		this._maxSelected = 2;
 
-		this.explodeParticle = new ExplodeParticle();
+		this.explodeParticles = new ExplodeParticles();
 	}
 	init() {
 		this._productCfgs = $.extend(true, [], selectCfg.products);
 		this.isInit = true;
 		this._initEvent();
-		return this._build();
+		this._build();
+
+		this._controls = new THREE.TrackballControls(this.camera, M3.renderer.domElement);
+		this._controls.enabled = false;
 	}
 
 	_initEvent() {
@@ -455,38 +458,95 @@ class SelectStars extends Stage {
 		this.objects.lineGroup = lineGroup;
 		
 		// import build
-		this.explodeParticle.build();
-		this.objects.particleSystem = this.explodeParticle.particleSystem;
+		this.explodeParticles.build();
+		this.objects.particleSystem = this.explodeParticles.particleSystem;
 
 	}
 
-	entry() {
-		let that = this;
+	entry(animate = true) {
 		Object.keys(this.objects).forEach(function(o) { M3.scene.add(this.objects[o]);}.bind(this));
+		this._pStars
+			.forEach(pStar=>pStar.mesh.visible=true);
 
 
-		// lightUp
-		this.explodeParticle.lightUp().then(function() {
+		let that = this;
+		let lightUpDur = !animate ? 0 : TIME_4000;
+		let starGroupScaleDelay = !animate ? 0 : TIME_800;
+		let starGroupScaleDur = !animate ? 0 : TIME_800;
 
+		let starMoveDelay = !animate ? 0 : TIME_400;
+		let starMoveDur = !animate ? 0 : TIME_300;
+
+		let gatherDur = !animate ? 0 : TIME_2200;
+		let exploreDur = !animate ? 0 : TIME_4000;
+
+		let cameraRotateDur = !animate ? 0 : gatherDur + exploreDur + TIME_1000;
+
+		let lineConnectDelay = !animate ? 0 : TIME_2000;
+		let lineConnectDur = !animate ? 0 : TIME_3000;
+
+		/* lightUp */
+		// lightUp camera cross ani
+		if (animate) {
+			this.camera.position.set(100, 0, -500);
+			this.camera.lookAt(that.explodeParticles.initPos);
+			this.camera.up.set(1, 0, 0);
+			this.camera.animate({
+				position: new THREE.Vector3(0, 0, 300),
+				up: new THREE.Vector3(0, 1 ,0)
+			}, lightUpDur, 0, {
+				onUpdate() { that.camera.lookAt(that.explodeParticles.initPos); },
+			});
+		}
+
+		this.explodeParticles.lightUp(lightUpDur).then(function() {
+
+			// group scale
 			that.objects.starGroup.rotation.x = Math.PI * 20;
 			that.objects.starGroup.animate({
 				scale: new THREE.Vector3(1,1,1),
 				rotation_x: 0 
-			}, TIME_800, TIME_800);
+			}, starGroupScaleDur, starGroupScaleDelay, {
+				onComplete() {
+					// star move
+					that._stars.forEach(function(star) {
+						star.mesh.animate({position: star.initCrood}, starMoveDur, starMoveDelay )
+					});	
+				}
+			});
 
-			that._stars.forEach(function(star) {
-				star.mesh.animate({position: star.initCrood}, TIME_300, (TIME_2000)|0 )
-			});	
-			return that.explodeParticle.explode();
-
+			// camera rotate ani after lightup
+			if (animate) {
+				that.addTween(
+					new TWEEN.Tween({a: Math.PI*0.5})
+					.to({a: Math.PI*2.5}, cameraRotateDur)
+					.easing(TWEEN.Easing.Cubic.InOut)
+					.onUpdate(function() {
+						// 聚集
+						let a = this.a;
+						M3.camera.position.x = Math.cos(a) * 300;
+						M3.camera.position.z = Math.sin(a) * 300;
+						M3.camera.position.y = Math.cos(a) * 200;
+						M3.camera.lookAt(that.explodeParticles.initPos);
+					}).start()
+				);
+			}
+	
+			// gather
+			return that.explodeParticles.gather(gatherDur);
+		}).then(function() {
+			return that.explodeParticles.explode(exploreDur);
 		}).then(function() {
 			that._lines.forEach(function(line) {
-				line.connect(TIME_3000, Math.random() * TIME_2000);
+				line.connect(lineConnectDur, Math.random() * lineConnectDelay);
 			});
 
 			that._controls = new THREE.TrackballControls(that.camera, M3.renderer.domElement);
-			that._controls.staticMoving = true;
+
+			that._controls.enabled = true;
 			that._controls.travel = true;
+			that.interacted = true;
+
 			that._t = that.addTick(function(delta) {
 				that._controls.update(delta);
 			});
@@ -501,6 +561,17 @@ class SelectStars extends Stage {
 		this._t = this.addTick(function(delta) {
 			this._controls.update(delta);
 		});*/
+
+	}
+
+	leave() {
+		this.interacted = false;
+		this._controls.travel = false;
+		this._controls.enabled = false;
+		this.removeTick(this._t);
+		this._pStars
+			.filter(pStar=>pStar.selected)
+			.forEach(pStar=>pStar.mesh.visible=false);
 	}
 
 
@@ -552,11 +623,13 @@ class SelectStars extends Stage {
 	}
 
 	getSelected() {
-		var selectedNames = this._pStars.filter((pStar)=>pStar.selected).map((pStar)=>pStar.name);
-
-		return selectedNames;
+		// var selectedNames = this._pStars.filter((pStar)=>pStar.selected).map((pStar)=>pStar.name);
+		return this._pStars.filter((pStar)=>pStar.selected);
 	}
 	
+
+
+
 }
 
 export default SelectStars;

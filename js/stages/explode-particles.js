@@ -57,23 +57,11 @@ class ExplodeParticles extends Time {
             // console.log(that.particleSystem);
     }
 
-    lightUp() {
+    lightUp(dur = TIME_4000) {
         let that = this;
-        let dur = TIME_4000;
         let cameraTween;
-        
-        return new Promise(function(resolve) {
-            // camera ani
-            M3.camera.position.set(100, 0, -500);
-            M3.camera.lookAt(that.initPos);
-            M3.camera.up.set(1, 0, 0);
-            M3.camera.animate({
-                position: new THREE.Vector3(0, 0, 300),
-                up: new THREE.Vector3(0, 1 ,0)
-            }, dur, 0, {
-                onUpdate() { M3.camera.lookAt(that.initPos); },
-            });
 
+        return new Promise(function(resolve) {
             // particle ani
             let particleTween = new TWEEN.Tween({z: 1}).to({z: 0}, dur * 1.2);
             particleTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function() {
@@ -87,58 +75,29 @@ class ExplodeParticles extends Time {
         });
     }
 
-    /*rise() {
-		let cameraTween = this.addTHREEObjTween(M3.camera, {
-			position: new THREE.Vector3(0, -500, 0),
-            lookAt: this.finalPos,
-            up: new THREE.Vector3(0, 1 ,0)
-		}, dur, {
-			// onUpdate() { M3.camera.lookAt(that.initPos); },
-            onComplete() { that.removeTween(cameraTween); }
-		}).start();
-
-        let maxR = 300; // 旋转飞起最大半径
-        let maxA = Math.PI * 3; // 每个粒子旋转最大角度
-
-        
-    }*/
-
-    explode() {
+    gather(dur = TIME_2000) {
         let that = this;
-        let gatherDur = TIME_2200;
-        let explodeDur = TIME_4000;
-        let cameraDur = gatherDur + explodeDur;
-        let gatherTween = new TWEEN.Tween({p: 1}).to({p: -1}, gatherDur);
-        let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 20}, explodeDur);
-        let cameraTween = new TWEEN.Tween({a: Math.PI*0.5}).to({a: Math.PI*2.5}, cameraDur + 1000);
-
-        cameraTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function() {
-            // 聚集
-            let a = this.a;
-            M3.camera.position.x = Math.cos(a) * 300;
-            M3.camera.position.z = Math.sin(a) * 300;
-            M3.camera.position.y = Math.cos(a) * 200;
-            M3.camera.lookAt(that.initPos);
-        }).onComplete(function() { }).start();
-
-        gatherTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function() {
-
-            // 聚集
-            let p = this.p > 0 ? this.p : 0;
-            that.particleSystem.geometry.verticesNeedUpdate = true;
-            that.particleSystem.geometry.vertices.forEach(function(v3) {
-                v3.setLength(v3.initV.length() * p);
-            });
-        }).onComplete(function() {
-            // console.log
-            // explode
-            explodeTween.start();
-
-        }).start();
+        let gatherTween = new TWEEN.Tween({p: 1}).to({p: -1}, dur);
 
         this.addTween(gatherTween);  
-        this.addTween(explodeTween);  
+        return new Promise(function(resolve) {
+            gatherTween.easing(TWEEN.Easing.Cubic.InOut).onUpdate(function() {
 
+                // 聚集
+                let p = this.p > 0 ? this.p : 0;
+                that.particleSystem.geometry.verticesNeedUpdate = true;
+                that.particleSystem.geometry.vertices.forEach(function(v3) {
+                    v3.setLength(v3.initV.length() * p);
+                });
+            }).onComplete(resolve).start();
+        });
+    }
+
+    explode(dur = TIME_4000) {
+        let that = this;
+        let explodeTween = new TWEEN.Tween({r: 0, size: 3}).to({r: 1000, size: 20}, dur);
+
+        this.addTween(explodeTween); 
         return new Promise(function(resolve) {
             explodeTween.easing(TWEEN.Easing.Cubic.Out).onUpdate(function() {
                 // explode
@@ -154,7 +113,7 @@ class ExplodeParticles extends Time {
                     v3.x = planeR * Math.cos(v3.exAngle);
                     v3.z = planeR * Math.sin(v3.exAngle);
                 });
-            }).onComplete(resolve)
+            }).onComplete(resolve).start();
         });
     }
 }

@@ -139,15 +139,20 @@ function appInit() {
 	// main render tick
 	var m3Time = new Time();
 
-	M3.tick = m3Time.addTick(function() {
+	M3.time = new Time();
+	M3.time.addTick(function() {
 		stats.update();
 		M3.renderer.render(M3.scene, M3.camera);
 	});
 
 
 	// M3.viewManager.activateView('index');
-	M3.viewManager.activateView('display', {mobiles: ['pro5', 'pro6'/*, 'mx5', 'mx6'*/]});
-	// M3.viewManager.activateView('select');	
+	// M3.viewManager.activateView('display', {mobiles: [
+	// 	{'name': 'pro5', 'position': new THREE.Vector3(0, 0, 0)},
+	// 	{'name': 'pro6', 'position': new THREE.Vector3(100, 0, 0)},
+	// 	{'name': 'mx6', 'position': new THREE.Vector3(200, 0, 0)}
+	// ]});
+	M3.viewManager.activateView('select');	
 }
 
 })();

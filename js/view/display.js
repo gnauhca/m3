@@ -33,7 +33,7 @@ class Display extends View {
 	}
 
 	// data : {mobile: [pro5, mx6 ...]}
-	activate(data) {
+	activate(data) { console.log(data);
 		var that = this;
 		// check self init
 		if (!this.isInit) {
@@ -44,10 +44,10 @@ class Display extends View {
 		if (data) {
 			var mobiles = $.extend(true, [], data.mobiles);
 			this._currentMobileStages = [];
-			mobiles.forEach(function(name, i) {
-				if (!this._mobileStages[name]) {
-					var mobileStage = new MobileStage(name);
-					this._mobileStages[name] = mobileStage;
+			mobiles.forEach(function(mobile, i) {
+				if (!this._mobileStages[mobile.name]) {
+					var mobileStage = new MobileStage(mobile.name, mobile.position);
+					this._mobileStages[mobile.name] = mobileStage;
 					this._currentMobileStages.push(mobileStage);
 				}
 			}.bind(this));
@@ -57,15 +57,19 @@ class Display extends View {
 		}
 
 		// all loaded 
+		M3.time.stop();
+
 		//this._containerStage.entry();// containerStage
 
-		var sizePos = calculateSubWindowSize(this._currentMobileStages.length);
-		var x = 0;
-		var entryCount = 0;
+		// 窗口大小
+		let sizePos = calculateSubWindowSize(this._currentMobileStages.length);
+		let x = 0;
+		let entryCount = 0;
 
 		this._currentMobileStages.forEach(function(mobileStage, i, all) {
-			var meshPos = new THREE.Vector3(x + (i - (all.length/2)) * 100, 0, 0);
-			mobileStage.entry(meshPos, sizePos[i]).then(function() {
+			let meshPos = new THREE.Vector3(x + (i - (all.length/2)) * 100, 0, 0);
+
+			mobileStage.entry(sizePos[i]).then(function() {
 				entryCount++;
 				if (entryCount === all.length) {
 					// todo entry animate done

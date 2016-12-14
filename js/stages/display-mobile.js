@@ -4,7 +4,7 @@ import TrackballControls from 'm3-trackballcontrol.js';
 
 class DisplayMobile extends Stage {
 
-	constructor(mobileName) {
+	constructor(mobileName, position) {
 		super();
 		this._windowSize; // for px calculate
 		this._winSizePX; // for render 
@@ -19,7 +19,7 @@ class DisplayMobile extends Stage {
 
 		this.trackball;
 		this.objects = {};
-		this.target;
+		this.target = position.clone();
 
 		// 模型位置，旋转等信息
 		this.objectSizes = {
@@ -57,10 +57,8 @@ class DisplayMobile extends Stage {
 		}).catch(function(e) { console.log(e.stack); });;
 	}
 
-	entry(meshPos, windowSize) {
+	entry(windowSize) {
 		this._windowSize = windowSize;
-		// 3d
-		this.target = new THREE.Vector3(meshPos.x, meshPos.y, meshPos.z);
 
         this.objects.mesh.position.copy(this.target);
         // this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
@@ -235,8 +233,8 @@ class DisplayMobile extends Stage {
 
 		// 3D 相关资源创建
  		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
- 		this.objects.spotLight.intensity = 1;
-		this._camera = new THREE.PerspectiveCamera(90, window.innerWidth / window.innerHeight, 0.1, 1000);
+ 		this.objects.spotLight.intensity = 1.5;
+		this._camera = new THREE.PerspectiveCamera(53, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 
         this.trackball = new TrackballControls(this._camera);
