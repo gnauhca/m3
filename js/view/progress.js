@@ -19,6 +19,7 @@ class ProgressView extends View {
 	inactivate() {
 		setTimeout(function() {
 			this._$progressWrap.style.display = 'none';
+			this.setProgress(0)
 		}.bind(this), 1000);
 	}
 

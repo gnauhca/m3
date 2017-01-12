@@ -157,7 +157,8 @@ body {
   z-index: 1000;
   bottom: 0;
   width: 100%;
-  background-color: rgba(255, 255, 255, 0.2); }
+  background-color: rgba(255, 255, 255, 0.2);
+  transition: all 0.5s; }
   .select-page .select-bar .select-bar-con {
     width: 1000px;
     margin: 0 auto; }
@@ -231,6 +232,9 @@ body {
     .select-page .select-bar .select-confirm.selected {
       color: #fff;
       background-color: #0bb6e2; }
+
+.select-page.inactivate .select-bar {
+  bottom: -50px; }
 
 #displayView {
   position: fixed;

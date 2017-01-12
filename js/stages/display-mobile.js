@@ -61,7 +61,8 @@ class DisplayMobile extends Stage {
 		this._windowSize = windowSize;
 
         this.objects.mesh.position.copy(this.target);
-        // this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+		
+        this.objects.mesh.rotation.copy(new THREE.Euler(-Math.PI/6, -0.4, -0.2, 'XYZ' ));
         this._camera.up.copy(M3.camera.up);
         this._camera.position.copy(M3.camera.position);
 		this._camera.position.z += 40;
@@ -70,9 +71,18 @@ class DisplayMobile extends Stage {
 		// light
         this.objects.spotLight.position.copy(this.target);
         this.objects.spotLight.position.y += 200;
-        this.objects.spotLight.position.x += 300;
+        this.objects.spotLight.position.x += 200;
         this.objects.spotLight.position.z += 100;
         this.objects.spotLight.lookAt(this.target); 
+
+		// light2
+        this.objects.spotLight2.position.copy(this.target);
+        this.objects.spotLight2.position.y -= 200;
+        this.objects.spotLight2.position.x -= 300;
+        this.objects.spotLight2.position.z -= 100;
+        this.objects.spotLight2.lookAt(this.target); 
+
+
 
 		// initial size info
 		this.objectSizes = {mesh: {}, camera: {}};
@@ -234,6 +244,10 @@ class DisplayMobile extends Stage {
 		// 3D 相关资源创建
  		this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
  		this.objects.spotLight.intensity = 1.5;
+
+ 		this.objects.spotLight2 = new THREE.SpotLight(0xeeeeee);
+ 		this.objects.spotLight2.intensity = 1.0;
+		 
 		this._camera = new THREE.PerspectiveCamera(53, window.innerWidth / window.innerHeight, 0.1, 1000);
 
 

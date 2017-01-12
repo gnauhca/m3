@@ -86,11 +86,12 @@ function appInit() {
 
  	var spotLight = new THREE.SpotLight(0xffffff);
  	spotLight.intensity = 0.8;
- 	spotLight.position.set(-300, 500, 200);
+ 	spotLight.position.set(-100, 500, 200);
  	spotLight.lookAt(new THREE.Vector3); 
 	M3.scene.add(spotLight);
 
-
+	var light = new THREE.AmbientLight( 0x666666 ); // soft white light
+	M3.scene.add( light );
 
 	window.addEventListener('resize', function() {
 		winWidth = window.innerWidth;
@@ -131,7 +132,7 @@ function appInit() {
 		stats.domElement.style.left = '0px';
 		stats.domElement.style.top = '0px';
 
-		document.body.appendChild(stats.domElement);
+		// document.body.appendChild(stats.domElement);
 		return stats;
 	}
 	var stats = initStats();

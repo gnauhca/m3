@@ -33,7 +33,7 @@ class Display extends View {
 	}
 
 	// data : {mobile: [pro5, mx6 ...]}
-	activate(data) { console.log(data);
+	activate(data) { //console.log(data);
 		var that = this;
 		// check self init
 		if (!this.isInit) {
@@ -298,7 +298,7 @@ class Display extends View {
 		this._currentMobileStages.forEach(function(mobileStage, i) {
 			mobileStage.unlock();
 		});
-		that.removeTick(this._lockTick); this._lockTick = null;
+		this.removeTick(this._lockTick); this._lockTick = null;
 	}
 
 

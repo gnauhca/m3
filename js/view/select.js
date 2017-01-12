@@ -84,8 +84,11 @@ class SelectView extends View {
 		
 	}
 
+
 	inactivate() {
 		this._selectStarsStage.leave();
+	
+		$('#selectView').addClass('inactivate');
 	}
 
 }

@@ -34,14 +34,14 @@ class Star extends Time {
 
 	build() {
 		// create mesh
-		let geom = new THREE.SphereGeometry(10, 30, 30);
+		let geom = new THREE.SphereGeometry(10 + Math.random() * 3, 6, 4);
 		/*geom = new THREE.TetrahedronGeometry(15, 0);
 		if (Math.random() > 0) {
 			geom = new THREE.BoxGeometry(15, 15, 15);
 		}*/
 		// geom.computeVertexNormals();
 
-		let material1 = new THREE.MeshBasicMaterial({color: 0x888888, wireframe: true});
+		let material1 = new THREE.MeshBasicMaterial({color: 0x333333, wireframe: true, opacity: 0.2});
 		// let material2 = THREE.CustomMaterial.glass.clone();
 		let material2 = new THREE.MeshLambertMaterial();
 		material2.envMap = M3.assets.envMap;
@@ -49,8 +49,8 @@ class Star extends Time {
 		material2.transparent = true;
 		material2.opacity = 0.1;
 		material2.refractionRatio = 1.4;
-		let mesh = new THREE.Mesh(geom, material2);
-		// let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [/*material1,*/ material2]);
+		// let mesh = new THREE.Mesh(geom, material2);
+		let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [material1, material2]);
 
 		mesh.rotation.set(Math.random(), Math.random(), Math.random());
 		this.mesh = mesh;
@@ -571,7 +571,12 @@ class SelectStars extends Stage {
 		this.removeTick(this._t);
 		this._pStars
 			.filter(pStar=>pStar.selected)
-			.forEach(pStar=>pStar.mesh.visible=false);
+			.forEach(pStar=>{
+				pStar.mesh.visible=false;
+			});
+
+		this.objects.lineGroup.visible = false;
+		
 	}
 
 

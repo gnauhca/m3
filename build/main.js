@@ -121,9 +121,12 @@
 	
 			var spotLight = new THREE.SpotLight(0xffffff);
 			spotLight.intensity = 0.8;
-			spotLight.position.set(-300, 500, 200);
+			spotLight.position.set(-100, 500, 200);
 			spotLight.lookAt(new THREE.Vector3());
 			M3.scene.add(spotLight);
+	
+			var light = new THREE.AmbientLight(0x666666); // soft white light
+			M3.scene.add(light);
 	
 			window.addEventListener('resize', function () {
 				winWidth = window.innerWidth;
@@ -162,7 +165,7 @@
 				stats.domElement.style.left = '0px';
 				stats.domElement.style.top = '0px';
 	
-				document.body.appendChild(stats.domElement);
+				// document.body.appendChild(stats.domElement);
 				return stats;
 			}
 			var stats = initStats();
@@ -341,6 +344,7 @@
 			value: function inactivate() {
 				setTimeout(function () {
 					this._$progressWrap.style.display = 'none';
+					this.setProgress(0);
 				}.bind(this), 1000);
 			}
 		}, {
@@ -1267,6 +1271,8 @@
 			key: 'inactivate',
 			value: function inactivate() {
 				this._selectStarsStage.leave();
+	
+				$('#selectView').addClass('inactivate');
 			}
 		}]);
 	
@@ -2027,14 +2033,14 @@
 			key: 'build',
 			value: function build() {
 				// create mesh
-				var geom = new THREE.SphereGeometry(10, 30, 30);
+				var geom = new THREE.SphereGeometry(10 + Math.random() * 3, 6, 4);
 				/*geom = new THREE.TetrahedronGeometry(15, 0);
 	   if (Math.random() > 0) {
 	   	geom = new THREE.BoxGeometry(15, 15, 15);
 	   }*/
 				// geom.computeVertexNormals();
 	
-				var material1 = new THREE.MeshBasicMaterial({ color: 0x888888, wireframe: true });
+				var material1 = new THREE.MeshBasicMaterial({ color: 0x333333, wireframe: true, opacity: 0.2 });
 				// let material2 = THREE.CustomMaterial.glass.clone();
 				var material2 = new THREE.MeshLambertMaterial();
 				material2.envMap = M3.assets.envMap;
@@ -2042,8 +2048,8 @@
 				material2.transparent = true;
 				material2.opacity = 0.1;
 				material2.refractionRatio = 1.4;
-				var mesh = new THREE.Mesh(geom, material2);
-				// let mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [/*material1,*/ material2]);
+				// let mesh = new THREE.Mesh(geom, material2);
+				var mesh = THREE.SceneUtils.createMultiMaterialObject(geom, [material1, material2]);
 	
 				mesh.rotation.set(Math.random(), Math.random(), Math.random());
 				this.mesh = mesh;
@@ -2618,8 +2624,10 @@
 				this._pStars.filter(function (pStar) {
 					return pStar.selected;
 				}).forEach(function (pStar) {
-					return pStar.mesh.visible = false;
+					pStar.mesh.visible = false;
 				});
+	
+				this.objects.lineGroup.visible = false;
 			}
 		}, {
 			key: '_select',
@@ -2921,7 +2929,7 @@
 		_createClass(Display, [{
 			key: 'activate',
 			value: function activate(data) {
-				console.log(data);
+				//console.log(data);
 				var that = this;
 				// check self init
 				if (!this.isInit) {
@@ -3200,7 +3208,7 @@
 				this._currentMobileStages.forEach(function (mobileStage, i) {
 					mobileStage.unlock();
 				});
-				that.removeTick(this._lockTick);this._lockTick = null;
+				this.removeTick(this._lockTick);this._lockTick = null;
 			}
 		}]);
 	
@@ -3313,7 +3321,8 @@
 				this._windowSize = windowSize;
 	
 				this.objects.mesh.position.copy(this.target);
-				// this.objects.mesh.rotation.copy(new THREE.Euler(Math.PI/3, -0.2, .8, 'XYZ' ));
+	
+				this.objects.mesh.rotation.copy(new THREE.Euler(-Math.PI / 6, -0.4, -0.2, 'XYZ'));
 				this._camera.up.copy(M3.camera.up);
 				this._camera.position.copy(M3.camera.position);
 				this._camera.position.z += 40;
@@ -3322,9 +3331,16 @@
 				// light
 				this.objects.spotLight.position.copy(this.target);
 				this.objects.spotLight.position.y += 200;
-				this.objects.spotLight.position.x += 300;
+				this.objects.spotLight.position.x += 200;
 				this.objects.spotLight.position.z += 100;
 				this.objects.spotLight.lookAt(this.target);
+	
+				// light2
+				this.objects.spotLight2.position.copy(this.target);
+				this.objects.spotLight2.position.y -= 200;
+				this.objects.spotLight2.position.x -= 300;
+				this.objects.spotLight2.position.z -= 100;
+				this.objects.spotLight2.lookAt(this.target);
 	
 				// initial size info
 				this.objectSizes = { mesh: {}, camera: {} };
@@ -3512,6 +3528,10 @@
 				// 3D 相关资源创建
 				this.objects.spotLight = new THREE.SpotLight(0xeeeeee);
 				this.objects.spotLight.intensity = 1.5;
+	
+				this.objects.spotLight2 = new THREE.SpotLight(0xeeeeee);
+				this.objects.spotLight2.intensity = 1.0;
+	
 				this._camera = new THREE.PerspectiveCamera(53, window.innerWidth / window.innerHeight, 0.1, 1000);
 	
 				this.trackball = new _m3Trackballcontrol2.default(this._camera);
