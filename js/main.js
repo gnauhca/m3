@@ -103,10 +103,10 @@ function appInit() {
 
 
 	/* helper */
-	var size = 400;
-	var step = 10;
-	var axisHelper = new THREE.AxisHelper( 100 );
-	M3.scene.add( axisHelper );
+	// var size = 400;
+	// var step = 10;
+	// var axisHelper = new THREE.AxisHelper( 100 );
+	// M3.scene.add( axisHelper );
 	/* grid helper */
 	// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	// gridHelperX.rotation.z = Math.PI / 2;
