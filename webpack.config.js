@@ -26,17 +26,26 @@ module.exports = {
     entry: entrys,
     output: {
         'filename': '[name].js',
-        'path': './build'
+        'path': './build',
+        'publicPath': '/'
     },
     resolve: {
         root: process.cwd(),
-        modulesDirectories: ['./', 'node_modules', './js/libs', './js/common', './js/config']
+        modules: ['./', 'node_modules'/*, './js/libs', './js/common', './js/config'*/]
     },
 
     devtool: 'source-map',
 
     module: {
-        loaders: [
+        rules: [
+            {
+                test: ''
+            },
+        ]
+
+
+
+        /*loaders: [
             { test: /css\/m3\.scss$/, loader: ExtractTextPlugin.extract(['css', 'sass']) },
             { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] },
 
@@ -48,7 +57,7 @@ module.exports = {
                 loader: 'babel', 
                 query: { presets: ['es2015'] }
             }
-        ]
+        ]*/
     },
 
     plugins: [
