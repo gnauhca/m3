@@ -1,13 +1,14 @@
-window.$ = window.jQuery = require('jquery');
-window.THREE = require('./libs/three.min.js');
-window.TWEEN = require('./libs/Tween.js');
+require('script-loader!jquery');
 
-// require('exports?window.dat!./libs/dat.gui.js');
+require('script-loader?three');
+require('script-loader?tween.js');
+require('script-loader!./common/utils.js');
+require('script-loader!./common/three-common.js');
+
+require('./libs/dat.gui.js');
+require('./libs/stats.js');
 require('./libs/d3-threeD.js');
 require('./libs/SubdivisionModifier.js');
 require('./libs/TrackballControls.js');
 require('./libs/OrbitControls.js');
 
-require('./common/time.js');
-require('./common/utils.js');
-require('./common/three-common.js');

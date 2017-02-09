@@ -27,14 +27,18 @@
     "exports-loader": "^0.6.3",
     "extract-text-webpack-plugin": "^2.0.0-rc.3",
     "file-loader": "^0.10.0",
+    "ionicons": "^3.0.0",
     "jquery": "^3.1.1",
     "json-loader": "^0.5.4",
     "node-sass": "^4.5.0",
     "sass-loader": "^5.0.1",
+    "script-loader": "^0.7.0",
+    "three": "^0.79.0",
     "to-string-loader": "^1.1.5",
     "tojson-loader": "^1.0.4",
     "tween.js": "^16.6.0",
     "url-loader": "^0.5.7",
-    "webpack": "^2.2.1"
+    "webpack": "^2.2.1",
+    "wolfy87-eventemitter": "^5.1.0"
   }
 }

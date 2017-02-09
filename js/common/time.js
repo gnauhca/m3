@@ -1,7 +1,6 @@
-import EventEmitter from 'EventEmitter.js';
+import EventEmitter from 'wolfy87-eventemitter';
 /* 时间 */
 var TIME = {
-
 	// 所有时间body对象
 	bodys : [],
 	delta: 16

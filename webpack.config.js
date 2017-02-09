@@ -22,6 +22,10 @@ entrys.main = './js/main.js';
 entrys.presets = './js/presets.js';
 
 
+// ExtractTextPlugin
+var extractLess = new ExtractTextPlugin('[name].css');
+var extractCss = new ExtractTextPlugin('[name].css');
+
 module.exports = {
     entry: entrys,
     output: {
@@ -31,33 +35,39 @@ module.exports = {
     },
     resolve: {
         root: process.cwd(),
-        modules: ['./', 'node_modules'/*, './js/libs', './js/common', './js/config'*/]
+        modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
     },
 
     devtool: 'source-map',
 
     module: {
         rules: [
-            {
-                test: ''
+            { 
+                test: /\.scss$/, 
+                use: extractLess.extract(['css', 'sass']) 
             },
-        ]
-
-
-
-        /*loaders: [
-            { test: /css\/m3\.scss$/, loader: ExtractTextPlugin.extract(['css', 'sass']) },
-            { test: /assets.*?\.(png|jpeg|jpg)$/, loaders: ['file?name=[path][name].[ext]'] },
-
-            { test: /assets.*?\.json$/, loaders: ['json'] },
-            { test: /assets.*?\.js$/, loaders: ['file?name=[path][name].[ext]','tojson'] },
+            { 
+                test: /\.css$/, 
+                use: extractCss.extract('css', 'sass') 
+            },
+            { 
+                test: /assets.*?\.(png|jpeg|jpg)$/, 
+                use: ['file?name=[path][name].[ext]'] 
+            },
+            { 
+                test: /assets.*?\.js$/, 
+                use: ['file?name=[path][name].[ext]','tojson'] 
+            },
             {
-                test: /js.*?\.js$/,
+                test: /\.js$/,
                 exclude: /node_modules/,
-                loader: 'babel', 
-                query: { presets: ['es2015'] }
+                use: 'babel'
+            },
+            {
+                test: /libs.*\.js$/,
+                use: 'script'
             }
-        ]*/
+        ]
     },
 
     plugins: [
@@ -68,11 +78,15 @@ module.exports = {
             CONFIG: 'config',
             Util: 'util'
         }),
-        new ExtractTextPlugin("common.css")
+        new ExtractTextPlugin({
+            filename: "common.css",
+            disable: false,
+            allChunks: true
+        })
     ],
 
     devServer: {
-        'content-base': '/',
+        // 'content-base': '/',
         'inline': true,
         'host': '0.0.0.0',
         'port': 9123

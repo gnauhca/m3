@@ -142,7 +142,6 @@ window.getAngle = function(x, y) {
 	return angel;
 }
 
-
 window.calculateSubWindowSize = (function() {
 	var r13 = 1/3;
 	var r23 = 2/3;

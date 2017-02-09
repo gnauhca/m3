@@ -4,8 +4,9 @@ import Loader from 'loader.js';
 import {ASSETS} from 'config.js'
 
 require('../css/m3.scss');//return;
-
+require('ionicons/dist/css/ionicons.css');
 // require('../assets/mobiles/pro5/pro5.js');
+
 (function() { 
 
 window.M3 = {};
@@ -19,9 +20,7 @@ progressView.activate();
 
 
 
-//        var textureCube = THREE.ImageUtils.loadTextureCube( urls );
-
-
+// var textureCube = THREE.ImageUtils.loadTextureCube( urls );
 
 loader.load(ASSETS, function(percent) {
 	progressView.setProgress(percent);
