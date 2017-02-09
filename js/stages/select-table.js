@@ -1,5 +1,5 @@
 import Stage from './stage.js';
-import selectCfg from 'select-conf.js';
+import selectCfg from '../config/select-conf.js';
 
 // Dependencies CONFIG.selects
 class SelectTable extends Stage {

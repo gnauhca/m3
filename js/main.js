@@ -1,7 +1,7 @@
 import ViewManager from './view/view-manager.js';
 import Time from 'time.js';
 import Loader from 'loader.js';
-import {ASSETS} from 'config.js'
+import {ASSETS} from './config/config.js'
 
 require('../css/m3.scss');//return;
 require('ionicons/dist/css/ionicons.css');

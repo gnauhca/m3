@@ -1,4 +1,4 @@
-import Time from 'time.js';
+import Time from '../common/time.js';
 
 class Stage extends Time {
 

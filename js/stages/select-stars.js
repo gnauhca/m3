@@ -1,6 +1,6 @@
-import Time from 'time.js';
+import Time from '../common/time.js';
+import selectCfg from '../config/select-conf.js';
 import Stage from './stage.js';
-import selectCfg from 'select-conf.js';
 import ExplodeParticles from './explode-particles.js';
 
 class Star extends Time {

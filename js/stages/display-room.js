@@ -1,5 +1,5 @@
 var View = require('./view.js');
-var Loader = require('./loader');
+var Loader = require('../common/loader.js');
 
 
 var DisplayRoom = View.extend(function() {

@@ -2,7 +2,7 @@ import View from './view.js';
 import SelectTable from '../stages/select-table.js';
 import SelectCube from '../stages/select-cube.js';
 import SelectStars from '../stages/select-stars.js';
-import selectCfg from 'select-conf.js';
+import selectCfg from '../config/select-conf.js';
 
 
 class SelectView extends View {

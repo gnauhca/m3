@@ -3,38 +3,22 @@ var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
 
-// 模型 json 文件作为入口，异步加载
-function getModelEntrys() {
-    var base = 'assets/mobiles/';
-    var products = fs.readdirSync(base);
-    var entrys = {};
-
-    
-    products.forEach(function(product) {
-        if (/^[^\.]/.test(product))
-        entrys[product] = base + product + '/' + product + '.js';
-    });
-    return entrys;
-}
 var entrys = {};
-// var entrys = getModelEntrys();
 entrys.main = './js/main.js';
 entrys.presets = './js/presets.js';
 
-
 // ExtractTextPlugin
-var extractLess = new ExtractTextPlugin('[name].css');
-var extractCss = new ExtractTextPlugin('[name].css');
+var extractSass = new ExtractTextPlugin('m3.css');
+var extractCss = new ExtractTextPlugin('ionicons.css');
 
 module.exports = {
     entry: entrys,
     output: {
         'filename': '[name].js',
-        'path': './build',
+        'path': path.resolve(__dirname, 'build'),
         'publicPath': '/'
     },
     resolve: {
-        root: process.cwd(),
         modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
     },
 
@@ -44,29 +28,33 @@ module.exports = {
         rules: [
             { 
                 test: /\.scss$/, 
-                use: extractLess.extract(['css', 'sass']) 
+                use: extractSass.extract(['css-loader', 'sass-loader']) 
             },
             { 
                 test: /\.css$/, 
-                use: extractCss.extract('css', 'sass') 
+                use: extractCss.extract(['css-loader']) 
             },
-            { 
+            /*{ 
                 test: /assets.*?\.(png|jpeg|jpg)$/, 
-                use: ['file?name=[path][name].[ext]'] 
-            },
+                use: ['file-loader?name=[path][name].[ext]'] 
+            },*/
             { 
                 test: /assets.*?\.js$/, 
-                use: ['file?name=[path][name].[ext]','tojson'] 
+                use: ['file-loader?name=[path][name].[ext]','tojson-loader'] 
+            },
+            { 
+                test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, 
+                use: 'url-loader?limit=8192&name=[path][name].[ext]'
+            },
+            {
+                test: /libs.*\.js$/,
+                use: 'script-loader'
             },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
-                use: 'babel'
+                use: 'babel-loader'
             },
-            {
-                test: /libs.*\.js$/,
-                use: 'script'
-            }
         ]
     },
 
@@ -78,11 +66,8 @@ module.exports = {
             CONFIG: 'config',
             Util: 'util'
         }),
-        new ExtractTextPlugin({
-            filename: "common.css",
-            disable: false,
-            allChunks: true
-        })
+        extractSass,
+        extractCss
     ],
 
     devServer: {

@@ -4,7 +4,6 @@
  * @author alteredq / http://alteredqualia.com/
  * @author WestLangley / http://github.com/WestLangley
  */
-
 THREE.OrbitControls = function ( object, domElement ) {
 
     this.object = object;

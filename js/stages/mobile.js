@@ -1,7 +1,7 @@
 // Dependencies CONFIG.mobiles
-import Time from 'time.js';
-import Loader from 'loader.js';
-import MobileConfigs from 'mobile-conf.js';
+import Time from '../common/time.js';
+import Loader from '../common/loader.js';
+import MobileConfigs from '../config/mobile-conf.js';
 
 var loader = new Loader();
 var mobileEnvMap;
