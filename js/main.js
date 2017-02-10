@@ -4,7 +4,7 @@ import Loader from 'loader.js';
 import {ASSETS} from './config/config.js'
 
 require('../css/m3.scss');//return;
-require('ionicons/dist/css/ionicons.css');
+require('../css/ionicons/css/ionicons.css');
 // require('../assets/mobiles/pro5/pro5.js');
 
 (function() { 

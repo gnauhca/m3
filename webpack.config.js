@@ -2,17 +2,17 @@ var fs = require('fs');
 var path = require('path');
 var webpack = require('webpack');
 var ExtractTextPlugin = require('extract-text-webpack-plugin');
-
-var entrys = {};
-entrys.main = './js/main.js';
-entrys.presets = './js/presets.js';
+var HtmlWebpackPlugin = require('html-webpack-plugin');
 
 // ExtractTextPlugin
 var extractSass = new ExtractTextPlugin('m3.css');
 var extractCss = new ExtractTextPlugin('ionicons.css');
 
 module.exports = {
-    entry: entrys,
+    entry: {
+        presets: './js/presets.js',
+        main: './js/main.js'
+    },
     output: {
         'filename': '[name].js',
         'path': path.resolve(__dirname, 'build'),
@@ -34,31 +34,33 @@ module.exports = {
                 test: /\.css$/, 
                 use: extractCss.extract(['css-loader']) 
             },
-            /*{ 
-                test: /assets.*?\.(png|jpeg|jpg)$/, 
-                use: ['file-loader?name=[path][name].[ext]'] 
-            },*/
             { 
                 test: /assets.*?\.js$/, 
                 use: ['file-loader?name=[path][name].[ext]','tojson-loader'] 
             },
             { 
                 test: /\.(gif|jpg|png|woff|svg|eot|ttf)\??.*$/, 
-                use: 'url-loader?limit=8192&name=[path][name].[ext]'
-            },
-            {
-                test: /libs.*\.js$/,
-                use: 'script-loader'
+                use: 'file-loader?name=[path][name].[ext]'
             },
             {
                 test: /\.js$/,
                 exclude: /node_modules/,
                 use: 'babel-loader'
             },
+            {
+                test: /libs.*\.js$/,
+                use: 'script-loader'
+            },
         ]
     },
 
     plugins: [
+        new HtmlWebpackPlugin({
+            chunksSortMode: function(a, b, c, d) {
+                return 1;
+            },
+            template: './index.html'
+        }),
         new webpack.ProvidePlugin({
             // $: "jquery",
             // jQuery: "jquery",
