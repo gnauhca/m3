@@ -16,7 +16,7 @@ module.exports = {
     output: {
         'filename': '[name].js',
         'path': path.resolve(__dirname, 'build'),
-        'publicPath': '/'
+        'publicPath': './'
     },
     resolve: {
         modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
