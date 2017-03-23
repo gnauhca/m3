@@ -16,8 +16,8 @@ class ExplodeParticles extends Time {
     build() {
         let that = this;
         let logoImg = M3.assets.logoImg.img;
-        // let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.dataset.src); 
-        let particleMap= M3.assets.particleMap.texture;
+        let particleMap = new THREE.TextureLoader().load(M3.assets.particleMap.src); 
+        // let particleMap = M3.assets.particleMap.texture;
         // particleMap.image = M3.assets.particleMap;
 
         let imgData = getImageData(logoImg, 0, 0, 0);
@@ -52,7 +52,7 @@ class ExplodeParticles extends Time {
             geom.vertices.push(v3);
             // geom.vertices.push(v3);
         });
-        that.particleSystem = new THREE.ParticleSystem(geom, material); 
+        that.particleSystem = new THREE.Points(geom, material); 
             // M3.scene.add(that.particleSystem);
             // console.log(that.particleSystem);
     }

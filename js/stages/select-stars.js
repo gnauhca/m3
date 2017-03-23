@@ -101,7 +101,14 @@ class ProductStar extends Star {
 
 		this.updateT;
 	}
-
+	static getPointLightTexture() {
+		let pointLightMap =  new THREE.TextureLoader().load(M3.assets.particleMap.src);
+		function _getPointLightTexture() {
+			return pointLightMap;
+		}
+		Line.getPointLightTexture = _getPointLightTexture;
+		return _getPointLightTexture();
+	}
 	init() {
 		super.init(); // call build
 		// this.removeTick(this.rotateT);
@@ -138,7 +145,7 @@ class ProductStar extends Star {
 		svgMesh.rotation.setFromQuaternion(quaternion);
 		this._svgMesh = svgMesh;
 
-		let spriteMap = M3.assets.particleMap.texture; 
+		let spriteMap = ProductStar.getPointLightTexture(); 
 
 		let spriteMaterial = new THREE.SpriteMaterial({
 			map: spriteMap,
@@ -194,6 +201,15 @@ class Line extends Time {
 		this.connected = false;
 		this.init();
 	}
+	
+	static getPointLightTexture() {
+		let pointLightMap =  new THREE.TextureLoader().load(M3.assets.particleMap.src);
+		function _getPointLightTexture() {
+			return pointLightMap;
+		}
+		Line.getPointLightTexture = _getPointLightTexture;
+		return _getPointLightTexture();
+	}
 
 	init() {
 		let lineMaterial = new THREE.LineBasicMaterial( { color: 0xffffff, opacity: 0, linewidth: 1, transparent: true } );
@@ -208,7 +224,7 @@ class Line extends Time {
 		lineGeom.vertices.push(this.start, this.end);
 		this.line = new THREE.Line(lineGeom, lineMaterial);
 
-		let pointLightMap = M3.assets.particleMap.texture; 
+		let pointLightMap =  Line.getPointLightTexture(); 
 
 		let spriteMaterial = new THREE.SpriteMaterial({
 			map: pointLightMap,
@@ -551,6 +567,8 @@ class SelectStars extends Stage {
 				that._controls.update(delta);
 			});
 		});
+
+
 
 		// control travel
 		/*this.camera.position.set(0,0,1000);

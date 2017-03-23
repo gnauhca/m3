@@ -14,6 +14,7 @@ class ProgressView extends View {
 
 	activate() { 
 		this._$progressWrap.style.display = 'block';
+		this.setProgress(0)
 	}
 
 	inactivate() {
@@ -33,12 +34,14 @@ class ProgressView extends View {
 			return initColor[i] + (colorVal - initColor[i]) * percent|0;
 		});
 
-		this._$waterDivs.forEach(function($waterDiv) {
+		for (let $waterDiv of this._$waterDivs) {
+
 			$waterDiv.style.backgroundColor = 'rgba(' + currentColor.join(',') + ',' + opacity + ')';
-		});
+		};
 
 		this._$progressVal.innerHTML = (percent*100 | 0) + '%';
-		percent *= 0.999;
+		// percent *= 0.999;
+		// console.log(percent.toFixed(2));
 		this._$water.style.transform = 'scaleY(' + percent.toFixed(2) + ')';
 	}
 }

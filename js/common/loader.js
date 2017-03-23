@@ -58,7 +58,7 @@ class Loader {
 					}, function(progress) {
 						loadTask.loaded = loadTask.size * progress;
 						onProgress(getLoadedSize() / totalSize);
-					});
+					}, loadTask.size);
 				})(loadTask);
 			}			
 		});
@@ -118,7 +118,7 @@ class Loader {
 
 	// 遍历下载参数里的 url， 替换成下载结果缓存
 	_getResults(_params) {
-		let params = $.extend(true, {}, _params);
+		let params = { ..._params };
 
 		function _getResults(params) {
 			if (Object.prototype.toString.call(params) === '[object Array]') {
@@ -146,73 +146,91 @@ class Loader {
  * loadMethod 根据不同type 应用相应策略下载资源缓存在 loaded cache 中
  * img直接缓存 url 
  */
-let loadMethod = {
 
-	// 下载图片 
-	// return {src: string, img: dom, texture: THREE.Texture}
-	'img': function(url, onload, onProgress) {
-		let imgLoader = new THREE.ImageLoader();
-		imgLoader.load(url, function(img) {
-			let particleMap = new THREE.TextureLoader().load(url, function(texture) {
-				let imgInfo = {};
-				imgInfo.img = img;
-				imgInfo.src = url;
-				imgInfo.texture = texture;
-				onload(imgInfo);
-			});
-			/*img.dataset.src = url;
-			onload(img);*/
-		}, function(xhr) {
-			return onProgress(xhr.loaded / xhr.total);
-		});
-	},
-
-	// 下载 模型
-	'json': function(url, onload, onProgress) {
-		let xhrLoader = new THREE.XHRLoader();
-		xhrLoader.load(url, onload, function(xhr) {
-			return onProgress(xhr.loaded / xhr.total);
-		});
-	},
-
-	// model 
-	'model': function(url, onload, onProgress) {
-		let xhrLoader = new THREE.XHRLoader();
-		xhrLoader.load(url, function(str) {
-			onload(str.replace(/module\.exports\s*=\s*/, ''));
-		}, function(xhr) {
-			return onProgress(xhr.loaded / xhr.total);
-		});
-	},
-
-	// 下载 script 
-	'js': function(url, onload, onProgress) {
-
+class XHRLoader {
+	load(url, onLoad, onProgress, onError, size) {
 		let req = new XMLHttpRequest();
 
 		// report progress events
+		// console.log(url);
+		
 		req.addEventListener("progress", function(xhr) {
+				// console.log(url, xhr.lengthComputable);
+			// console.log(url, xhr);
 		    if (xhr.lengthComputable) {
 		        onProgress(xhr.loaded / xhr.total);
-		    }
+		    } else if (size) {
+				// console.log(xhr.loaded);
+				onProgress(Math.min(0.999, xhr.loaded / (size * 1024 * 5)));
+			}
 		}, false);
 
 		// load responseText into a new script element
 		req.addEventListener("load", function(event) {
-		    let e = event.target;
-		    let s = document.createElement("script");
-		    s.innerHTML = e.responseText;
-		    // or: s[s.innerText!=undefined?"innerText":"textContent"] = e.responseText
-		    document.documentElement.appendChild(s);
-			onload();
-		    /*s.addEventListener("load", function() {
-		    	console.log(1);
-		        
-		    });*/
+			var response = event.target.response;
+			if ( this.status === 200 ) {
+				if ( onLoad ) onLoad( response );
+			} else if ( this.status === 0 ) {
+				if ( onLoad ) onLoad( response );
+			} else {
+				if ( onError ) onError( event );
+			}
 		}, false);
 
+		// console.log(url);
 		req.open("GET", url);
-		req.send();
+		req.send(null);
+	}
+}
+
+let loadMethod = {
+
+	// 下载图片 
+	// return {src: string, img: dom, texture: THREE.Texture}
+	'img': function(url, onLoad, onProgress) {
+		let loader = new XHRLoader();
+		loader.load(url, function() {
+			let img = new Image();
+			img.onload = ()=>{
+				let imgInfo = {};
+				imgInfo.img = img;
+				imgInfo.src = url;
+				onLoad(imgInfo);
+			}
+			img.src = url;
+		}, onProgress);
+	},
+
+	// 下载 模型
+	'json': function(url, onLoad, onProgress, size) {
+		let xhrLoader = new XHRLoader();
+		xhrLoader.load(url, (str)=>{ onLoad(JSON.parse(str)); }, onProgress);
+	},
+
+	// model 
+	'model': function(url, onLoad, onProgress, size) {
+		let xhrLoader = new XHRLoader();
+		xhrLoader.load(url, function(str) {
+			onLoad(str.replace(/module\.exports\s*=\s*/, ''));
+		}, onProgress, null, size);
+	},
+
+	// 下载 script 
+	'js': function(url, onLoad, onProgress, size) {
+		let xhrLoader = new XHRLoader();
+		xhrLoader.load(url, function() {
+			let jsInfo = {};
+			jsInfo.src = url;
+			onLoad(jsInfo);
+		}, onProgress, null, size);
+	},
+	'font': function(url, onLoad, onProgress) {
+		let xhrLoader = new XHRLoader();
+		xhrLoader.load(url, function() {
+			let info = {};
+			info.src = url;
+			onLoad(info);
+		}, onProgress);
 	}
 }
 

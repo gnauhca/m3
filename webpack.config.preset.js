@@ -11,8 +11,8 @@ var extractCss = new ExtractTextPlugin('ionicons.css');
 
 module.exports = {
     entry: {
-        // presets: './js/presets.js',
-        main: './js/main.js'
+        presets: './js/presets.js',
+        // main: './js/main.js'
     },
     output: {
         'filename': '[name].js',
@@ -23,7 +23,7 @@ module.exports = {
         modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
     },
 
-    devtool: 'source-map',
+    // devtool: 'source-map',
 
     module: {
         rules: [
@@ -54,29 +54,7 @@ module.exports = {
             },
         ]
     },
-
     plugins: [
-        new HtmlWebpackPlugin({
-            chunksSortMode: function(a, b, c, d) {
-                return 1;
-            },
-            template: './index.html'
-        }),
-        new webpack.ProvidePlugin({
-            // $: "jquery",
-            // jQuery: "jquery",
-            // "window.$": "jquery",
-            CONFIG: 'config',
-            Util: 'util'
-        }),
-        extractSass,
-        extractCss
-    ],
-
-    devServer: {
-        // 'content-base': '/',
-        'inline': true,
-        'host': '0.0.0.0',
-        'port': 9123
-    }
+        new UglifyJSPlugin({comments: false})
+    ]
 }

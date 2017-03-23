@@ -7,6 +7,7 @@ require('../css/m3.scss');//return;
 require('../css/ionicons/css/ionicons.css');
 // require('../assets/mobiles/pro5/pro5.js');
 
+
 (function() { 
 
 window.M3 = {};
@@ -14,49 +15,30 @@ M3.viewManager = new ViewManager();
 
 // todo: webgl 检查
 // ...
-var loader = new Loader();
-var progressView = M3.viewManager.getView('progress');
+let loader = new Loader();
+let progressView = M3.viewManager.getView('progress');
 progressView.activate();
 
 
 
-// var textureCube = THREE.ImageUtils.loadTextureCube( urls );
+// let textureCube = THREE.ImageUtils.loadTextureCube( urls );
 
 loader.load(ASSETS, function(percent) {
+	// console.log(percent);
 	progressView.setProgress(percent);
 }).then(function(assets) {
+	progressView.setProgress(1);
+	
+	
 	M3.assets = assets;
-	progressView.inactivate();
-
-	// envMap
-	M3.assets.envMap = new THREE.CubeTexture(
-		[
-			M3.assets.envPosX.texture,
-			M3.assets.envNegX.texture,
-			M3.assets.envPosY.texture,
-			M3.assets.envNegY.texture,
-			M3.assets.envPosZ.texture,
-			M3.assets.envNegZ.texture
-		],
-		THREE.CubeReflectionMapping
-	);
-
-	var urls = [
-		ASSETS.envPosX.url,
-		ASSETS.envNegX.url,
-		ASSETS.envPosY.url,
-		ASSETS.envNegY.url,
-		ASSETS.envPosZ.url,
-		ASSETS.envNegZ.url
-	];
-	var textureCube = THREE.ImageUtils.loadTextureCube(urls,  THREE.CubeReflectionMapping);
-	M3.assets.envMap = textureCube;
-	// console.log(M3.assets.envMap);
-	
-	
-	appInit();
-
-
+	// excute preset.js
+	let script = document.createElement('script');
+	script.src = M3.assets.presetjs.src;
+	script.onload = ()=>{
+		appInit();
+		progressView.inactivate();
+	};
+	document.body.appendChild(script);
 });
 
 // appInit();
@@ -70,58 +52,75 @@ function appInit() {
 	document.body.appendChild(M3.renderer.domElement);
 	M3.renderer.setClearColor(0x2abced, 0);
 
-	var winWidth = window.innerWidth;
-	var winHeight = window.innerHeight;
+	let winWidth = window.innerWidth;
+	let winHeight = window.innerHeight;
 
 	M3.renderer.setSize(winWidth, winHeight);
+
+
+	let urls = [
+		M3.assets.envPosX.src,
+		M3.assets.envNegX.src,
+		M3.assets.envPosY.src,
+		M3.assets.envNegY.src,
+		M3.assets.envPosZ.src,
+		M3.assets.envNegZ.src
+	];
+	let textureCube = new THREE.CubeTextureLoader().load(urls);
+	textureCube.mapping = THREE.CubeReflectionMapping;
+	M3.assets.envMap = textureCube;
+	// console.log(M3.assets.envMap);
+
 
 
 	M3.camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 5000);
 
 
 	/* fog */
-	var fog = new THREE.Fog(0x666666, 0, 2000);
+	let fog = new THREE.Fog(0x666666, 0, 2000);
 	// M3.scene.fog = fog;
 
- 	var spotLight = new THREE.SpotLight(0xffffff);
+ 	let spotLight = new THREE.SpotLight(0xffffff);
  	spotLight.intensity = 0.8;
  	spotLight.position.set(-100, 500, 200);
  	spotLight.lookAt(new THREE.Vector3); 
 	M3.scene.add(spotLight);
 
-	var light = new THREE.AmbientLight( 0x666666 ); // soft white light
+	let light = new THREE.AmbientLight( 0x666666 ); // soft white light
 	M3.scene.add( light );
 
-	window.addEventListener('resize', function() {
+
+	function resize() {
 		winWidth = window.innerWidth;
 		winHeight = window.innerHeight;
-		M3.camera.aspect = winWidth / winHeight;
-		M3.camera.updateProjectionMatrix();
+		M3.camera.setFovAndAspect(winWidth / winHeight);
 		M3.renderer.setSize(winWidth, winHeight);
-	});
+	}
+	resize();
+	window.addEventListener('resize', resize);
 
 
 
 	/* helper */
-	// var size = 400;
-	// var step = 10;
-	// var axisHelper = new THREE.AxisHelper( 100 );
+	// let size = 400;
+	// let step = 10;
+	// let axisHelper = new THREE.AxisHelper( 100 );
 	// M3.scene.add( axisHelper );
 	/* grid helper */
-	// var gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
+	// let gridHelperX = new THREE.GridHelper( size, step, 0xff0000 );
 	// gridHelperX.rotation.z = Math.PI / 2;
 	// M3.scene.add( gridHelperX );
 
-	// var gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
+	// let gridHelperY = new THREE.GridHelper( size, step, 0x00ff00 );
 	// M3.scene.add( gridHelperY );
 
-	// var gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
+	// let gridHelperZ = new THREE.GridHelper( size, step, 0x0000ff );
 	// gridHelperZ.rotation.x = Math.PI / 2;
 	// M3.scene.add( gridHelperZ );
 
 	function initStats() {
 
-		var stats = new Stats();
+		let stats = new Stats();
 
 		stats.setMode(0); // 0: fps, 1: ms
 
@@ -134,10 +133,10 @@ function appInit() {
 		// document.body.appendChild(stats.domElement);
 		return stats;
 	}
-	var stats = initStats();
+	let stats = initStats();
 
 	// main render tick
-	var m3Time = new Time();
+	let m3Time = new Time();
 
 	M3.time = new Time();
 	M3.time.addTick(function() {

@@ -11,7 +11,6 @@ var extractCss = new ExtractTextPlugin('ionicons.css');
 
 module.exports = {
     entry: {
-        // presets: './js/presets.js',
         main: './js/main.js'
     },
     output: {
@@ -23,7 +22,7 @@ module.exports = {
         modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
     },
 
-    devtool: 'source-map',
+    // devtool: 'source-map',
 
     module: {
         rules: [
@@ -56,6 +55,7 @@ module.exports = {
     },
 
     plugins: [
+        new UglifyJSPlugin({comments: false}),
         new HtmlWebpackPlugin({
             chunksSortMode: function(a, b, c, d) {
                 return 1;
@@ -71,12 +71,5 @@ module.exports = {
         }),
         extractSass,
         extractCss
-    ],
-
-    devServer: {
-        // 'content-base': '/',
-        'inline': true,
-        'host': '0.0.0.0',
-        'port': 9123
-    }
+    ]
 }

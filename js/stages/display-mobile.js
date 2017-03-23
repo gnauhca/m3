@@ -131,9 +131,7 @@ class DisplayMobile extends Stage {
 
 		this._winSizePX['bottom'] = winHeight - this._winSizePX['height'] - this._winSizePX['top'];
 
-		this._camera.aspect = this._winSizePX['width'] / this._winSizePX['height'];
-		this._camera.updateProjectionMatrix();
-
+		this._camera.setFovAndAspect(this._winSizePX['width'] / this._winSizePX['height']);
 		this.trackball.handleResize(this._winSizePX);
 	}
 

@@ -13,6 +13,18 @@ THREE.THREEUtil = {
 
 }
 
+/**
+* 计算相机 fov 的函数
+* @param k : 想要看到最大正方形区域边长为 w 和 相机到目标距离 d  k = w/d
+* @param r : 屏幕宽高比
+*/
+THREE.Camera.prototype.setFovAndAspect = function(r, k = 1) {
+	this.aspect = r;
+	this.fov = Math.atan(k/(2*(r<1?r:1)))*2 * (180 / Math.PI);
+	this.updateProjectionMatrix();
+}
+
+
 // Object3DAnimate
 var threeTime = new Time();
 THREE.Object3D.prototype.animate = function(target, dur, delay=0, tweenObj) {

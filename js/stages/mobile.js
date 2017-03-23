@@ -5,7 +5,6 @@ import MobileConfigs from '../config/mobile-conf.js';
 
 var loader = new Loader();
 var mobileEnvMap;
-var JSONLoader = new THREE.JSONLoader();
 
 
 
@@ -22,7 +21,7 @@ class Mobile extends Time {
 		this._colors = [];
 		this._currentColor;
 		this._uuidMaterialNameMap = {};
-		this._texturePath = './assets/texture/';
+		// this._texturePath = './assets/texture/';
 
 		MobileConfigs.forEach(function(mobile) {
 			if (mobile.name === mobileName) {
@@ -122,7 +121,7 @@ class Mobile extends Time {
 				}
 			});
 		}
-		return JSONLoader.parse(json, location.pathname.replace(/[^\/]+$/, ''));
+		return new THREE.JSONLoader().parse(json, location.pathname.replace(/[^\/]+$/, ''));
 	}
 }
 

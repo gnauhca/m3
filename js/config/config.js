@@ -1,7 +1,7 @@
-// const BUILDPATH = './build/'; 
+const BUILDPATH = '.'; 
 const CONFIG = {};
 const ASSETS = {
-    //libjs: BUILDPATH + '/presets.js',
+    presetjs: {url: BUILDPATH + '/presets.js', size: 300},
 
 
     // envmap

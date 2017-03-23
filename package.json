@@ -4,7 +4,10 @@
   "description": "m3",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "webpack-dev-server",
+    "preset": "webpack --config webpack.config.preset.js",
+    "build": "webpack --config webpack.config.build.js"
   },
   "repository": {
     "type": "git",
@@ -42,6 +45,7 @@
     "to-string-loader": "^1.1.5",
     "tojson-loader": "^1.0.4",
     "tween.js": "^16.6.0",
+    "uglifyjs-webpack-plugin": "^0.3.1",
     "url-loader": "^0.5.7",
     "webpack": "^2.2.1",
     "wolfy87-eventemitter": "^5.1.0"
