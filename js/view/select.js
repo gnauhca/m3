@@ -81,7 +81,7 @@ class SelectView extends View {
 		this._selectStarsStage.entry();
 		setTimeout(()=>{
 			$('#selectView').removeClass('inactivate');
-		}, 12000);
+		}, window.TIME_12000);
 
 		// select animation
 		

@@ -89,6 +89,7 @@ class DisplayMobile extends Stage {
 		this.objectSizes.mesh.position = this.objects.mesh.position.clone();
 		this.objectSizes.mesh.rotation = this.objects.mesh.rotation.clone();
 
+		this.objectSizes.camera.up = new THREE.Vector3(0, 1, 0);
 		this.objectSizes.camera.position = this.objects.mesh.position.clone();
 		this.objectSizes.camera.position.z += 50;
 		this.objectSizes.camera.lookAt = this.objects.mesh.position.clone();
@@ -265,6 +266,7 @@ class DisplayMobile extends Stage {
 
 			var initModelRotation = that.objectSizes.mesh.rotation;
 			var initCameraPosition = that.objectSizes.camera.position;
+			var initCameraUp = that.objectSizes.camera.up;
 
 			that.objects.mesh.rotation.copy(initModelRotation);
 			that.objects.mesh.rotation.x -= Math.PI * 0.5;
@@ -273,8 +275,10 @@ class DisplayMobile extends Stage {
 				rotation: initModelRotation
 			}, 2000);
 
+			// console.log(initCameraUp);
 			that._camera.animate({
-				position: initCameraPosition
+				position: initCameraPosition,
+				up: initCameraUp
 			}, 2000, 0, {
 				onComplete: function() {
 					that.setState('handle');

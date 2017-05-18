@@ -17,7 +17,7 @@ module.exports = {
     output: {
         'filename': '[name].js',
         'path': path.resolve(__dirname, 'build'),
-        'publicPath': './'
+        // 'publicPath': './build'
     },
     resolve: {
         modules: ['./', 'node_modules'/*, './js/libs'*/, './js/common', /*'./js/config'*/]
@@ -74,7 +74,8 @@ module.exports = {
     ],
 
     devServer: {
-        // 'content-base': '/',
+        'contentBase': path.join(__dirname, 'build'),
+        'disableHostCheck': true,
         'inline': true,
         'host': '0.0.0.0',
         'port': 9123

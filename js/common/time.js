@@ -146,7 +146,7 @@ class Time extends EventEmitter {
 
 window.Time = Time;
 
-for (let i = 0; i < 10000; i+=100) {
+for (let i = 0; i < 20000; i+=100) {
 	window['TIME_' + i] = window.env === 'develop' ? 0 : i;
 }
 
